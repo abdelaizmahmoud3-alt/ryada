@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Smart Maintenance V24 - University Pro</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+
+    <style>
+        /* ==================== Core Styling (University Light Theme) ==================== */
+        :root {
+            --primary: #0056b3;        
+            --primary-dark: #003d80;   
+            --dark: #f8fafc;           
+            --surface: #ffffff;        
+            --surface-light: #f1f5f9;  
+            --border: #e2e8f0;         
+            --text: #1e293b;           
+            --text-muted: #64748b;     
+            --gold: #d97706;           
+            --success: #10b981;        
+            --error: #ef4444;          
+            --warning: #f59e0b;        
+            --info: #0ea5e9;           
+            --bg-image: url('https://a.top4top.io/p_36115ao3o1.jpg');
+            --glass: rgba(255, 255, 255, 0.95);
+            --shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+        }
+        
+        * { box-sizing: border-box; outline: none; -webkit-tap-highlight-color: transparent; }
+        
+        body {
+            font-family: 'Cairo', sans-serif; 
+            background-color: var(--dark); 
+            color: var(--text); 
+            margin: 0; 
+            min-height: 100vh;
+            background-image: linear-gradient(rgba(248,250,252,0.92), rgba(248,250,252,0.92)), var(--bg-image);
+            background-size: cover; 
+            background-position: center; 
+            background-attachment: fixed;
+            position: relative; 
+            overflow-x: hidden;
+        }
+        
+        .app-wrapper { max-width: 600px; margin: 0 auto; min-height: 100vh; position: relative; padding-bottom: 100px; }
+        .hidden { display: none !important; }
+        html { scroll-behavior: smooth; }
+
+        /* --- Header --- */
+        .main-banner {
+            height: 220px; 
+            background: linear-gradient(to bottom, rgba(0,86,179,0.3), rgba(0, 61, 128, 0.9)), url('https://a.top4top.io/p_36115ao3o1.jpg');
+            background-size: cover; 
+            background-position: center;
+            display: flex; flex-direction: column; justify-content: flex-end; padding: 25px;
+            border-bottom-left-radius: 40px; border-bottom-right-radius: 40px; 
+            margin-bottom: 25px;
+            box-shadow: 0 10px 40px rgba(0,86,179,0.3);
+            position: relative;
+        }
+
+        .header-top {
+            position: absolute; top: 20px; left: 20px; right: 20px;
+            display: flex; justify-content: space-between; align-items: center;
+        }
+
+        .bell-btn {
+            background: rgba(255,255,255,0.2);
+            width: 40px; height: 40px; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            color: white; cursor: pointer; backdrop-filter: blur(5px);
+            border: 1px solid rgba(255,255,255,0.3);
+            position: relative;
+        }
+        .bell-badge {
+            position: absolute; top: 8px; right: 8px; width: 8px; height: 8px;
+            background: var(--error); border-radius: 50%; display: none; border: 1px solid #fff;
+        }
+
+        .header-content { display: flex; align-items: flex-end; justify-content: space-between; width: 100%; padding-bottom: 10px; }
+
+        /* User Info */
+        .user-minimal { display: flex; flex-direction: column; gap: 6px; text-shadow: 0 2px 5px rgba(0,0,0,0.5); }
+        .user-minimal h1 { margin: 0; font-size: 26px; font-weight: 900; color: #fff; line-height: 1.1; letter-spacing: -0.5px; }
+        .user-minimal .role-badge { 
+            background: rgba(255, 255, 255, 0.2); color: white; padding: 5px 14px; 
+            border-radius: 20px; font-size: 11px; font-weight: 800; width: fit-content;
+            border: 1px solid rgba(255,255,255,0.4); backdrop-filter: blur(4px);
+        }
+
+        .user-avatar-container img {
+            width: 85px; height: 85px; border-radius: 50%;
+            border: 4px solid rgba(255,255,255,0.3); object-fit: cover;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2); transition: transform 0.3s; background: #fff;
+        }
+        .user-avatar-container img:active { transform: scale(0.9); }
+
+        /* --- Cards --- */
+        .glass-card {
+            background: var(--surface); border: 1px solid var(--border);
+            border-radius: 24px; padding: 24px; margin: 15px;
+            box-shadow: var(--shadow); position: relative; overflow: hidden; transition: 0.2s;
+        }
+        .glass-card h2, .glass-card h3 { color: var(--primary-dark); }
+        .request-card { cursor: pointer; border-right: 4px solid transparent; margin-bottom: 15px; background: white; transition: transform 0.2s; border: 1px solid var(--border); }
+        .request-card:active { transform: scale(0.98); }
+        .req-new { border-left: 3px solid var(--info); }
+        .req-done { border-left: 3px solid var(--success); background: #f0fdf4; }
+        .req-rejected { border-left: 3px solid var(--error); background: #fef2f2; }
+
+        /* --- Inputs --- */
+        .input-group { margin-bottom: 20px; position: relative; }
+        .input-group label { display: block; font-size: 12px; color: var(--text-muted); margin-bottom: 8px; font-weight: 700; }
+        input, select, textarea {
+            width: 100%; padding: 16px; background: var(--surface-light); 
+            border: 1px solid var(--border); border-radius: 16px; color: var(--text); 
+            font-family: 'Cairo', sans-serif; font-size: 14px; font-weight: 600; transition: 0.3s;
+        }
+        input:focus, select:focus, textarea:focus { border-color: var(--primary); background: #fff; box-shadow: 0 0 0 4px rgba(0, 86, 179, 0.1); }
+
+        /* --- Auth Styling Updates (Request #3) --- */
+        .auth-logo-modern {
+            width: 90px; height: 90px;
+            /* No sharp edges, no floating circle effect, just modern soft square */
+            border-radius: 20px; 
+            margin-bottom: 15px; 
+            object-fit: cover; 
+            box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+        }
+
+        /* Auth Grid */
+        .auth-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 20px; }
+        .auth-card-input { display: none; }
+        .auth-card {
+            background: var(--surface-light); border: 1px solid var(--border);
+            padding: 15px 5px; border-radius: 14px; text-align: center; cursor: pointer; transition: 0.2s;
+            display: flex; flex-direction: column; align-items: center; gap: 8px;
+        }
+        .auth-card-input:checked + .auth-card { background: rgba(0, 86, 179, 0.1); border-color: var(--primary); }
+        .auth-card-input:checked + .auth-card i { color: var(--primary); }
+
+        /* Priority Grid */
+        .priority-grid { display: flex; gap: 10px; }
+        .prio-card {
+            flex: 1; padding: 15px 5px; background: var(--surface-light); border: 1px solid var(--border);
+            border-radius: 16px; text-align: center; cursor: pointer; transition: 0.3s; 
+            display: flex; flex-direction: column; align-items: center; gap: 5px; color: var(--text-muted);
+        }
+        .prio-radio:checked + .prio-card.p-low { background: #ecfdf5; border-color: var(--success); color: var(--success); }
+        .prio-radio:checked + .prio-card.p-med { background: #fff7ed; border-color: var(--warning); color: var(--warning); }
+        .prio-radio:checked + .prio-card.p-high { background: #fef2f2; border-color: var(--error); color: var(--error); }
+
+        /* Buttons */
+        .btn-main {
+            width: 100%; padding: 16px; background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            border: none; border-radius: 16px; color: white; font-weight: 700; cursor: pointer;
+            display: flex; justify-content: center; align-items: center; gap: 10px;
+            box-shadow: 0 8px 20px rgba(0, 86, 179, 0.2); font-size: 15px; font-family: 'Cairo', sans-serif; transition: 0.1s;
+        }
+        .btn-main:active { transform: scale(0.97); }
+        .btn-ghost { background: transparent; border: 1px solid var(--border); color: var(--text-muted); border-radius: 14px; font-family: 'Cairo', sans-serif; cursor: pointer;}
+        .btn-danger { background: linear-gradient(135deg, var(--error), #b91c1c); box-shadow: 0 8px 20px rgba(239, 68, 68, 0.2); }
+        .btn-sm { padding: 8px 16px; font-size: 12px; width: auto; margin: 0; border-radius: 10px; min-height: 35px; }
+
+        /* Timeline */
+        .timeline { margin: 20px 0; padding: 0 10px; }
+        .timeline-item { display: flex; gap: 15px; padding-bottom: 25px; position: relative; }
+        .timeline-item::before { content: ''; position: absolute; right: 14px; top: 30px; bottom: 0; width: 2px; background: var(--border); }
+        .timeline-item:last-child::before { display: none; }
+        .tl-icon {
+            width: 30px; height: 30px; border-radius: 50%; background: var(--surface-light); 
+            border: 2px solid var(--border); display: flex; align-items: center; justify-content: center;
+            font-size: 12px; color: var(--text-muted); z-index: 2; flex-shrink: 0;
+        }
+        .tl-content h4 { margin: 0 0 5px; font-size: 14px; font-weight: 700; color: var(--text); }
+        .tl-content p { margin: 0; font-size: 12px; color: var(--text-muted); }
+        .timeline-item.active .tl-icon { background: var(--primary); border-color: var(--primary); color: white; box-shadow: 0 0 15px rgba(0, 86, 179, 0.3); }
+        .timeline-item.rejected .tl-icon { background: var(--error); border-color: var(--error); color: white; }
+
+        /* Tabs & Nav */
+        .tabs-container { display: flex; margin: 15px; background: #fff; padding: 6px; border-radius: 20px; border: 1px solid var(--border); box-shadow: var(--shadow); }
+        .tab-btn { flex: 1; padding: 12px; color: var(--text-muted); font-size: 13px; font-weight: 700; cursor: pointer; border-radius: 14px; background: transparent; border: none; font-family: 'Cairo', sans-serif; transition: 0.3s; }
+        .tab-btn.active { background: var(--primary); color: white; box-shadow: 0 4px 15px rgba(0, 86, 179, 0.2); }
+
+        .bottom-nav { 
+            position: fixed; bottom: 0; left: 0; right: 0; max-width: 600px; margin: 0 auto; 
+            background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px);
+            border-top: 1px solid var(--border); display: flex; justify-content: space-between; align-items: flex-end; 
+            padding: 10px 20px 25px; z-index: 900; border-top-left-radius: 30px; border-top-right-radius: 30px;
+            box-shadow: 0 -5px 20px rgba(0,0,0,0.05);
+        }
+        .nav-item { text-align: center; color: #94a3b8; font-size: 10px; cursor: pointer; width: 60px; }
+        .nav-item i { font-size: 20px; margin-bottom: 6px; display: block; }
+        .nav-item.active { color: var(--primary); }
+        .nav-add-btn {
+            width: 60px; height: 60px; background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 26px;
+            box-shadow: 0 10px 25px rgba(0, 86, 179, 0.4); transform: translateY(-25px); border: 5px solid var(--dark);
+        }
+
+        /* --- Friends & Modals --- */
+        .friend-item { display: flex; align-items: center; gap: 15px; padding: 15px; background: #fff; border-radius: 18px; margin-bottom: 10px; cursor: pointer; border: 1px solid var(--border); transition: 0.2s; }
+        .friend-item:hover { border-color: var(--primary); background: #f8fafc; }
+        .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 2000; display: flex; align-items: center; justify-content: center; padding: 20px; backdrop-filter: blur(5px); }
+        .modal-content { width: 100%; max-width: 450px; background: #fff; border: 1px solid var(--border); border-radius: 30px; padding: 30px; max-height: 90vh; overflow-y: auto; position: relative; box-shadow: 0 25px 50px rgba(0,0,0,0.15); }
+        .close-btn { position: absolute; top: 20px; left: 20px; background: #f1f5f9; width: 35px; height: 35px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; color: var(--text-muted); }
+
+        /* Status Pills */
+        .status-pill { padding: 6px 14px; border-radius: 20px; font-size: 11px; font-weight: 800; display: flex; align-items: center; gap: 5px; width: fit-content; }
+        .st-pending { background: #e0f2fe; color: var(--info); border: 1px solid #bae6fd; }
+        .st-approved { background: #eff6ff; color: var(--primary); border: 1px solid #bfdbfe; }
+        .st-working { background: #fff7ed; color: var(--warning); border: 1px solid #fed7aa; }
+        .st-done { background: #f0fdf4; color: var(--success); border: 1px solid #bbf7d0; }
+        .st-rejected { background: #fef2f2; color: var(--error); border: 1px solid #fecaca; }
+
+        /* Media & Image Updates (Request #2) */
+        .media-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 15px; }
+        .media-item { aspect-ratio: 1; border-radius: 14px; overflow: hidden; background: #f8fafc; border: 1px solid var(--border); position: relative; }
+        .media-item img, .media-item video { 
+            width: 100%; height: 100%; 
+            object-fit: contain; /* Shows full image small */
+            background: #000; /* Dark bg for contrast */
+        }
+        .remove-file { position: absolute; top: 4px; right: 4px; background: var(--error); color: white; width: 22px; height: 22px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 10px; }
+        
+        .archive-thumbs { display: flex; gap: 5px; margin-top: 10px; flex-wrap: wrap; }
+        .archive-thumbs img { 
+            width: 45px; height: 45px; /* Slightly bigger */
+            border-radius: 10px; 
+            object-fit: cover; /* Use cover for thumbs to look neat */
+            border: 1px solid var(--border); 
+            background: #fff;
+        }
+
+        /* Modern Confirm Modal (Request #4) */
+        .confirm-icon-box {
+            width: 70px; height: 70px; margin: 0 auto 20px;
+            background: #fef2f2; border-radius: 50%; display: flex; align-items: center; justify-content: center;
+            color: var(--error); font-size: 30px; border: 4px solid #fff; box-shadow: 0 10px 20px rgba(239, 68, 68, 0.1);
+        }
+    </style>
+</head>
+<body>
+
+<div class="app-wrapper">
+    
+    <audio id="notify-sound" src="https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3" preload="auto"></audio>
+
+    <div id="loader" style="position:fixed; inset:0; background:var(--dark); z-index:9999; display:flex; flex-direction:column; justify-content:center; align-items:center;">
+        <i class="fa-solid fa-circle-notch fa-spin fa-3x" style="color:var(--primary);"></i>
+        <p style="margin-top:20px; color:var(--text-muted); font-size:14px; letter-spacing: 1px;">Smart Maintenance V24</p>
+    </div>
+
+    <div id="auth-screen" class="hidden" style="min-height:100vh; display:flex; flex-direction:column; justify-content:center; padding:25px;">
+        <div class="glass-card" style="text-align:center; padding: 40px 25px;">
+            <img src="https://a.top4top.io/p_36115ao3o1.jpg" class="auth-logo-modern">
+            
+            <h2 style="margin:0 0 5px; font-weight:900; font-size: 26px; color:var(--primary-dark);">مرحباً بك</h2>
+            <p style="color:var(--text-muted); font-size:13px; margin-bottom:35px; line-height:1.6;">نظام الصيانة الذكي - الجامعة</p>
+
+            <div id="reg-fields" class="hidden">
+                <p style="text-align:right; font-size:12px; color:var(--text-muted); margin-bottom:8px;">اختر النوع:</p>
+                <div class="auth-grid" style="grid-template-columns: 1fr 1fr;">
+                    <label><input type="radio" name="auth-gender" value="male" class="auth-card-input" checked><div class="auth-card"><i class="fa-solid fa-person"></i><span>ذكر</span></div></label>
+                    <label><input type="radio" name="auth-gender" value="female" class="auth-card-input"><div class="auth-card"><i class="fa-solid fa-person-dress"></i><span>أنثى</span></div></label>
+                </div>
+                <div class="input-group"><input type="text" id="reg-name" placeholder="الاسم الكامل"></div>
+                <div class="input-group"><input type="tel" id="reg-phone" placeholder="01xxxxxxxxx"></div>
+                <p style="text-align:right; font-size:12px; color:var(--text-muted); margin-bottom:8px;">الوظيفة:</p>
+                <div class="auth-grid">
+                    <label><input type="radio" name="auth-role" value="employee" class="auth-card-input" checked><div class="auth-card"><i class="fa-solid fa-user-pen"></i><span>موظف</span></div></label>
+                    <label><input type="radio" name="auth-role" value="supervisor" class="auth-card-input"><div class="auth-card"><i class="fa-solid fa-user-tie"></i><span>مشرف</span></div></label>
+                    <label><input type="radio" name="auth-role" value="technician" class="auth-card-input"><div class="auth-card"><i class="fa-solid fa-helmet-safety"></i><span>فني</span></div></label>
+                </div>
+                <div class="input-group"><input type="text" id="reg-job" placeholder="المسمى الوظيفي"></div>
+                <div class="input-group"><input type="text" id="reg-loc" placeholder="مقر العمل"></div>
+            </div>
+
+            <div class="input-group"><input type="email" id="email" placeholder="البريد الإلكتروني الجامعي"></div>
+            <div class="input-group"><input type="password" id="password" placeholder="كلمة المرور"></div>
+            <div id="confirm-pass-field" class="hidden input-group"><input type="password" id="confirm-password" placeholder="تأكيد كلمة المرور"></div>
+            
+            <button onclick="handleAuth()" id="auth-btn" class="btn-main" style="margin-top:25px;">تسجيل الدخول</button>
+            <div onclick="toggleAuth()" style="margin-top:25px; font-size:13px; cursor:pointer; padding:10px; color:var(--text-muted);">
+                <span id="auth-switch-text">ليس لديك حساب؟ <b style="color:var(--primary)">إنشاء حساب جديد</b></span>
+            </div>
+        </div>
+    </div>
+
+    <div id="app-container" class="hidden">
+        <div class="main-banner">
+            <div class="header-top">
+                <div class="user-avatar-container" onclick="nav('profile', document.querySelector('.nav-item:nth-child(4)'))">
+                    <img id="banner-img" src="https://cdn-icons-png.flaticon.com/512/4140/4140048.png">
+                </div>
+                <div class="bell-btn" onclick="toast('لا توجد إشعارات جديدة')">
+                    <i class="fa-regular fa-bell"></i>
+                    <div class="bell-badge"></div>
+                </div>
+            </div>
+            <div class="header-content">
+                <div class="user-minimal">
+                    <span id="banner-role" class="role-badge">User</span>
+                    <h1 id="banner-name">Guest</h1>
+                    <span id="banner-id" style="color:rgba(255,255,255,0.8); font-family:monospace; font-size:12px;">ID: --</span>
+                </div>
+            </div>
+        </div>
+        
+        <div id="main-content">
+            <div id="page-home" class="page-section">
+                <div class="tabs-container">
+                    <button class="tab-btn active" onclick="switchTab('active', this)">المهام الجارية</button>
+                    <button class="tab-btn" onclick="switchTab('history', this)">الأرشيف</button>
+                    <button class="tab-btn" onclick="switchTab('trash', this)" style="color:var(--error);">المحذوفات</button>
+                </div>
+                <div id="filter-container" class="hidden" style="padding:0 15px 10px;">
+                    <select id="feed-filter" onchange="renderFeed()" style="padding:10px;"><option value="all">عرض كل القطاعات</option><option value="eng">هندسة</option><option value="sci">علوم</option><option value="art">آداب</option></select>
+                </div>
+                <div id="archive-actions" class="hidden" style="padding:0 15px 15px;">
+                     <button onclick="downloadArchivePDF()" class="btn-main btn-sm" style="background:var(--success); width:100%;"><i class="fa-solid fa-file-pdf"></i> تحميل تقرير الأرشيف (PDF)</button>
+                </div>
+                <div id="requests-feed" style="padding-bottom:100px;"></div>
+            </div>
+
+            <div id="page-create" class="page-section hidden">
+                <div class="glass-card" style="margin-top:0;">
+                    <h3 style="margin:0 0 20px; font-weight:800; color:var(--primary-dark); border-right:4px solid var(--primary); padding-right:15px; font-size:20px;">بلاغ جديد</h3>
+                    <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:15px;">
+                        <div class="input-group"><label>التاريخ</label><div class="date-wrapper"><input type="date" id="req-date"></div></div>
+                        <div class="input-group"><label>الوقت</label><div class="time-wrapper"><input type="time" id="req-time"></div></div>
+                    </div>
+                    <div class="input-group">
+                        <label>نوع العطل</label>
+                        <select id="req-type">
+                            <option value="">اختر التخصص...</option>
+                            <option value="كهرباء">كهرباء</option>
+                            <option value="سباكة">سباكة</option>
+                            <option value="نجارة">نجارة</option>
+                            <option value="تكييف">تكييف</option>
+                            <option value="IT">دعم فني (IT)</option>
+                        </select>
+                    </div>
+                    <div class="input-group">
+                        <label>الأهمية</label>
+                        <div class="priority-grid">
+                            <label class="prio-label" style="flex:1"><input type="radio" name="prio" value="low" class="prio-radio" checked><div class="prio-card p-low"><i class="fa-regular fa-face-smile"></i><span>عادي</span></div></label>
+                            <label class="prio-label" style="flex:1"><input type="radio" name="prio" value="medium" class="prio-radio"><div class="prio-card p-med"><i class="fa-regular fa-face-meh"></i><span>متوسط</span></div></label>
+                            <label class="prio-label" style="flex:1"><input type="radio" name="prio" value="high" class="prio-radio"><div class="prio-card p-high"><i class="fa-solid fa-fire"></i><span>عاجل</span></div></label>
+                        </div>
+                    </div>
+                    <div class="input-group">
+                        <label>الموقع</label>
+                        <select id="req-faculty" onchange="updateBuildings()" style="margin-bottom:12px;"><option value="">القطاع/الكلية...</option><option value="eng">هندسة</option><option value="sci">علوم</option><option value="art">آداب</option><option value="admin">إدارة</option></select>
+                        <select id="req-building" style="margin-bottom:12px;"><option value="">المبنى...</option></select>
+                        <input type="text" id="req-room" placeholder="رقم الغرفة / القاعة">
+                    </div>
+                    <div class="input-group"><label>وصف البلاغ</label><textarea id="req-desc" rows="4" placeholder="تفاصيل المشكلة..."></textarea></div>
+                    <div style="background:var(--surface-light); padding:20px; border-radius:16px; border:2px dashed var(--border); text-align:center; cursor:pointer; margin-bottom:20px;" onclick="document.getElementById('req-files').click()">
+                        <i class="fa-solid fa-cloud-arrow-up fa-2x" style="color:var(--text-muted); margin-bottom:10px;"></i>
+                        <p style="font-size:12px; color:var(--text-muted);">اضغط لرفع صور أو فيديو (Max 40s)</p>
+                        <input type="file" id="req-files" hidden multiple accept="image/*,video/*" onchange="handleFiles(this)">
+                    </div>
+                    <div id="preview-grid" class="media-grid" style="margin-bottom:20px;"></div>
+                    <button onclick="openSupModal()" class="btn-main">التالي: اختيار المشرف <i class="fa-solid fa-arrow-left"></i></button>
+                </div>
+            </div>
+
+            <div id="page-team" class="page-section hidden">
+                <div class="glass-card" style="border-top: 3px solid var(--gold);">
+                    <h3 style="margin-bottom:20px;">فريق العمل</h3>
+                    <div style="display:flex; gap:10px; margin-bottom:20px;">
+                        <input type="text" id="search-query" placeholder="بحث بالـ ID ..." style="margin:0;">
+                        <button onclick="searchUser()" class="btn-main" style="width:auto; margin:0;"><i class="fa-solid fa-search"></i></button>
+                    </div>
+                    <div id="search-results" class="hidden" style="margin-bottom:20px;"></div>
+                    <div id="friend-reqs" class="hidden" style="background:#fff7ed; padding:15px; border-radius:15px; margin-bottom:20px; border:1px solid var(--gold);">
+                        <h5 style="margin:0 0 10px; color:var(--gold);">طلبات صداقة جديدة:</h5>
+                        <div id="reqs-list"></div>
+                    </div>
+                    <h5 style="color:var(--text-muted);">الأصدقاء:</h5>
+                    <div id="team-list"></div>
+                </div>
+            </div>
+
+            <div id="page-profile" class="page-section hidden">
+                <div class="glass-card" style="margin-top:20px;">
+                    <div style="text-align:center;">
+                        <div style="position:relative; width:130px; height:130px; margin:0 auto 25px;">
+                            <img id="edit-current-pic" src="" style="width:100%; height:100%; border-radius:50%; object-fit:cover; border:4px solid var(--primary);">
+                            <div onclick="document.getElementById('edit-profile-file').click()" style="position:absolute; bottom:5px; right:5px; background:var(--primary); width:40px; height:40px; border-radius:50%; display:flex; align-items:center; justify-content:center; cursor:pointer; border:3px solid #fff;"><i class="fa-solid fa-camera" style="color:white;"></i></div>
+                        </div>
+                        <input type="file" id="edit-profile-file" hidden accept="image/*" onchange="previewProfilePic(this)">
+                        <div style="font-family:monospace; background:var(--surface-light); display:inline-block; padding:10px 25px; border-radius:30px; margin-bottom:30px; color:var(--primary-dark); border:1px solid var(--border);" onclick="copyId()">ID: <span id="edit-id-display">--</span> <i class="fa-regular fa-copy"></i></div>
+                        <div style="text-align:right;">
+                            <div class="input-group"><label>الاسم الكامل</label><input type="text" id="edit-name"></div>
+                            <div class="input-group"><label>النوع</label><select id="edit-gender"><option value="male">ذكر</option><option value="female">أنثى</option></select></div>
+                            <div class="input-group"><label>رقم الهاتف</label><input type="tel" id="edit-phone"></div>
+                            <div class="input-group"><label>المسمى الوظيفي</label><input type="text" id="edit-job"></div>
+                            <div class="input-group"><label>مقر العمل</label><input type="text" id="edit-loc"></div>
+                        </div>
+                        <button onclick="saveProfile()" class="btn-main" id="save-profile-btn" style="margin-top:20px;">حفظ التعديلات</button>
+                    </div>
+                </div>
+            </div>
+
+            <div id="page-settings" class="page-section hidden">
+                <div class="glass-card">
+                    <h3 style="margin-bottom:25px;">الإعدادات</h3>
+                    <div class="input-group">
+                        <label>الإشعارات</label>
+                        <div style="display:flex; justify-content:space-between; align-items:center; background:var(--surface-light); padding:15px; border-radius:16px; border:1px solid var(--border);">
+                            <span>تفعيل التنبيهات الصوتية</span>
+                            <button onclick="reqNotifyPerm()" class="btn-sm btn-main" style="width:auto;">تفعيل</button>
+                        </div>
+                    </div>
+                    <hr style="border-color:var(--border); margin:25px 0;">
+                    <button onclick="document.getElementById('logout-modal').classList.remove('hidden')" class="btn-main btn-danger">تسجيل خروج</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="bottom-nav">
+            <div class="nav-item active" onclick="nav('home', this)"><i class="fa-solid fa-list-check"></i>المهام</div>
+            <div class="nav-item" onclick="nav('team', this)"><i class="fa-solid fa-users"></i>الفريق</div>
+            <div class="nav-add-btn" onclick="nav('create', null)"><i class="fa-solid fa-plus"></i></div>
+            <div class="nav-item" onclick="nav('profile', this)"><i class="fa-solid fa-user"></i>حسابي</div>
+            <div class="nav-item" onclick="nav('settings', this)"><i class="fa-solid fa-gear"></i>الإعدادات</div>
+        </div>
+    </div>
+
+    <div id="media-viewer" class="hidden" style="position:fixed; inset:0; background:rgba(0,0,0,0.95); z-index:9999; display:flex; flex-direction:column; align-items:center; justify-content:center;">
+        <div class="close-btn" style="top:30px; right:30px; left:auto; background:rgba(255,255,255,0.1); color:white;" onclick="document.getElementById('media-viewer').classList.add('hidden')"><i class="fa-solid fa-xmark"></i></div>
+        <div id="media-content-container" style="max-width:95%; max-height:80vh;"></div>
+    </div>
+
+    <div id="delete-friend-modal" class="modal-overlay hidden">
+        <div class="modal-content" style="text-align:center;">
+            <div class="close-btn" onclick="closeModal('delete-friend-modal')"><i class="fa-solid fa-xmark"></i></div>
+            <div class="confirm-icon-box"><i class="fa-solid fa-user-xmark"></i></div>
+            <h3 style="margin-bottom:10px; color:var(--text);">حذف صديق؟</h3>
+            <p style="color:var(--text-muted); margin-bottom:25px; font-size:14px;">هل أنت متأكد من رغبتك في إزالة هذا المستخدم من قائمة الأصدقاء؟ لا يمكن التراجع عن هذا الإجراء.</p>
+            <div style="display:flex; gap:10px;">
+                <button onclick="confirmRemoveFriend()" class="btn-main btn-danger">نعم، حذف</button>
+                <button onclick="closeModal('delete-friend-modal')" class="btn-ghost" style="width:100%;">إلغاء</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="friend-profile-modal" class="modal-overlay hidden">
+        <div class="modal-content" style="text-align:center;">
+            <div class="close-btn" onclick="closeModal('friend-profile-modal')"><i class="fa-solid fa-xmark"></i></div>
+            <div style="position:relative; margin-bottom:20px;">
+                <img id="fp-pic" src="" style="width:120px; height:120px; border-radius:50%; border:4px solid var(--primary); object-fit:cover; box-shadow:0 15px 30px rgba(0,0,0,0.1);">
+            </div>
+            <h3 id="fp-name" style="margin:0; font-size:22px; font-weight:800; color:var(--text);">-</h3>
+            <span id="fp-role" style="background:var(--primary); color:white; padding:5px 18px; border-radius:20px; font-size:12px; display:inline-block; margin:10px 0 25px; font-weight:700;">-</span>
+            <div style="display:flex; justify-content:center; gap:10px; margin-bottom:25px;">
+                <a id="fp-call-btn" href="#" class="btn-main" style="background:var(--success); width:auto; border-radius:50px; padding:10px 25px;"><i class="fa-solid fa-phone"></i> اتصال</a>
+                <button onclick="openDeleteFriendModal()" class="btn-ghost" style="color:var(--error); border-color:var(--error); border-radius:50px; padding:10px 25px;"><i class="fa-solid fa-user-xmark"></i> حذف</button>
+            </div>
+            <div style="text-align:right; background:var(--surface-light); padding:25px; border-radius:24px; border:1px solid var(--border);">
+                <p style="margin:12px 0;"><i class="fa-solid fa-briefcase" style="color:var(--text-muted); width:25px;"></i> <span id="fp-job">-</span></p>
+                <p style="margin:12px 0;"><i class="fa-solid fa-location-dot" style="color:var(--text-muted); width:25px;"></i> <span id="fp-loc">-</span></p>
+                <p style="margin:12px 0;"><i class="fa-solid fa-envelope" style="color:var(--text-muted); width:25px;"></i> <span id="fp-email">-</span></p>
+            </div>
+        </div>
+    </div>
+
+    <div id="sup-modal" class="modal-overlay hidden">
+        <div class="modal-content">
+            <div class="close-btn" onclick="closeModal('sup-modal')"><i class="fa-solid fa-xmark"></i></div>
+            <h3 style="margin-bottom:20px; border-right:4px solid var(--gold); padding-right:15px; color:var(--text);">اختر المشرف</h3>
+            <div id="sup-list" style="max-height:300px; overflow-y:auto; margin-bottom:20px;"></div>
+            <button onclick="sendRequestFinal()" class="btn-main" id="confirm-send-btn">إرسال البلاغ <i class="fa-regular fa-paper-plane"></i></button>
+        </div>
+    </div>
+
+    <div id="action-modal" class="modal-overlay hidden">
+        <div class="modal-content">
+            <div class="close-btn" onclick="closeModal('action-modal')"><i class="fa-solid fa-xmark"></i></div>
+            <h3 id="act-title" style="margin-bottom:20px; color:var(--text);">إجراء</h3>
+            <textarea id="act-comment" rows="4" placeholder="اكتب ملاحظات أو سبب الرفض..."></textarea>
+            
+            <div id="tech-select-area" class="hidden" style="margin-top:15px;">
+                <p style="font-size:12px; color:var(--text-muted); margin-bottom:10px;">اختر الفني المختص:</p>
+                <div id="tech-list-action" style="max-height:150px; overflow-y:auto; border:1px solid var(--border); border-radius:12px; padding:5px;"></div>
+            </div>
+
+            <button onclick="submitAction()" id="act-submit-btn" class="btn-main" style="margin-top:20px;">تنفيذ</button>
+        </div>
+    </div>
+
+    <div id="request-details-modal" class="modal-overlay hidden">
+        <div class="modal-content" style="max-width:550px;">
+            <div class="close-btn" onclick="closeModal('request-details-modal')"><i class="fa-solid fa-xmark"></i></div>
+            <h3 style="text-align:center; color:var(--primary); margin-bottom:25px;">تفاصيل البلاغ</h3>
+            <div id="req-details-content"></div>
+        </div>
+    </div>
+
+    <div id="logout-modal" class="modal-overlay hidden">
+        <div class="modal-content" style="text-align:center;">
+            <i class="fa-solid fa-right-from-bracket fa-3x" style="color:var(--error); margin-bottom:15px;"></i>
+            <h3 style="color:var(--text);">تأكيد الخروج؟</h3>
+            <div style="display:flex; gap:10px; margin-top:25px;">
+                <button onclick="logout()" class="btn-main btn-danger">نعم، خروج</button>
+                <button onclick="closeModal('logout-modal')" class="btn-ghost" style="width:100%;">إلغاء</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="toast" style="position:fixed; top:30px; left:50%; transform:translateX(-50%); background:rgba(15, 23, 42, 0.95); color:white; padding:12px 30px; border-radius:50px; border:1px solid rgba(255,255,255,0.1); z-index:9999; display:none; font-size:13px; font-weight:bold; box-shadow:0 10px 40px rgba(0,0,0,0.5); font-family:'Cairo'; backdrop-filter:blur(5px);"></div>
+
+</div>
+
+هذا الجزء الأول (HTML & CSS).
+هل تريد مني إرسال الجزء الثاني (كود الـ JavaScript) الذي يحتوي على منطق الفنيين الجديد، تفعيل الصوت، وتشغيل المودال المحدث؟
