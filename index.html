@@ -16,17 +16,17 @@
         :root {
             --primary: #0056b3;        
             --primary-dark: #003d80;   
-            --dark: #f8fafc;           
+            --dark: #f8fafc;            
             --surface: #ffffff;        
             --surface-light: #f1f5f9;  
             --border: #e2e8f0;         
-            --text: #1e293b;           
-            --text-muted: #64748b;     
-            --gold: #d97706;           
+            --text: #1e293b;            
+            --text-muted: #64748b;      
+            --gold: #d97706;            
             --success: #10b981;        
-            --error: #ef4444;          
+            --error: #ef4444;           
             --warning: #f59e0b;        
-            --info: #0ea5e9;           
+            --info: #0ea5e9;            
             --bg-image: url('https://a.top4top.io/p_36115ao3o1.jpg');
             --glass: rgba(255, 255, 255, 0.95);
             --shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
@@ -51,6 +51,18 @@
         .app-wrapper { max-width: 600px; margin: 0 auto; min-height: 100vh; position: relative; padding-bottom: 100px; }
         .hidden { display: none !important; }
         html { scroll-behavior: smooth; }
+
+        /* Loader Styling */
+        #loader {
+            position: fixed; 
+            inset: 0; 
+            background-color: var(--dark);
+            z-index: 99999; 
+            display: flex; 
+            flex-direction: column; 
+            justify-content: center; 
+            align-items: center;
+        }
 
         /* --- Header --- */
         .main-banner {
@@ -124,18 +136,22 @@
         }
         input:focus, select:focus, textarea:focus { border-color: var(--primary); background: #fff; box-shadow: 0 0 0 4px rgba(0, 86, 179, 0.1); }
 
-        /* --- Auth Styling Updates (Request #3) --- */
+        /* --- Auth Styling --- */
         .auth-logo-modern {
             width: 90px; height: 90px;
-            /* No sharp edges, no floating circle effect, just modern soft square */
             border-radius: 20px; 
             margin-bottom: 15px; 
             object-fit: cover; 
             box-shadow: 0 10px 25px rgba(0,0,0,0.05);
         }
 
-        /* Auth Grid */
-        .auth-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 20px; }
+        /* Fixed Auth Labels Spacing */
+        .auth-section-label {
+            text-align: right; font-size: 12px; color: var(--text-muted); 
+            margin-bottom: 8px; margin-top: 15px; display: block; font-weight: 700;
+        }
+
+        .auth-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 10px; }
         .auth-card-input { display: none; }
         .auth-card {
             background: var(--surface-light); border: 1px solid var(--border);
@@ -207,9 +223,14 @@
         /* --- Friends & Modals --- */
         .friend-item { display: flex; align-items: center; gap: 15px; padding: 15px; background: #fff; border-radius: 18px; margin-bottom: 10px; cursor: pointer; border: 1px solid var(--border); transition: 0.2s; }
         .friend-item:hover { border-color: var(--primary); background: #f8fafc; }
+        
+        /* Updated Z-Index for Modals */
         .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 2000; display: flex; align-items: center; justify-content: center; padding: 20px; backdrop-filter: blur(5px); }
         .modal-content { width: 100%; max-width: 450px; background: #fff; border: 1px solid var(--border); border-radius: 30px; padding: 30px; max-height: 90vh; overflow-y: auto; position: relative; box-shadow: 0 25px 50px rgba(0,0,0,0.15); }
         .close-btn { position: absolute; top: 20px; left: 20px; background: #f1f5f9; width: 35px; height: 35px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; color: var(--text-muted); }
+
+        /* Specific Z-Index for Delete Modal to appear ON TOP of Friend Profile */
+        #delete-friend-modal { z-index: 10000 !important; }
 
         /* Status Pills */
         .status-pill { padding: 6px 14px; border-radius: 20px; font-size: 11px; font-weight: 800; display: flex; align-items: center; gap: 5px; width: fit-content; }
@@ -219,31 +240,30 @@
         .st-done { background: #f0fdf4; color: var(--success); border: 1px solid #bbf7d0; }
         .st-rejected { background: #fef2f2; color: var(--error); border: 1px solid #fecaca; }
 
-        /* Media & Image Updates (Request #2) */
+        /* Media & Image Updates */
         .media-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 15px; }
         .media-item { aspect-ratio: 1; border-radius: 14px; overflow: hidden; background: #f8fafc; border: 1px solid var(--border); position: relative; }
-        .media-item img, .media-item video { 
-            width: 100%; height: 100%; 
-            object-fit: contain; /* Shows full image small */
-            background: #000; /* Dark bg for contrast */
-        }
+        .media-item img, .media-item video { width: 100%; height: 100%; object-fit: contain; background: #000; }
         .remove-file { position: absolute; top: 4px; right: 4px; background: var(--error); color: white; width: 22px; height: 22px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 10px; }
-        
         .archive-thumbs { display: flex; gap: 5px; margin-top: 10px; flex-wrap: wrap; }
-        .archive-thumbs img { 
-            width: 45px; height: 45px; /* Slightly bigger */
-            border-radius: 10px; 
-            object-fit: cover; /* Use cover for thumbs to look neat */
-            border: 1px solid var(--border); 
-            background: #fff;
-        }
+        .archive-thumbs img { width: 45px; height: 45px; border-radius: 10px; object-fit: cover; border: 1px solid var(--border); background: #fff; }
 
-        /* Modern Confirm Modal (Request #4) */
+        /* Modern Confirm Modal */
         .confirm-icon-box {
             width: 70px; height: 70px; margin: 0 auto 20px;
             background: #fef2f2; border-radius: 50%; display: flex; align-items: center; justify-content: center;
             color: var(--error); font-size: 30px; border: 4px solid #fff; box-shadow: 0 10px 20px rgba(239, 68, 68, 0.1);
         }
+
+        /* Modern Tech Selection */
+        .tech-select-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
+        .tech-select-card {
+            border: 1px solid var(--border); border-radius: 16px; padding: 15px; text-align: center; cursor: pointer; transition: 0.2s; background: var(--surface-light);
+        }
+        .tech-select-card:hover { border-color: var(--primary); background: #fff; }
+        .tech-select-card.selected { border-color: var(--primary); background: #eff6ff; box-shadow: 0 4px 12px rgba(0,86,179,0.1); }
+        .tech-select-card img { width: 50px; height: 50px; border-radius: 50%; object-fit: cover; margin-bottom: 8px; border: 2px solid white; box-shadow: 0 5px 10px rgba(0,0,0,0.05); }
+
     </style>
 </head>
 <body>
@@ -252,7 +272,7 @@
     
     <audio id="notify-sound" src="https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3" preload="auto"></audio>
 
-    <div id="loader" style="position:fixed; inset:0; background:var(--dark); z-index:9999; display:flex; flex-direction:column; justify-content:center; align-items:center;">
+    <div id="loader">
         <i class="fa-solid fa-circle-notch fa-spin fa-3x" style="color:var(--primary);"></i>
         <p style="margin-top:20px; color:var(--text-muted); font-size:14px; letter-spacing: 1px;">Smart Maintenance V24</p>
     </div>
@@ -265,20 +285,21 @@
             <p style="color:var(--text-muted); font-size:13px; margin-bottom:35px; line-height:1.6;">نظام الصيانة الذكي - الجامعة</p>
 
             <div id="reg-fields" class="hidden">
-                <p style="text-align:right; font-size:12px; color:var(--text-muted); margin-bottom:8px;">اختر النوع:</p>
+                <p class="auth-section-label">اختر النوع:</p>
                 <div class="auth-grid" style="grid-template-columns: 1fr 1fr;">
                     <label><input type="radio" name="auth-gender" value="male" class="auth-card-input" checked><div class="auth-card"><i class="fa-solid fa-person"></i><span>ذكر</span></div></label>
                     <label><input type="radio" name="auth-gender" value="female" class="auth-card-input"><div class="auth-card"><i class="fa-solid fa-person-dress"></i><span>أنثى</span></div></label>
                 </div>
-                <div class="input-group"><input type="text" id="reg-name" placeholder="الاسم الكامل"></div>
+                <div class="input-group" style="margin-top:15px;"><input type="text" id="reg-name" placeholder="الاسم الكامل"></div>
                 <div class="input-group"><input type="tel" id="reg-phone" placeholder="01xxxxxxxxx"></div>
-                <p style="text-align:right; font-size:12px; color:var(--text-muted); margin-bottom:8px;">الوظيفة:</p>
+                
+                <p class="auth-section-label">الوظيفة:</p>
                 <div class="auth-grid">
                     <label><input type="radio" name="auth-role" value="employee" class="auth-card-input" checked><div class="auth-card"><i class="fa-solid fa-user-pen"></i><span>موظف</span></div></label>
                     <label><input type="radio" name="auth-role" value="supervisor" class="auth-card-input"><div class="auth-card"><i class="fa-solid fa-user-tie"></i><span>مشرف</span></div></label>
                     <label><input type="radio" name="auth-role" value="technician" class="auth-card-input"><div class="auth-card"><i class="fa-solid fa-helmet-safety"></i><span>فني</span></div></label>
                 </div>
-                <div class="input-group"><input type="text" id="reg-job" placeholder="المسمى الوظيفي"></div>
+                <div class="input-group" style="margin-top:15px;"><input type="text" id="reg-job" placeholder="المسمى الوظيفي"></div>
                 <div class="input-group"><input type="text" id="reg-loc" placeholder="مقر العمل"></div>
             </div>
 
@@ -321,7 +342,7 @@
                     <button class="tab-btn" onclick="switchTab('trash', this)" style="color:var(--error);">المحذوفات</button>
                 </div>
                 <div id="filter-container" class="hidden" style="padding:0 15px 10px;">
-                    <select id="feed-filter" onchange="renderFeed()" style="padding:10px;"><option value="all">عرض كل القطاعات</option><option value="eng">هندسة</option><option value="sci">علوم</option><option value="art">آداب</option></select>
+                    <select id="feed-filter" onchange="renderFeed()" style="padding:10px;"><option value="all">عرض الكل</option><option value="Admin">المبني الاداري</option><option value="Nursing">تمريض</option><option value="CS">حاسبات</option><option value="PT">علاج طبيعي</option><option value="Pharmacy">صيدلة</option><option value="Dentistry">أسنان</option><option value="Business">إدارة أعمال</option></select>
                 </div>
                 <div id="archive-actions" class="hidden" style="padding:0 15px 15px;">
                      <button onclick="downloadArchivePDF()" class="btn-main btn-sm" style="background:var(--success); width:100%;"><i class="fa-solid fa-file-pdf"></i> تحميل تقرير الأرشيف (PDF)</button>
@@ -357,8 +378,17 @@
                     </div>
                     <div class="input-group">
                         <label>الموقع</label>
-                        <select id="req-faculty" onchange="updateBuildings()" style="margin-bottom:12px;"><option value="">القطاع/الكلية...</option><option value="eng">هندسة</option><option value="sci">علوم</option><option value="art">آداب</option><option value="admin">إدارة</option></select>
-                        <select id="req-building" style="margin-bottom:12px;"><option value="">المبنى...</option></select>
+                        <select id="req-faculty" style="margin-bottom:12px;">
+                            <option value="">اختر المبنى/الكلية...</option>
+                            <option value="Admin">المبني الاداري</option>
+                            <option value="Nursing">مبني كلية التمريض</option>
+                            <option value="CS">مبني كليه الحاسبات والمعلومات</option>
+                            <option value="PT">مبني كلية العلاج الطبيعي</option>
+                            <option value="Pharmacy">مبني كليه الصيدلة</option>
+                            <option value="Dentistry">مبني كلية الاسنان</option>
+                            <option value="Business">مبني كلية ادراة اعمال</option>
+                            <option value="Other">إضافة أخرى...</option>
+                        </select>
                         <input type="text" id="req-room" placeholder="رقم الغرفة / القاعة">
                     </div>
                     <div class="input-group"><label>وصف البلاغ</label><textarea id="req-desc" rows="4" placeholder="تفاصيل المشكلة..."></textarea></div>
@@ -440,21 +470,8 @@
         <div id="media-content-container" style="max-width:95%; max-height:80vh;"></div>
     </div>
 
-    <div id="delete-friend-modal" class="modal-overlay hidden">
-        <div class="modal-content" style="text-align:center;">
-            <div class="close-btn" onclick="closeModal('delete-friend-modal')"><i class="fa-solid fa-xmark"></i></div>
-            <div class="confirm-icon-box"><i class="fa-solid fa-user-xmark"></i></div>
-            <h3 style="margin-bottom:10px; color:var(--text);">حذف صديق؟</h3>
-            <p style="color:var(--text-muted); margin-bottom:25px; font-size:14px;">هل أنت متأكد من رغبتك في إزالة هذا المستخدم من قائمة الأصدقاء؟ لا يمكن التراجع عن هذا الإجراء.</p>
-            <div style="display:flex; gap:10px;">
-                <button onclick="confirmRemoveFriend()" class="btn-main btn-danger">نعم، حذف</button>
-                <button onclick="closeModal('delete-friend-modal')" class="btn-ghost" style="width:100%;">إلغاء</button>
-            </div>
-        </div>
-    </div>
-
     <div id="friend-profile-modal" class="modal-overlay hidden">
-        <div class="modal-content" style="text-align:center;">
+        <div class="modal-content" style="text-align:center; z-index:2001;">
             <div class="close-btn" onclick="closeModal('friend-profile-modal')"><i class="fa-solid fa-xmark"></i></div>
             <div style="position:relative; margin-bottom:20px;">
                 <img id="fp-pic" src="" style="width:120px; height:120px; border-radius:50%; border:4px solid var(--primary); object-fit:cover; box-shadow:0 15px 30px rgba(0,0,0,0.1);">
@@ -486,14 +503,25 @@
         <div class="modal-content">
             <div class="close-btn" onclick="closeModal('action-modal')"><i class="fa-solid fa-xmark"></i></div>
             <h3 id="act-title" style="margin-bottom:20px; color:var(--text);">إجراء</h3>
-            <textarea id="act-comment" rows="4" placeholder="اكتب ملاحظات أو سبب الرفض..."></textarea>
+            <textarea id="act-comment" rows="4" placeholder="اكتب ملاحظات..."></textarea>
             
-            <div id="tech-select-area" class="hidden" style="margin-top:15px;">
-                <p style="font-size:12px; color:var(--text-muted); margin-bottom:10px;">اختر الفني المختص:</p>
-                <div id="tech-list-action" style="max-height:150px; overflow-y:auto; border:1px solid var(--border); border-radius:12px; padding:5px;"></div>
+            <div id="tech-select-area" class="hidden" style="margin-top:20px;">
+                <p style="font-size:13px; font-weight:700; color:var(--text-muted); margin-bottom:12px;">اختر الفني المختص:</p>
+                <div id="tech-list-action" class="tech-select-grid" style="max-height:200px; overflow-y:auto; padding:5px;"></div>
             </div>
 
             <button onclick="submitAction()" id="act-submit-btn" class="btn-main" style="margin-top:20px;">تنفيذ</button>
+        </div>
+    </div>
+
+    <div id="tech-report-modal" class="modal-overlay hidden">
+        <div class="modal-content">
+            <div class="close-btn" onclick="closeModal('tech-report-modal')"><i class="fa-solid fa-xmark"></i></div>
+            <h3 style="margin-bottom:20px; color:var(--primary-dark);">تقرير فني</h3>
+            <p style="font-size:12px; color:var(--text-muted); margin-bottom:15px;">اكتب التقرير ليتم حفظه كملف PDF</p>
+            <div class="input-group"><input type="text" id="tech-report-title" placeholder="عنوان التقرير"></div>
+            <div class="input-group"><textarea id="tech-report-content" rows="6" placeholder="تفاصيل التقرير..."></textarea></div>
+            <button onclick="submitTechReport()" class="btn-main"><i class="fa-solid fa-file-pdf"></i> حفظ وتحميل PDF</button>
         </div>
     </div>
 
@@ -515,19 +543,31 @@
             </div>
         </div>
     </div>
+    
+    <div id="delete-friend-modal" class="modal-overlay hidden">
+        <div class="modal-content" style="text-align:center;">
+            <div class="close-btn" onclick="closeModal('delete-friend-modal')"><i class="fa-solid fa-xmark"></i></div>
+            <div class="confirm-icon-box"><i class="fa-solid fa-user-xmark"></i></div>
+            <h3 style="margin-bottom:10px; color:var(--text);">حذف صديق؟</h3>
+            <p style="color:var(--text-muted); margin-bottom:25px; font-size:14px;">هل أنت متأكد من رغبتك في إزالة هذا المستخدم من قائمة الأصدقاء؟ سيتم إزالته أيضاً من قائمة المشرفين.</p>
+            <div style="display:flex; gap:10px;">
+                <button onclick="confirmRemoveFriend()" class="btn-main btn-danger">نعم، حذف</button>
+                <button onclick="closeModal('delete-friend-modal')" class="btn-ghost" style="width:100%;">إلغاء</button>
+            </div>
+        </div>
+    </div>
 
     <div id="toast" style="position:fixed; top:30px; left:50%; transform:translateX(-50%); background:rgba(15, 23, 42, 0.95); color:white; padding:12px 30px; border-radius:50px; border:1px solid rgba(255,255,255,0.1); z-index:9999; display:none; font-size:13px; font-weight:bold; box-shadow:0 10px 40px rgba(0,0,0,0.5); font-family:'Cairo'; backdrop-filter:blur(5px);"></div>
 
 </div>
-
-هذا الجزء الأول (HTML & CSS).
-هل تريد مني إرسال الجزء الثاني (كود الـ JavaScript) الذي يحتوي على منطق الفنيين الجديد، تفعيل الصوت، وتشغيل المودال المحدث؟
-    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
 
 <script>
-    // --- Configuration ---
+    // =========================================================================
+    // 1. CONFIGURATION & INITIALIZATION
+    // =========================================================================
     const firebaseConfig = {
         apiKey: "AIzaSyABwJfEkkbNB8GurZkyj67R8ksVNEXZ11I",
         authDomain: "ryadanur1-375a8.firebaseapp.com",
@@ -539,12 +579,11 @@
     const CLOUD_NAME = "djzfruh22"; 
     const CLOUD_PRESET = "udyvggup";
 
-    // --- Init ---
     firebase.initializeApp(firebaseConfig);
     const auth = firebase.auth();
     const db = firebase.firestore();
 
-    // --- State ---
+    // --- Global State ---
     let currentUser = null;
     let userData = null;
     let isLoginMode = true;
@@ -553,17 +592,19 @@
     let requestsCache = [];
     let uploadQueue = []; 
     let tempActionData = {}; 
-    let selectedGender = 'male';
     let selectedTech = null;
     let newProfilePicFile = null;
     let isFirstLoad = true;
-    let currentFriendDocId = null; // For the new delete modal
+    let currentFriendDocId = null; // To track friend deletion
 
-    // --- Auth Listener ---
+    // =========================================================================
+    // 2. AUTHENTICATION & STARTUP
+    // =========================================================================
     auth.onAuthStateChanged(async u => {
-        document.getElementById('loader').classList.add('hidden');
         if(u) {
+            // Check Email Verification
             if(!u.emailVerified) {
+                document.getElementById('loader').classList.add('hidden');
                 toast("⚠️ يجب تفعيل البريد الإلكتروني أولاً.");
                 auth.signOut();
                 showScreen('auth-screen');
@@ -572,17 +613,18 @@
             currentUser = u;
             await loadUser();
         } else {
+            document.getElementById('loader').classList.add('hidden');
             showScreen('auth-screen');
         }
     });
 
-    // --- User Loading ---
     async function loadUser() {
         try {
             const doc = await db.collection('users').doc(currentUser.uid).get();
             if(doc.exists) {
                 userData = doc.data();
                 
+                // Legacy fields patch
                 if(!userData.shortId) {
                     userData.shortId = Math.random().toString(36).substr(2,6).toUpperCase();
                     await db.collection('users').doc(currentUser.uid).update({shortId: userData.shortId});
@@ -591,21 +633,49 @@
 
                 renderHeader();
                 showScreen('app-container');
-                
-                if(userData.role === 'supervisor') document.getElementById('filter-container').classList.remove('hidden');
+                setupRoleUI();
                 
                 loadFeed();
-                loadTeam();
+                loadTeam(); // Essential for supervisor filtering
                 loadFriendReqs();
                 loadProfilePageData();
                 
+                // Set default dates
                 document.getElementById('req-date').valueAsDate = new Date();
                 document.getElementById('req-time').value = new Date().toLocaleTimeString('en-GB', {hour:'2-digit', minute:'2-digit'});
+
+                // Hide loader only after data is ready
+                setTimeout(() => { document.getElementById('loader').classList.add('hidden'); }, 500);
             }
-        } catch(e) { toast("⚠️ خطأ في تحميل بيانات المستخدم"); }
+        } catch(e) { 
+            console.error(e);
+            document.getElementById('loader').classList.add('hidden');
+            toast("⚠️ خطأ في تحميل بيانات المستخدم"); 
+        }
     }
 
-    // --- Header & Sound ---
+    function setupRoleUI() {
+        // Supervisor Filters
+        if(userData.role === 'supervisor') {
+            document.getElementById('filter-container').classList.remove('hidden');
+        }
+        
+        // Technician: Replace "Add" button with "Report" button
+        if(userData.role === 'technician') {
+            const addBtn = document.querySelector('.nav-add-btn');
+            addBtn.innerHTML = '<i class="fa-solid fa-file-pdf"></i>';
+            addBtn.onclick = function() {
+                // Open Tech Report Modal instead of Create Page
+                document.getElementById('tech-report-modal').classList.remove('hidden');
+            };
+            // Disable Create Page Logic
+            document.getElementById('page-create').innerHTML = "<div style='text-align:center; padding:50px;'><h3 style='color:var(--text-muted)'>حساب فني</h3><p>لا يمكنك إنشاء بلاغات، فقط متابعة المهام وإرسال التقارير.</p></div>";
+        }
+    }
+
+    // =========================================================================
+    // 3. UI RENDERING & FEED
+    // =========================================================================
     function renderHeader() {
         const roleMap = {'employee':'موظف', 'supervisor':'مشرف', 'technician':'فني'};
         document.getElementById('banner-name').innerText = userData.fullName;
@@ -614,15 +684,17 @@
         document.getElementById('banner-img').src = userData.photoUrl;
     }
 
-    // Request #6: Sound Function
-    function playNotificationSound() {
-        const audio = document.getElementById('notify-sound');
-        if(audio) {
-            audio.play().catch(e => console.log("Sound blocked by browser policy until interaction"));
+    // Logic for Sound: Play ONLY if request is incoming (not mine)
+    function checkAndPlaySound(newRequests) {
+        const hasIncoming = newRequests.some(r => r.userId !== currentUser.uid);
+        if (hasIncoming) {
+            const audio = document.getElementById('notify-sound');
+            if(audio) audio.play().catch(e => console.log("Audio play blocked"));
+            toast("🔔 إشعار جديد");
+            document.querySelector('.bell-badge').style.display = 'block';
         }
     }
 
-    // --- Feed & Logic ---
     function loadFeed() {
         let q = db.collection('requests'); 
         if(userData.role==='employee') q = q.where('userId','==',currentUser.uid);
@@ -630,15 +702,24 @@
         else if(userData.role==='technician') q = q.where('technicianId','==',currentUser.uid);
         
         q.onSnapshot(snap => {
-            const prevLen = requestsCache.length;
-            requestsCache = [];
-            snap.forEach(doc => requestsCache.push({id: doc.id, ...doc.data()}));
+            const currentIds = requestsCache.map(r => r.id);
+            let newItems = [];
+            let updatedCache = [];
+
+            snap.forEach(doc => {
+                const data = {id: doc.id, ...doc.data()};
+                updatedCache.push(data);
+                // Check if it's a truly new item (not just updated)
+                if (!isFirstLoad && !currentIds.includes(doc.id)) {
+                    newItems.push(data);
+                }
+            });
+
+            requestsCache = updatedCache;
             requestsCache.sort((a,b) => (b.createdAt?.seconds||0)-(a.createdAt?.seconds||0));
             
-            if(!isFirstLoad && requestsCache.length > prevLen) {
-                toast("🔔 تحديث جديد في القائمة");
-                document.querySelector('.bell-badge').style.display = 'block';
-                playNotificationSound(); // Trigger Sound
+            if(!isFirstLoad && newItems.length > 0) {
+                checkAndPlaySound(newItems);
             }
             isFirstLoad = false;
             
@@ -657,6 +738,7 @@
             else if(currentTab === 'history') list = list.filter(r => ['done','rejected'].includes(r.status));
         }
 
+        // Supervisor Filter
         const facFilter = document.getElementById('feed-filter').value;
         if(userData.role === 'supervisor' && facFilter !== 'all') list = list.filter(r => r.faculty === facFilter);
 
@@ -687,7 +769,7 @@
                 }
 
                 if(userData.role === 'supervisor' && d.status === 'pending') {
-                    // Supervisor Action
+                    // Supervisor actions
                     actionBtns = `
                     <div style="display:flex; gap:10px;">
                         <button onclick="event.stopPropagation(); openAction('${d.id}','approve')" class="btn-main btn-sm" style="background:var(--success);">قبول وتعيين فني</button>
@@ -695,16 +777,14 @@
                     </div>`;
                 }
                 else if(userData.role === 'technician') {
-                    // Request #5: Technician Logic
+                    // Tech actions
                     if(d.status === 'approved') {
-                        // Technician assigned but hasn't started
                         actionBtns = `
                         <div style="display:flex; gap:10px;">
                              <button onclick="event.stopPropagation(); openAction('${d.id}','startWork')" class="btn-main btn-sm" style="background:var(--warning); color:#fff;">قبول (بدء العمل)</button>
                              <button onclick="event.stopPropagation(); openAction('${d.id}','tech_reject')" class="btn-main btn-danger btn-sm">رفض</button>
                         </div>`;
                     } else if(d.status === 'working') {
-                        // Working on it
                         actionBtns = `<button onclick="event.stopPropagation(); openAction('${d.id}','done')" class="btn-main btn-sm" style="background:var(--success);">تم الإصلاح</button>`;
                     }
                 }
@@ -715,7 +795,7 @@
             let prioIcon = d.priority === 'high' ? '<i class="fa-solid fa-fire" style="color:var(--error)"></i>' : '';
             let prioColor = d.priority === 'high' ? 'var(--error)' : d.priority === 'medium' ? 'var(--warning)' : 'var(--success)';
             
-            // Media Thumbs (Request #2 fixed in CSS, rendered here)
+            // Media
             let thumbsHtml = "";
             if(d.media && d.media.length > 0) {
                 thumbsHtml = `<div class="archive-thumbs">`;
@@ -753,43 +833,61 @@
         });
     }
 
-    // --- Actions ---
+    // =========================================================================
+    // 4. ACTIONS (Supervisor & Tech)
+    // =========================================================================
     async function openAction(id, type) {
         tempActionData = { id, type };
         document.getElementById('action-modal').classList.remove('hidden');
-        document.getElementById('act-comment').value = "";
+        const commBox = document.getElementById('act-comment');
+        commBox.value = "";
         
         const titles = {
             'approve':'قبول وتعيين فني', 
             'reject':'رفض الطلب', 
-            'startWork':'بدء التنفيذ (قبول)', 
+            'startWork':'بدء التنفيذ', 
             'done':'إتمام الإصلاح',
             'tech_reject': 'رفض المهمة'
         };
         document.getElementById('act-title').innerText = titles[type];
 
         if(type === 'approve') {
+            commBox.placeholder = "ملاحظات للفني (اختياري)...";
             document.getElementById('tech-select-area').classList.remove('hidden');
-            const list = document.getElementById('tech-list-action'); 
-            list.innerHTML="<small>جاري التحميل...</small>";
-            
-            // Request #1: Load Technicians ONLY
-            const snap = await db.collection('users').where('role','==','technician').get();
-            list.innerHTML="";
-            if(snap.empty) {
-                list.innerHTML = "<p style='font-size:11px; color:red;'>لا يوجد فنيين مسجلين</p>";
-            }
-            snap.forEach(doc => {
-                 list.innerHTML += `<div onclick="selTech(this, '${doc.id}', '${doc.data().fullName}')" style="padding:10px; border-bottom:1px solid var(--border); cursor:pointer; font-size:12px; color:var(--text); display:flex; justify-content:space-between;"><span>${doc.data().fullName}</span> <span style="color:var(--text-muted); font-size:10px;">${doc.data().jobTitle||'فني'}</span></div>`;
-            });
+            loadTechsForAction();
         } else {
+            commBox.placeholder = "سبب الرفض / ملاحظات...";
             document.getElementById('tech-select-area').classList.add('hidden');
         }
     }
+
+    async function loadTechsForAction() {
+        const list = document.getElementById('tech-list-action'); 
+        list.innerHTML="<small>جاري التحميل...</small>";
+        
+        const snap = await db.collection('users').where('role','==','technician').get();
+        list.innerHTML="";
+        
+        if(snap.empty) {
+            list.innerHTML = "<p style='grid-column:span 2; font-size:11px; color:red;'>لا يوجد فنيين مسجلين</p>";
+            return;
+        }
+
+        // Modern Grid for Tech Selection
+        snap.forEach(doc => {
+             const t = doc.data();
+             list.innerHTML += `
+             <div class="tech-select-card" onclick="selTech(this, '${doc.id}', '${t.fullName}')">
+                <img src="${t.photoUrl}">
+                <div style="font-size:12px; font-weight:bold; color:var(--text);">${t.fullName}</div>
+                <div style="font-size:10px; color:var(--text-muted);">${t.jobTitle||'فني'}</div>
+             </div>`;
+        });
+    }
     
     function selTech(el, id, name) {
-        document.querySelectorAll('#tech-list-action div').forEach(d=>d.style.background='transparent');
-        el.style.background='rgba(37, 99, 235, 0.2)'; selectedTech={id, name};
+        document.querySelectorAll('.tech-select-card').forEach(d=>d.classList.remove('selected'));
+        el.classList.add('selected'); selectedTech={id, name};
     }
 
     async function submitAction() {
@@ -797,12 +895,13 @@
         const comment = document.getElementById('act-comment').value;
         const btn = document.getElementById('act-submit-btn');
 
-        if((type==='reject' || type==='tech_reject') && !comment) return toast("⚠️ يجب ذكر سبب الرفض");
+        if((type==='reject' || type==='tech_reject') && !comment) return toast("⚠️ يجب ذكر السبب");
         if(type==='approve' && !selectedTech) return toast("⚠️ اختر فني للمهمة");
 
         btn.disabled=true;
         try {
             let updateData = { supervisorComment: comment };
+            
             if(type === 'approve') { 
                 updateData.status = 'approved'; 
                 updateData.technicianId = selectedTech.id; 
@@ -812,12 +911,9 @@
                 updateData.status = 'rejected'; 
                 updateData.rejectedBy = userData.fullName;
             }
-            // Technician Logic Updates
-            else if(type === 'startWork') { 
-                updateData.status = 'working'; 
-            }
+            else if(type === 'startWork') { updateData.status = 'working'; }
             else if(type === 'tech_reject') {
-                updateData.status = 'rejected'; // Or 'pending' if you want it to bounce back
+                updateData.status = 'rejected';
                 updateData.rejectedBy = `الفني: ${userData.fullName}`;
                 updateData.supervisorComment = `رفض الفني: ${comment}`;
             }
@@ -828,152 +924,65 @@
         } catch(e) { toast("❌ خطأ"); } finally { btn.disabled=false; }
     }
 
-    // --- Friends & New Delete Modal (Request #4) ---
+    // =========================================================================
+    // 5. FRIENDS & DELETE LOGIC (UPDATED)
+    // =========================================================================
     function openDeleteFriendModal() {
-        // Just show the new modal, context is already set in viewFriendProfile
+        // Just show the modal (it now has high z-index)
         document.getElementById('delete-friend-modal').classList.remove('hidden');
     }
 
     async function confirmRemoveFriend() {
         if(!currentFriendDocId) return;
         try {
+            // Delete from Firestore
             await db.collection('users').doc(currentUser.uid).collection('friends').doc(currentFriendDocId).delete();
+            
             toast("تم حذف الصديق");
             closeModal('delete-friend-modal');
             closeModal('friend-profile-modal');
+            // The team list updates automatically via snapshot
         } catch(e) {
+            console.error(e);
             toast("حدث خطأ أثناء الحذف");
         }
     }
     
-    // --- Other Core Functions ---
     async function viewFriendProfile(fid, docId) {
         document.getElementById('loader').classList.remove('hidden');
         currentFriendDocId = docId; // Store docId for deletion
-        const doc = await db.collection('users').doc(fid).get();
-        document.getElementById('loader').classList.add('hidden');
         
-        if(doc.exists) {
-            const d = doc.data();
-            const roleMap = {'employee':'موظف', 'supervisor':'مشرف', 'technician':'فني'};
-            document.getElementById('fp-pic').src = d.photoUrl;
-            document.getElementById('fp-name').innerText = d.fullName;
-            document.getElementById('fp-role').innerText = roleMap[d.role] || '-';
-            document.getElementById('fp-job').innerText = d.jobTitle || 'غير محدد';
-            document.getElementById('fp-loc').innerText = d.location || 'غير محدد';
-            document.getElementById('fp-email').innerText = d.email;
+        try {
+            const doc = await db.collection('users').doc(fid).get();
+            document.getElementById('loader').classList.add('hidden');
             
-            const callBtn = document.getElementById('fp-call-btn');
-            if(d.phone) {
-                callBtn.href = `tel:${d.phone}`;
-                callBtn.classList.remove('hidden');
-            } else {
-                callBtn.classList.add('hidden');
+            if(doc.exists) {
+                const d = doc.data();
+                const roleMap = {'employee':'موظف', 'supervisor':'مشرف', 'technician':'فني'};
+                
+                document.getElementById('fp-pic').src = d.photoUrl;
+                document.getElementById('fp-name').innerText = d.fullName;
+                document.getElementById('fp-role').innerText = roleMap[d.role] || '-';
+                document.getElementById('fp-job').innerText = d.jobTitle || 'غير محدد';
+                document.getElementById('fp-loc').innerText = d.location || 'غير محدد';
+                document.getElementById('fp-email').innerText = d.email;
+                
+                const callBtn = document.getElementById('fp-call-btn');
+                if(d.phone) {
+                    callBtn.href = `tel:${d.phone}`;
+                    callBtn.classList.remove('hidden');
+                } else {
+                    callBtn.classList.add('hidden');
+                }
+                
+                document.getElementById('friend-profile-modal').classList.remove('hidden');
             }
-            
-            document.getElementById('friend-profile-modal').classList.remove('hidden');
-        }
+        } catch(e) { document.getElementById('loader').classList.add('hidden'); }
     }
 
-    function switchTab(tab, el) {
-        currentTab = tab; 
-        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active')); 
-        el.classList.add('active'); 
-        
-        if(tab === 'history') document.getElementById('archive-actions').classList.remove('hidden');
-        else document.getElementById('archive-actions').classList.add('hidden');
-        
-        renderFeed();
-    }
-
-    function getStatusLabel(s) {
-        const map = {
-            'pending': 'تم الإرسال (انتظار)',
-            'approved': 'مقبول (بانتظار الفني)',
-            'working': 'قيد التنفيذ',
-            'done': 'تم الإصلاح',
-            'rejected': 'مرفوض',
-            'suspended': 'معلق'
-        };
-        return map[s] || s;
-    }
-
-    function openRequestDetails(id) {
-        const d = requestsCache.find(r => r.id === id);
-        document.getElementById('request-details-modal').classList.remove('hidden');
-        
-        let mediaHtml = "";
-        if(d.media && d.media.length > 0) d.media.forEach(m => mediaHtml += `<div class="media-item" onclick="openMediaViewer('${m.url}','${m.type}')">${m.type==='video' ? `<video src="${m.url}"></video><div style="position:absolute; inset:0; display:flex; align-items:center; justify-content:center;"><i class="fa-solid fa-play"></i></div>` : `<img src="${m.url}">`}</div>`);
-        else mediaHtml = "<p style='color:var(--text-muted); font-size:12px; grid-column:span 3; text-align:center;'>لا توجد مرفقات</p>";
-
-        let steps = [
-            { id: 'pending', label: 'تم الإرسال', desc: 'بانتظار الموافقة' },
-            { id: 'approved', label: 'جاري الإصلاح', desc: d.technicianName ? `مع الفني: ${d.technicianName}` : 'تعيين فني' },
-            { id: 'working', label: 'قيد التنفيذ', desc: 'بدأ العمل' },
-            { id: 'done', label: 'تم الإصلاح', desc: 'انتهت العملية' }
-        ];
-
-        let timelineHtml = '<div class="timeline">';
-        let isRejected = d.status === 'rejected';
-        
-        if(isRejected) {
-             timelineHtml += `
-             <div class="timeline-item active rejected">
-                <div class="tl-icon"><i class="fa-solid fa-xmark"></i></div>
-                <div class="tl-content"><h4>تم الرفض</h4><p>بواسطة: ${d.rejectedBy || 'المشرف'}<br>السبب: ${d.supervisorComment}</p></div>
-             </div>`;
-        } else {
-            steps.forEach(s => {
-                let active = false;
-                if(s.id === 'pending') active = true;
-                if(d.status === 'approved' && (s.id==='pending'||s.id==='approved')) active=true;
-                if(d.status === 'working' && (s.id==='pending'||s.id==='approved'||s.id==='working')) active=true;
-                if(d.status === 'done') active=true;
-
-                timelineHtml += `
-                <div class="timeline-item ${active ? 'active' : ''}">
-                    <div class="tl-icon"><i class="fa-solid fa-check"></i></div>
-                    <div class="tl-content"><h4>${s.label}</h4><p>${s.desc}</p></div>
-                </div>`;
-            });
-        }
-        timelineHtml += '</div>';
-
-        document.getElementById('req-details-content').innerHTML = `
-            ${timelineHtml}
-            <div style="background:var(--surface-light); padding:15px; border-radius:15px; margin-bottom:15px; border:1px solid var(--border);">
-                <p style="margin:0; font-size:15px; line-height:1.6; color:var(--text);">${d.description}</p>
-            </div>
-            <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; font-size:12px; color:var(--text-muted); margin-bottom:10px;">
-               <span><i class="fa-solid fa-screwdriver-wrench"></i> ${d.type || 'عام'}</span>
-               <span><i class="fa-solid fa-calendar"></i> ${d.date}</span>
-               <span><i class="fa-solid fa-clock"></i> ${d.time}</span>
-               <span><i class="fa-solid fa-map-pin"></i> ${d.location}</span>
-            </div>
-            
-            <h5 style="margin:10px 0 5px; color:var(--text-muted);">المرفقات:</h5>
-            <div class="media-grid" style="margin-bottom:20px;">${mediaHtml}</div>
-            
-            <button onclick="downloadSinglePDF('${d.id}')" class="btn-main btn-ghost" style="width:100%; border-color:var(--primary); color:var(--primary);"><i class="fa-solid fa-download"></i> تحميل تفاصيل البلاغ (PDF)</button>
-        `;
-    }
-
-    // --- Standard Helpers (Auth, Nav, etc) ---
-    function toggleAuth() { 
-        isLoginMode = !isLoginMode; 
-        const regFields = document.getElementById('reg-fields');
-        const confirmPass = document.getElementById('confirm-pass-field');
-        if (isLoginMode) {
-            regFields.classList.add('hidden'); confirmPass.classList.add('hidden');
-            document.getElementById('auth-btn').innerText = "تسجيل الدخول";
-            document.getElementById('auth-switch-text').innerHTML = "ليس لديك حساب؟ <b style='color:var(--primary)'>إنشاء حساب جديد</b>";
-        } else {
-            regFields.classList.remove('hidden'); confirmPass.classList.remove('hidden');
-            document.getElementById('auth-btn').innerText = "إنشاء حساب";
-            document.getElementById('auth-switch-text').innerHTML = "لديك حساب بالفعل؟ <b style='color:var(--primary)'>تسجيل الدخول</b>";
-        }
-    }
-
+    // =========================================================================
+    // 6. CREATE REQUEST & UPLOAD
+    // =========================================================================
     function handleFiles(input) { 
         const files = Array.from(input.files);
         files.forEach(file => {
@@ -1003,6 +1012,48 @@
             </div>`;
     }
 
+    // UPDATED: Logic to filter supervisors by friends list
+    async function openSupModal() { 
+        if(!document.getElementById('req-desc').value) return toast("⚠️ الوصف مطلوب");
+        if(!document.getElementById('req-type').value) return toast("⚠️ نوع العطل مطلوب");
+        
+        document.getElementById('sup-modal').classList.remove('hidden'); 
+        const l=document.getElementById('sup-list'); 
+        l.innerHTML="<p style='text-align:center'>تحميل المشرفين...</p>"; 
+        
+        // 1. Get ALL Supervisors
+        const snap = await db.collection('users').where('role','==','supervisor').get();
+        l.innerHTML="";
+        
+        // 2. Get MY Friends IDs
+        const friendsSnap = await db.collection('users').doc(currentUser.uid).collection('friends').get();
+        const friendIds = friendsSnap.docs.map(doc => doc.data().friendId);
+
+        let count = 0;
+        snap.forEach(d=>{ 
+            // 3. FILTER: Only show supervisors who are in my friends list
+            // This ensures if I delete a friend, they disappear from here too.
+            if(friendIds.includes(d.id)) { 
+                const u=d.data(); 
+                l.innerHTML+=`
+                <div onclick="selectSup(this, '${d.id}')" style="display:flex; align-items:center; gap:10px; padding:15px; border:1px solid var(--border); margin-bottom:8px; border-radius:12px; cursor:pointer;">
+                    <img src="${u.photoUrl}" style="width:35px; height:35px; border-radius:50%;">
+                    <span style="color:var(--text)">${u.fullName}</span>
+                </div>`;
+                count++;
+            }
+        }); 
+        
+        if(count === 0) {
+            l.innerHTML = "<div style='text-align:center; padding:20px; color:var(--text-muted);'><p>لا يوجد مشرفين في قائمة أصدقائك.</p><p style='font-size:11px;'>يجب إضافة المشرف كصديق أولاً.</p></div>";
+        }
+    }
+    
+    function selectSup(el, id) { 
+        document.querySelectorAll('#sup-list div').forEach(d=>d.style.background='transparent');
+        el.style.background='rgba(37, 99, 235, 0.2)'; selectedSup=id; 
+    }
+
     async function sendRequestFinal() { 
         if(!selectedSup) return toast("⚠️ اختر مشرف");
         const btn=document.getElementById('confirm-send-btn'); btn.disabled=true; btn.innerText="جاري الإرسال...";
@@ -1015,8 +1066,12 @@
                 mediaLinks.push({url: d.secure_url, type: file.type.startsWith('video')?'video':'image'});
             }
             
-            const fac = document.getElementById('req-faculty');
-            const loc = `${fac.options[fac.selectedIndex].text} - ${document.getElementById('req-building').value} - ${document.getElementById('req-room').value}`;
+            const facSelect = document.getElementById('req-faculty');
+            const facVal = facSelect.value;
+            const facText = facSelect.options[facSelect.selectedIndex].text;
+            
+            // Updated Location String: Faculty - Room
+            const loc = `${facText} - ${document.getElementById('req-room').value}`;
             
             await db.collection('requests').add({ 
                 userId:currentUser.uid, 
@@ -1029,7 +1084,7 @@
                 date: document.getElementById('req-date').value, 
                 description: document.getElementById('req-desc').value, 
                 location: loc, 
-                faculty: fac.value,
+                faculty: facVal,
                 media: mediaLinks,
                 isDeleted: false,
                 createdAt: firebase.firestore.FieldValue.serverTimestamp() 
@@ -1038,30 +1093,137 @@
             toast("✅ تم الإرسال بنجاح"); closeModal('sup-modal'); 
             nav('home', document.querySelector('.nav-item:first-child'));
             uploadQueue=[]; document.getElementById('preview-grid').innerHTML=""; document.getElementById('req-desc').value="";
-        } catch(e){toast("❌ خطأ"); console.error(e);} finally{btn.disabled=false; btn.innerText="تأكيد";} 
+        } catch(e){toast("❌ خطأ"); console.error(e);} finally{btn.disabled=false; btn.innerText="إرسال البلاغ";} 
     }
 
-    async function openSupModal() { 
-        if(!document.getElementById('req-desc').value) return toast("⚠️ الوصف مطلوب");
-        if(!document.getElementById('req-type').value) return toast("⚠️ نوع العطل مطلوب");
+    // =========================================================================
+    // 7. TECH REPORT (PDF)
+    // =========================================================================
+    function submitTechReport() {
+        const title = document.getElementById('tech-report-title').value;
+        const content = document.getElementById('tech-report-content').value;
+        if(!title || !content) return toast("⚠️ أكمل البيانات");
         
-        document.getElementById('sup-modal').classList.remove('hidden'); 
-        const l=document.getElementById('sup-list'); l.innerHTML="<p style='text-align:center'>تحميل المشرفين...</p>"; 
-        const snap = await db.collection('users').where('role','==','supervisor').get();
-        l.innerHTML="";
-        snap.forEach(d=>{ 
-            const u=d.data(); 
-            l.innerHTML+=`
-            <div onclick="selectSup(this, '${d.id}')" style="display:flex; align-items:center; gap:10px; padding:15px; border:1px solid var(--border); margin-bottom:8px; border-radius:12px; cursor:pointer;">
-                <img src="${u.photoUrl}" style="width:35px; height:35px; border-radius:50%;">
-                <span style="color:var(--text)">${u.fullName}</span>
-            </div>`
-        }); 
+        const element = document.createElement('div');
+        element.style.padding = '30px'; element.style.fontFamily = 'Cairo, sans-serif'; element.dir = 'rtl';
+        element.innerHTML = `
+            <div style="text-align:center; border-bottom:3px solid #0056b3; padding-bottom:15px; margin-bottom:20px;">
+                <h1 style="color:#0056b3;">${title}</h1>
+                <p>بواسطة الفني: ${userData.fullName}</p>
+                <p>التاريخ: ${new Date().toLocaleDateString('ar-EG')}</p>
+            </div>
+            <div style="font-size:14px; line-height:1.8; white-space: pre-wrap;">${content}</div>
+            <div style="margin-top:50px; text-align:left;">
+                <p>التوقيع:</p>
+                <p>....................</p>
+            </div>
+        `;
+        
+        html2pdf().from(element).save(`Tech_Report_${Date.now()}.pdf`);
+        toast("✅ تم تحميل التقرير");
+        closeModal('tech-report-modal');
+        document.getElementById('tech-report-title').value = "";
+        document.getElementById('tech-report-content').value = "";
     }
-    
-    function selectSup(el, id) { 
-        document.querySelectorAll('#sup-list div').forEach(d=>d.style.background='transparent');
-        el.style.background='rgba(37, 99, 235, 0.2)'; selectedSup=id; 
+
+    // =========================================================================
+    // 8. STANDARD HELPERS
+    // =========================================================================
+    function toggleAuth() { 
+        isLoginMode = !isLoginMode; 
+        const regFields = document.getElementById('reg-fields');
+        const confirmPass = document.getElementById('confirm-pass-field');
+        if (isLoginMode) {
+            regFields.classList.add('hidden'); confirmPass.classList.add('hidden');
+            document.getElementById('auth-btn').innerText = "تسجيل الدخول";
+            document.getElementById('auth-switch-text').innerHTML = "ليس لديك حساب؟ <b style='color:var(--primary)'>إنشاء حساب جديد</b>";
+        } else {
+            regFields.classList.remove('hidden'); confirmPass.classList.remove('hidden');
+            document.getElementById('auth-btn').innerText = "إنشاء حساب";
+            document.getElementById('auth-switch-text').innerHTML = "لديك حساب بالفعل؟ <b style='color:var(--primary)'>تسجيل الدخول</b>";
+        }
+    }
+
+    function switchTab(tab, el) {
+        currentTab = tab; 
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active')); 
+        el.classList.add('active'); 
+        if(tab === 'history') document.getElementById('archive-actions').classList.remove('hidden');
+        else document.getElementById('archive-actions').classList.add('hidden');
+        renderFeed();
+    }
+
+    function getStatusLabel(s) {
+        const map = {
+            'pending': 'تم الإرسال',
+            'approved': 'بانتظار الفني',
+            'working': 'قيد التنفيذ',
+            'done': 'تم الإصلاح',
+            'rejected': 'مرفوض',
+            'suspended': 'معلق'
+        };
+        return map[s] || s;
+    }
+
+    function openRequestDetails(id) {
+        const d = requestsCache.find(r => r.id === id);
+        document.getElementById('request-details-modal').classList.remove('hidden');
+        
+        let mediaHtml = "";
+        if(d.media && d.media.length > 0) d.media.forEach(m => mediaHtml += `<div class="media-item" onclick="openMediaViewer('${m.url}','${m.type}')">${m.type==='video' ? `<video src="${m.url}"></video><div style="position:absolute; inset:0; display:flex; align-items:center; justify-content:center;"><i class="fa-solid fa-play"></i></div>` : `<img src="${m.url}">`}</div>`);
+        else mediaHtml = "<p style='color:var(--text-muted); font-size:12px; grid-column:span 3; text-align:center;'>لا توجد مرفقات</p>";
+
+        let steps = [
+            { id: 'pending', label: 'تم الإرسال', desc: 'بانتظار الموافقة' },
+            { id: 'approved', label: 'تم التوجيه', desc: d.technicianName ? `مع الفني: ${d.technicianName}` : 'تعيين فني' },
+            { id: 'working', label: 'قيد التنفيذ', desc: 'بدأ العمل' },
+            { id: 'done', label: 'تم الإصلاح', desc: 'انتهت العملية' }
+        ];
+
+        let timelineHtml = '<div class="timeline">';
+        let isRejected = d.status === 'rejected';
+        
+        if(isRejected) {
+             timelineHtml += `
+             <div class="timeline-item active rejected">
+                <div class="tl-icon"><i class="fa-solid fa-xmark"></i></div>
+                <div class="tl-content"><h4>تم الرفض</h4><p>بواسطة: ${d.rejectedBy || 'المشرف'}<br>ملاحظات: ${d.supervisorComment}</p></div>
+             </div>`;
+        } else {
+            steps.forEach(s => {
+                let active = false;
+                if(s.id === 'pending') active = true;
+                if(d.status === 'approved' && (s.id==='pending'||s.id==='approved')) active=true;
+                if(d.status === 'working' && (s.id==='pending'||s.id==='approved'||s.id==='working')) active=true;
+                if(d.status === 'done') active=true;
+
+                timelineHtml += `
+                <div class="timeline-item ${active ? 'active' : ''}">
+                    <div class="tl-icon"><i class="fa-solid fa-check"></i></div>
+                    <div class="tl-content"><h4>${s.label}</h4><p>${s.desc}</p></div>
+                </div>`;
+            });
+        }
+        timelineHtml += '</div>';
+
+        document.getElementById('req-details-content').innerHTML = `
+            ${timelineHtml}
+            <div style="background:var(--surface-light); padding:15px; border-radius:15px; margin-bottom:15px; border:1px solid var(--border);">
+                <p style="margin:0; font-size:15px; line-height:1.6; color:var(--text);">${d.description}</p>
+            </div>
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; font-size:12px; color:var(--text-muted); margin-bottom:10px;">
+               <span><i class="fa-solid fa-screwdriver-wrench"></i> ${d.type || 'عام'}</span>
+               <span><i class="fa-solid fa-calendar"></i> ${d.date}</span>
+               <span><i class="fa-solid fa-clock"></i> ${d.time}</span>
+               <span><i class="fa-solid fa-map-pin"></i> ${d.location}</span>
+            </div>
+            ${d.supervisorComment && !isRejected ? `<div style="background:#ecfdf5; color:#065f46; padding:10px; border-radius:10px; font-size:12px; margin-bottom:15px; border:1px solid #a7f3d0;"><i class="fa-solid fa-note-sticky"></i> ملاحظات المشرف: ${d.supervisorComment}</div>` : ''}
+            
+            <h5 style="margin:10px 0 5px; color:var(--text-muted);">المرفقات:</h5>
+            <div class="media-grid" style="margin-bottom:20px;">${mediaHtml}</div>
+            
+            <button onclick="downloadSinglePDF('${d.id}')" class="btn-main btn-ghost" style="width:100%; border-color:var(--primary); color:var(--primary);"><i class="fa-solid fa-download"></i> تحميل تفاصيل البلاغ (PDF)</button>
+        `;
     }
 
     function openMediaViewer(u, t) { 
@@ -1088,7 +1250,7 @@
     async function restoreReq(id) { await db.collection('requests').doc(id).update({isDeleted:false}); toast("تم الاستعادة"); }
     async function hardDelete(id) { if(confirm("حذف نهائي؟")) await db.collection('requests').doc(id).delete(); }
 
-    // --- Profile & Search (Existing) ---
+    // Search & Add Friend
     async function searchUser() {
         const q = document.getElementById('search-query').value.trim();
         const resDiv = document.getElementById('search-results');
@@ -1176,6 +1338,7 @@
         });
     }
 
+    // Profile Edit
     function loadProfilePageData() {
         document.getElementById('edit-current-pic').src = userData.photoUrl;
         document.getElementById('edit-id-display').innerText = userData.shortId;
@@ -1196,7 +1359,6 @@
     async function saveProfile() {
         const btn = document.getElementById('save-profile-btn');
         btn.disabled = true; btn.innerText = "جاري الحفظ...";
-        
         const name = document.getElementById('edit-name').value;
         const gender = document.getElementById('edit-gender').value;
         const phone = document.getElementById('edit-phone').value;
@@ -1211,32 +1373,16 @@
                 const d = await res.json();
                 newUrl = d.secure_url;
             }
-            
-            await db.collection('users').doc(currentUser.uid).update({
-                fullName: name, gender: gender, phone: phone, jobTitle: job, location: loc, photoUrl: newUrl
-            });
-            
+            await db.collection('users').doc(currentUser.uid).update({ fullName: name, gender: gender, phone: phone, jobTitle: job, location: loc, photoUrl: newUrl });
             userData.fullName = name; userData.gender = gender; userData.phone = phone; 
             userData.jobTitle = job; userData.location = loc; userData.photoUrl = newUrl;
-            
             renderHeader(); 
             toast("✅ تم حفظ التعديلات بنجاح");
         } catch(e) { toast("❌ فشل الحفظ"); } 
         finally { btn.disabled=false; btn.innerText = "حفظ التعديلات"; newProfilePicFile=null; }
     }
 
-    function copyId() {
-        navigator.clipboard.writeText(userData.shortId);
-        toast("تم نسخ ID");
-    }
-
-    function updateBuildings() { 
-        const f = document.getElementById('req-faculty').value; 
-        const b = document.getElementById('req-building'); 
-        b.innerHTML="<option value=''>المبنى...</option>"; 
-        const d = {'eng':['مبنى العمارة','الورش','مدرجات الإعدادي'], 'sci':['المعامل المركزية','مبنى الكيمياء'], 'art':['مبنى اللغات','قاعات الجغرافيا','المسرح'], 'admin':['شؤون الطلاب','رعاية الشباب','المكتبة المركزية']}; 
-        if(d[f]) d[f].forEach(x=>b.innerHTML+=`<option>${x}</option>`); 
-    }
+    function copyId() { navigator.clipboard.writeText(userData.shortId); toast("تم نسخ ID"); }
 
     async function handleAuth() {
         const email = document.getElementById('email').value; 
@@ -1268,7 +1414,6 @@
                     shortId: Math.random().toString(36).substr(2,6).toUpperCase(),
                     jobTitle: document.getElementById('reg-job').value, location: document.getElementById('reg-loc').value, phone: document.getElementById('reg-phone').value
                 });
-                
                 toggleAuth();
             }
         } catch(e) { toast(e.message); }
