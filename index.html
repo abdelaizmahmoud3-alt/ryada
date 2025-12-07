@@ -12,7 +12,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 
     <style>
-        /* ==================== Core Styling ==================== */
+        /* ==================== Core Styling (University Light Theme) ==================== */
         :root {
             --primary: #0056b3;        
             --primary-dark: #003d80;   
@@ -28,8 +28,8 @@
             --warning: #f59e0b;        
             --info: #0ea5e9;            
             --bg-image: url('https://a.top4top.io/p_36115ao3o1.jpg');
+            --glass: rgba(255, 255, 255, 0.95);
             --shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
-            --sidebar-width: 260px;
         }
         
         * { box-sizing: border-box; outline: none; -webkit-tap-highlight-color: transparent; }
@@ -40,418 +40,654 @@
             color: var(--text); 
             margin: 0; 
             min-height: 100vh;
-            background-image: linear-gradient(rgba(248,250,252,0.8), rgba(248,250,252,0.8)), var(--bg-image);
+            background-image: linear-gradient(rgba(248,250,252,0.6), rgba(248,250,252,0.6)), var(--bg-image);
             background-size: cover; 
+            background-position: center; 
             background-attachment: fixed;
+            position: relative; 
             overflow-x: hidden;
         }
-
+        
+        .app-wrapper { max-width: 600px; margin: 0 auto; min-height: 100vh; position: relative; padding-bottom: 100px; }
         .hidden { display: none !important; }
         html { scroll-behavior: smooth; }
 
-        /* Loader */
+        /* Loader Styling */
         #loader {
-            position: fixed; inset: 0; background: var(--dark); z-index: 99999; 
-            display: flex; flex-direction: column; justify-content: center; align-items: center;
+            position: fixed; 
+            inset: 0; 
+            background-color: var(--dark);
+            background-image: linear-gradient(rgba(255,255,255,0.9), rgba(255,255,255,0.9)), var(--bg-image);
+            background-size: cover;
+            z-index: 99999; 
+            display: flex; 
+            flex-direction: column; 
+            justify-content: center; 
+            align-items: center;
+            text-align: center;
         }
 
-        /* --- Mobile First Layout (Default) --- */
-        .app-wrapper { 
-            max-width: 600px; margin: 0 auto; min-height: 100vh; 
-            padding-bottom: 90px; position: relative; transition: 0.3s;
-        }
-
-        .desktop-sidebar { display: none; } /* Hidden on Mobile */
-
-        /* Header */
+        /* --- Header --- */
         .main-banner {
-            height: 200px; 
-            background: linear-gradient(to bottom, rgba(0,86,179,0.6), rgba(0, 61, 128, 0.9)), var(--bg-image);
-            background-size: cover; background-position: center;
+            height: 220px; 
+            background: linear-gradient(to bottom, rgba(0,86,179,0.3), rgba(0, 61, 128, 0.9)), url('https://a.top4top.io/p_36115ao3o1.jpg');
+            background-size: cover; 
+            background-position: center;
             display: flex; flex-direction: column; justify-content: flex-end; padding: 25px;
-            border-bottom-left-radius: 30px; border-bottom-right-radius: 30px; 
-            margin-bottom: 20px; box-shadow: 0 5px 20px rgba(0,86,179,0.2);
+            border-bottom-left-radius: 40px; border-bottom-right-radius: 40px; 
+            margin-bottom: 25px;
+            box-shadow: 0 10px 40px rgba(0,86,179,0.3);
             position: relative;
         }
 
-        .header-top { position: absolute; top: 20px; left: 20px; right: 20px; display: flex; justify-content: space-between; align-items: center; }
-        .bell-btn { width: 40px; height: 40px; background: rgba(255,255,255,0.2); border-radius: 50%; display: flex; justify-content: center; align-items: center; color: white; cursor: pointer; position: relative; }
-        .bell-badge { position: absolute; top: 8px; right: 8px; width: 8px; height: 8px; background: var(--error); border-radius: 50%; display: none; }
-        
-        .user-minimal h1 { margin: 0; font-size: 24px; color: #fff; font-weight: 800; }
-        .user-minimal .role-badge { background: rgba(255,255,255,0.2); color: white; padding: 4px 12px; border-radius: 20px; font-size: 11px; }
-        .user-avatar-container img { width: 80px; height: 80px; border-radius: 50%; border: 3px solid rgba(255,255,255,0.5); object-fit: cover; background: #fff; }
+        .header-top {
+            position: absolute; top: 20px; left: 20px; right: 20px;
+            display: flex; justify-content: space-between; align-items: center;
+        }
 
-        /* Cards */
-        .glass-card { background: rgba(255,255,255,0.95); border: 1px solid var(--border); border-radius: 20px; padding: 20px; margin: 15px; box-shadow: var(--shadow); }
-        .request-card { cursor: pointer; border-right: 4px solid transparent; }
+        .bell-btn {
+            background: rgba(255,255,255,0.2);
+            width: 40px; height: 40px; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            color: white; cursor: pointer; backdrop-filter: blur(5px);
+            border: 1px solid rgba(255,255,255,0.3);
+            position: relative;
+        }
+        .bell-badge {
+            position: absolute; top: 8px; right: 8px; width: 8px; height: 8px;
+            background: var(--error); border-radius: 50%; display: none; border: 1px solid #fff;
+        }
+
+        .header-content { display: flex; align-items: flex-end; justify-content: space-between; width: 100%; padding-bottom: 10px; }
+
+        /* User Info */
+        .user-minimal { display: flex; flex-direction: column; gap: 6px; text-shadow: 0 2px 5px rgba(0,0,0,0.5); }
+        .user-minimal h1 { margin: 0; font-size: 26px; font-weight: 900; color: #fff; line-height: 1.1; letter-spacing: -0.5px; }
+        .user-minimal .role-badge { 
+            background: rgba(255, 255, 255, 0.2); color: white; padding: 5px 14px; 
+            border-radius: 20px; font-size: 11px; font-weight: 800; width: fit-content;
+            border: 1px solid rgba(255,255,255,0.4); backdrop-filter: blur(4px);
+        }
+
+        .user-avatar-container { position: relative; }
+        .user-avatar-container img {
+            width: 85px; height: 85px; border-radius: 50%;
+            border: 4px solid rgba(255,255,255,0.3); object-fit: cover;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2); transition: transform 0.3s; background: #fff;
+        }
+        .user-avatar-container img:active { transform: scale(0.9); }
+
+        /* --- NEW FRAMES CSS --- */
+        .frame-none { border: 4px solid rgba(255,255,255,0.3) !important; }
+        .frame-gold { border: 4px solid #d97706 !important; box-shadow: 0 0 15px #d97706 !important; }
+        .frame-neon { border: 4px solid #0ea5e9 !important; box-shadow: 0 0 15px #0ea5e9, inset 0 0 10px #0ea5e9 !important; }
+        .frame-rose { border: 4px solid #e11d48 !important; box-shadow: 0 0 10px #e11d48 !important; }
+        .frame-double { border: 4px double var(--primary) !important; padding: 2px; }
+        .frame-dashed { border: 4px dashed var(--success) !important; }
+        .frame-glow-white { border: 4px solid #fff !important; box-shadow: 0 0 20px #fff !important; }
+        .frame-royal { border: 4px solid #4f46e5 !important; box-shadow: 0 5px 15px rgba(79, 70, 229, 0.4) !important; }
+
+        .frame-selector-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-top: 15px; }
+        .frame-option { width: 100%; aspect-ratio: 1; border-radius: 50%; background: #ddd; cursor: pointer; position: relative; transition: 0.2s; }
+        .frame-option:hover { transform: scale(1.1); }
+        .frame-option.selected::after { content: '\f00c'; font-family: 'Font Awesome 6 Free'; font-weight: 900; position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; color: white; background: rgba(0,0,0,0.3); border-radius: 50%; }
+
+        /* --- Cards --- */
+        .glass-card {
+            background: var(--surface); border: 1px solid var(--border);
+            border-radius: 24px; padding: 24px; margin: 15px;
+            box-shadow: var(--shadow); position: relative; overflow: hidden; transition: 0.2s;
+            background: rgba(255, 255, 255, 0.95); 
+        }
+        .glass-card h2, .glass-card h3 { color: var(--primary-dark); }
+        .request-card { cursor: pointer; border-right: 4px solid transparent; margin-bottom: 15px; background: rgba(255,255,255,0.95); transition: transform 0.2s; border: 1px solid var(--border); }
+        .request-card:active { transform: scale(0.98); }
         .req-new { border-left: 3px solid var(--info); }
         .req-done { border-left: 3px solid var(--success); background: #f0fdf4; }
-        
-        /* Inputs */
-        .input-group { margin-bottom: 15px; }
-        .input-group label { display: block; font-size: 12px; font-weight: 700; color: var(--text-muted); margin-bottom: 5px; }
-        input, select, textarea { width: 100%; padding: 14px; background: var(--surface-light); border: 1px solid var(--border); border-radius: 12px; font-family: 'Cairo'; font-size: 14px; }
-        
-        /* Buttons */
-        .btn-main { width: 100%; padding: 14px; background: var(--primary); color: white; border: none; border-radius: 12px; font-weight: 700; cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 8px; font-family: 'Cairo'; }
-        .btn-ghost { background: transparent; border: 1px solid var(--border); color: var(--text-muted); padding: 8px 15px; border-radius: 10px; cursor: pointer; font-family: 'Cairo'; }
-        .btn-danger { background: var(--error); }
-        .btn-sm { padding: 5px 15px; font-size: 12px; width: auto; min-height: 30px; }
+        .req-rejected { border-left: 3px solid var(--error); background: #fef2f2; }
 
-        /* Nav & Tabs */
-        .bottom-nav { position: fixed; bottom: 0; width: 100%; max-width: 600px; background: #fff; display: flex; justify-content: space-between; padding: 10px 20px 25px; border-top: 1px solid var(--border); z-index: 900; border-radius: 30px 30px 0 0; }
-        .nav-item { text-align: center; color: var(--text-muted); font-size: 10px; cursor: pointer; width: 50px; }
-        .nav-item.active { color: var(--primary); }
-        .nav-add-btn { width: 55px; height: 55px; background: var(--primary); color: white; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 24px; transform: translateY(-25px); border: 4px solid var(--dark); box-shadow: 0 10px 20px rgba(0,86,179,0.3); }
-
-        .tabs-container { display: flex; margin: 15px; background: #fff; padding: 5px; border-radius: 15px; border: 1px solid var(--border); }
-        .tab-btn { flex: 1; padding: 10px; border: none; background: transparent; cursor: pointer; border-radius: 10px; font-family: 'Cairo'; font-weight: 600; color: var(--text-muted); }
-        .tab-btn.active { background: var(--primary); color: white; }
-
-        /* Modals */
-        .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 2000; display: flex; align-items: center; justify-content: center; padding: 20px; backdrop-filter: blur(5px); }
-        .modal-content { background: #fff; width: 100%; max-width: 450px; padding: 25px; border-radius: 20px; max-height: 85vh; overflow-y: auto; position: relative; }
-        .close-btn { position: absolute; top: 15px; left: 15px; background: #f1f5f9; width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; }
-
-        /* Misc */
-        .status-pill { padding: 4px 10px; border-radius: 15px; font-size: 10px; font-weight: 700; }
-        .st-pending { background: #e0f2fe; color: var(--info); }
-        .st-done { background: #f0fdf4; color: var(--success); }
-        .st-rejected { background: #fef2f2; color: var(--error); }
-        
-        .media-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 10px; }
-        .media-item { aspect-ratio: 1; background: #f1f5f9; border-radius: 10px; overflow: hidden; position: relative; }
-        .media-item img, .media-item video { width: 100%; height: 100%; object-fit: cover; }
-
-        /* Auth Screen */
-        #auth-screen { min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 20px; }
-        #auth-screen .glass-card { width: 100%; max-width: 400px; text-align: center; }
-        .auth-card { padding: 10px; border: 1px solid var(--border); border-radius: 10px; cursor: pointer; text-align: center; }
-        .auth-card-input:checked + .auth-card { border-color: var(--primary); background: #eff6ff; }
-        .auth-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
-
-        /* ==================== DESKTOP RESPONSIVE (MEDIA QUERY) ==================== */
-        @media (min-width: 992px) {
-            body { overflow: hidden; background: #f1f5f9; } /* Disable body scroll on PC */
-            
-            /* Wrapper becomes Grid */
-            .app-wrapper {
-                max-width: 100%;
-                margin: 0;
-                padding-bottom: 0;
-                display: grid;
-                grid-template-columns: var(--sidebar-width) 1fr; /* Sidebar | Content */
-                height: 100vh;
-            }
-
-            /* Show Desktop Sidebar */
-            .desktop-sidebar {
-                display: flex;
-                flex-direction: column;
-                background: #fff;
-                border-left: 1px solid var(--border);
-                padding: 25px;
-                height: 100vh;
-                overflow-y: auto;
-                box-shadow: 5px 0 15px rgba(0,0,0,0.02);
-            }
-
-            /* Sidebar Styling */
-            .sidebar-logo { text-align: center; margin-bottom: 30px; padding-bottom: 20px; border-bottom: 1px solid var(--border); }
-            .sidebar-logo img { width: 60px; border-radius: 12px; margin-bottom: 10px; }
-            .sidebar-menu { display: flex; flex-direction: column; gap: 8px; flex: 1; }
-            .sidebar-item { padding: 12px 15px; border-radius: 10px; cursor: pointer; display: flex; align-items: center; gap: 12px; color: var(--text-muted); font-weight: 600; transition: 0.2s; }
-            .sidebar-item:hover { background: var(--surface-light); color: var(--primary); }
-            .sidebar-item.active { background: #eff6ff; color: var(--primary); border-right: 3px solid var(--primary); }
-            .sidebar-user { margin-top: auto; padding: 15px; background: var(--surface-light); border-radius: 12px; display: flex; align-items: center; gap: 10px; cursor: pointer; }
-
-            /* Content Area */
-            #main-content-area-wrapper {
-                height: 100vh;
-                overflow-y: auto;
-                padding: 30px 40px;
-                background: #f8fafc;
-                position: relative;
-            }
-
-            /* Hide Mobile Elements */
-            .bottom-nav, .header-top { display: none !important; }
-            
-            /* Adjust Banner */
-            .main-banner { height: 180px; border-radius: 20px; margin-top: 0; }
-            .user-minimal h1 { font-size: 32px; }
-
-            /* Grid Feeds */
-            #requests-feed { display: grid; grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); gap: 20px; }
-            .glass-card { margin: 0; margin-bottom: 20px; }
-
-            /* Form Grids */
-            #page-create .glass-card { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
-            #page-create .glass-card h3 { grid-column: span 2; }
-            #page-create .glass-card textarea { grid-column: span 2; }
-            #page-create .glass-card button { grid-column: span 2; }
-            #page-create .glass-card #preview-grid { grid-column: span 2; }
-
-            /* Profile Grid */
-            #page-profile .glass-card > div { display: grid; grid-template-columns: 200px 1fr; gap: 30px; align-items: start; }
-            
-            /* Auth Screen Centering */
-            #auth-screen { max-width: 500px; margin: 0 auto; height: 100vh; }
-            
-            /* Support Fab Position */
-            .support-fab { left: 30px; bottom: 30px; width: 60px; height: 60px; font-size: 24px; }
+        /* --- Inputs --- */
+        .input-group { margin-bottom: 20px; position: relative; }
+        .input-group label { display: block; font-size: 12px; color: var(--text-muted); margin-bottom: 8px; font-weight: 700; }
+        input, select, textarea {
+            width: 100%; padding: 16px; background: var(--surface-light); 
+            border: 1px solid var(--border); border-radius: 16px; color: var(--text); 
+            font-family: 'Cairo', sans-serif; font-size: 14px; font-weight: 600; transition: 0.3s;
         }
+        input:focus, select:focus, textarea:focus { border-color: var(--primary); background: #fff; box-shadow: 0 0 0 4px rgba(0, 86, 179, 0.1); }
+
+        /* --- Auth Styling --- */
+        .auth-logo-modern {
+            width: 90px; height: 90px;
+            border-radius: 20px; 
+            margin-bottom: 15px; 
+            object-fit: cover; 
+            box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+        }
+
+        .auth-section-label {
+            text-align: right; font-size: 12px; color: var(--text-muted); 
+            margin-bottom: 8px; margin-top: 15px; display: block; font-weight: 700;
+        }
+
+        .auth-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 10px; }
+        .auth-card-input { display: none; }
+        .auth-card {
+            background: var(--surface-light); border: 1px solid var(--border);
+            padding: 15px 5px; border-radius: 14px; text-align: center; cursor: pointer; transition: 0.2s;
+            display: flex; flex-direction: column; align-items: center; gap: 8px;
+        }
+        .auth-card-input:checked + .auth-card { background: rgba(0, 86, 179, 0.1); border-color: var(--primary); }
+        .auth-card-input:checked + .auth-card i { color: var(--primary); }
+
+        /* Priority Grid */
+        .priority-grid { display: flex; gap: 10px; }
+        .prio-card {
+            flex: 1; padding: 15px 5px; background: var(--surface-light); border: 1px solid var(--border);
+            border-radius: 16px; text-align: center; cursor: pointer; transition: 0.3s; 
+            display: flex; flex-direction: column; align-items: center; gap: 5px; color: var(--text-muted);
+        }
+        .prio-radio:checked + .prio-card.p-low { background: #ecfdf5; border-color: var(--success); color: var(--success); }
+        .prio-radio:checked + .prio-card.p-med { background: #fff7ed; border-color: var(--warning); color: var(--warning); }
+        .prio-radio:checked + .prio-card.p-high { background: #fef2f2; border-color: var(--error); color: var(--error); }
+
+        /* Buttons */
+        .btn-main {
+            width: 100%; padding: 16px; background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            border: none; border-radius: 16px; color: white; font-weight: 700; cursor: pointer;
+            display: flex; justify-content: center; align-items: center; gap: 10px;
+            box-shadow: 0 8px 20px rgba(0, 86, 179, 0.2); font-size: 15px; font-family: 'Cairo', sans-serif; transition: 0.1s;
+        }
+        .btn-main:active { transform: scale(0.97); }
+        .btn-ghost { background: transparent; border: 1px solid var(--border); color: var(--text-muted); border-radius: 14px; font-family: 'Cairo', sans-serif; cursor: pointer;}
+        .btn-danger { background: linear-gradient(135deg, var(--error), #b91c1c); box-shadow: 0 8px 20px rgba(239, 68, 68, 0.2); }
+        .btn-sm { padding: 8px 16px; font-size: 12px; width: auto; margin: 0; border-radius: 10px; min-height: 35px; }
+        
+        /* Support Floating Action Button - HIDDEN BY DEFAULT */
+        .support-fab {
+            position: fixed;
+            bottom: 85px; /* Above bottom nav */
+            left: 20px;
+            width: 55px; height: 55px;
+            background: linear-gradient(135deg, #25D366, #128C7E);
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            color: white; font-size: 24px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            z-index: 899;
+            text-decoration: none;
+            transition: transform 0.2s;
+            border: 2px solid white;
+        }
+        .support-fab:active { transform: scale(0.95); }
+
+        /* Audio Recording Pulse */
+        .mic-btn {
+            background: var(--surface-light); border: 2px solid var(--border); color: var(--text-muted);
+            width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
+            cursor: pointer; transition: 0.3s; font-size: 20px;
+        }
+        .mic-btn.recording {
+            background: #fef2f2; border-color: var(--error); color: var(--error);
+            animation: pulse 1.5s infinite;
+        }
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.4); }
+            70% { box-shadow: 0 0 0 10px rgba(239, 68, 68, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
+        }
+
+        /* Timeline */
+        .timeline { margin: 20px 0; padding: 0 10px; }
+        .timeline-item { display: flex; gap: 15px; padding-bottom: 25px; position: relative; }
+        .timeline-item::before { content: ''; position: absolute; right: 14px; top: 30px; bottom: 0; width: 2px; background: var(--border); }
+        .timeline-item:last-child::before { display: none; }
+        .tl-icon {
+            width: 30px; height: 30px; border-radius: 50%; background: var(--surface-light); 
+            border: 2px solid var(--border); display: flex; align-items: center; justify-content: center;
+            font-size: 12px; color: var(--text-muted); z-index: 2; flex-shrink: 0;
+        }
+        .tl-content h4 { margin: 0 0 5px; font-size: 14px; font-weight: 700; color: var(--text); }
+        .tl-content p { margin: 0; font-size: 12px; color: var(--text-muted); }
+        .timeline-item.active .tl-icon { background: var(--primary); border-color: var(--primary); color: white; box-shadow: 0 0 15px rgba(0, 86, 179, 0.3); }
+        .timeline-item.rejected .tl-icon { background: var(--error); border-color: var(--error); color: white; }
+
+        /* Tabs & Nav */
+        .tabs-container { display: flex; margin: 15px; background: #fff; padding: 6px; border-radius: 20px; border: 1px solid var(--border); box-shadow: var(--shadow); }
+        .tab-btn { flex: 1; padding: 12px; color: var(--text-muted); font-size: 13px; font-weight: 700; cursor: pointer; border-radius: 14px; background: transparent; border: none; font-family: 'Cairo', sans-serif; transition: 0.3s; }
+        .tab-btn.active { background: var(--primary); color: white; box-shadow: 0 4px 15px rgba(0, 86, 179, 0.2); }
+
+        .bottom-nav { 
+            position: fixed; bottom: 0; left: 0; right: 0; max-width: 600px; margin: 0 auto; 
+            background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px);
+            border-top: 1px solid var(--border); display: flex; justify-content: space-between; align-items: flex-end; 
+            padding: 10px 20px 25px; z-index: 900; border-top-left-radius: 30px; border-top-right-radius: 30px;
+            box-shadow: 0 -5px 20px rgba(0,0,0,0.05);
+        }
+        .nav-item { text-align: center; color: #94a3b8; font-size: 10px; cursor: pointer; width: 60px; }
+        .nav-item i { font-size: 20px; margin-bottom: 6px; display: block; }
+        .nav-item.active { color: var(--primary); }
+        .nav-add-btn {
+            width: 60px; height: 60px; background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 26px;
+            box-shadow: 0 10px 25px rgba(0, 86, 179, 0.4); transform: translateY(-25px); border: 5px solid var(--dark);
+        }
+
+        /* --- Friends & Modals --- */
+        .friend-item { display: flex; align-items: center; gap: 15px; padding: 15px; background: #fff; border-radius: 18px; margin-bottom: 10px; cursor: pointer; border: 1px solid var(--border); transition: 0.2s; }
+        .friend-item:hover { border-color: var(--primary); background: #f8fafc; }
+        
+        /* Updated Z-Index for Modals */
+        .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 2000; display: flex; align-items: center; justify-content: center; padding: 20px; backdrop-filter: blur(5px); }
+        .modal-content { width: 100%; max-width: 450px; background: #fff; border: 1px solid var(--border); border-radius: 30px; padding: 30px; max-height: 90vh; overflow-y: auto; position: relative; box-shadow: 0 25px 50px rgba(0,0,0,0.15); }
+        .close-btn { position: absolute; top: 20px; left: 20px; background: #f1f5f9; width: 35px; height: 35px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; color: var(--text-muted); }
+
+        /* Specific Z-Index for Delete Modal to appear ON TOP of Friend Profile */
+        #delete-friend-modal { z-index: 10000 !important; }
+
+        /* Status Pills */
+        .status-pill { padding: 6px 14px; border-radius: 20px; font-size: 11px; font-weight: 800; display: flex; align-items: center; gap: 5px; width: fit-content; }
+        .st-pending { background: #e0f2fe; color: var(--info); border: 1px solid #bae6fd; }
+        .st-approved { background: #eff6ff; color: var(--primary); border: 1px solid #bfdbfe; }
+        .st-working { background: #fff7ed; color: var(--warning); border: 1px solid #fed7aa; }
+        .st-done { background: #f0fdf4; color: var(--success); border: 1px solid #bbf7d0; }
+        .st-rejected { background: #fef2f2; color: var(--error); border: 1px solid #fecaca; }
+
+        /* Media & Image Updates */
+        .media-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 15px; }
+        .media-item { aspect-ratio: 1; border-radius: 14px; overflow: hidden; background: #f8fafc; border: 1px solid var(--border); position: relative; }
+        .media-item img, .media-item video { width: 100%; height: 100%; object-fit: contain; background: #000; }
+        .remove-file { position: absolute; top: 4px; right: 4px; background: var(--error); color: white; width: 22px; height: 22px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 10px; }
+        .archive-thumbs { display: flex; gap: 5px; margin-top: 10px; flex-wrap: wrap; }
+        .archive-thumbs img { width: 45px; height: 45px; border-radius: 10px; object-fit: cover; border: 1px solid var(--border); background: #fff; }
+
+        /* Modern Confirm Modal */
+        .confirm-icon-box {
+            width: 70px; height: 70px; margin: 0 auto 20px;
+            background: #fef2f2; border-radius: 50%; display: flex; align-items: center; justify-content: center;
+            color: var(--error); font-size: 30px; border: 4px solid #fff; box-shadow: 0 10px 20px rgba(239, 68, 68, 0.1);
+        }
+
+        /* Modern Tech Selection */
+        .tech-select-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
+        .tech-select-card {
+            border: 1px solid var(--border); border-radius: 16px; padding: 15px; text-align: center; cursor: pointer; transition: 0.2s; background: var(--surface-light);
+        }
+        .tech-select-card:hover { border-color: var(--primary); background: #fff; }
+        .tech-select-card.selected { border-color: var(--primary); background: #eff6ff; box-shadow: 0 4px 12px rgba(0,86,179,0.1); }
+        .tech-select-card img { width: 50px; height: 50px; border-radius: 50%; object-fit: cover; margin-bottom: 8px; border: 2px solid white; box-shadow: 0 5px 10px rgba(0,0,0,0.05); }
+
     </style>
 </head>
 <body>
 
 <div class="app-wrapper">
     
-    <div class="desktop-sidebar">
-        <div class="sidebar-logo">
-            <img src="https://a.top4top.io/p_36115ao3o1.jpg">
-            <h3 style="margin:0; color:var(--primary);">نظام الصيانة</h3>
-            <span style="font-size:11px; color:var(--text-muted);">جامعة الريادة</span>
-        </div>
-        
-        <div class="sidebar-menu">
-            <div class="sidebar-item active" onclick="nav('home', this)">
-                <i class="fa-solid fa-list-check" style="width:25px;"></i> المهام
-            </div>
-            <div class="sidebar-item" onclick="nav('team', this)">
-                <i class="fa-solid fa-users" style="width:25px;"></i> فريق العمل
-            </div>
-            <div class="sidebar-item" onclick="nav('create', null)">
-                <i class="fa-solid fa-plus-circle" style="width:25px;"></i> بلاغ جديد
-            </div>
-            <div class="sidebar-item" onclick="nav('profile', this)">
-                <i class="fa-solid fa-user" style="width:25px;"></i> حسابي
-            </div>
-            <div class="sidebar-item" onclick="nav('settings', this)">
-                <i class="fa-solid fa-gear" style="width:25px;"></i> الإعدادات
-            </div>
-        </div>
-
-        <div class="sidebar-user" onclick="document.getElementById('logout-modal').classList.remove('hidden')">
-             <i class="fa-solid fa-right-from-bracket" style="color:var(--error);"></i>
-             <span style="font-size:12px; font-weight:bold;">تسجيل خروج</span>
-        </div>
-    </div>
     <audio id="notify-sound" src="https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3" preload="auto"></audio>
-    <a href="mailto:zabdo723@gmail.com" id="support-fab" class="support-fab hidden" style="position:fixed; bottom:90px; left:20px; width:50px; height:50px; background:#25D366; color:#fff; border-radius:50%; display:flex; justify-content:center; align-items:center; z-index:900; box-shadow:0 5px 15px rgba(0,0,0,0.2);"><i class="fa-solid fa-headset"></i></a>
+
+    <a href="mailto:zabdo723@gmail.com" id="support-fab" class="support-fab hidden">
+        <i class="fa-solid fa-headset"></i>
+    </a>
 
     <div id="loader">
         <i class="fa-solid fa-circle-notch fa-spin fa-3x" style="color:var(--primary);"></i>
-        <p style="margin-top:20px; color:white;">جاري التحميل...</p>
+        <h2 style="margin-top:20px; color:var(--primary-dark); font-size:18px; font-weight:800;">نظام الصيانة الذكي</h2>
+        <p style="color:var(--text-muted); font-size:14px; margin:0;">جامعة الريادة للعلوم والتكنولوجيا</p>
     </div>
 
-    <div id="auth-screen" class="hidden">
-        <div class="glass-card">
-            <img src="https://a.top4top.io/p_36115ao3o1.jpg" style="width:80px; border-radius:15px; margin-bottom:15px;">
-            <h2 style="margin:0 0 10px; color:var(--primary);">نظام الصيانة الذكي</h2>
+    <div id="auth-screen" class="hidden" style="min-height:100vh; display:flex; flex-direction:column; justify-content:center; padding:25px;">
+        <div class="glass-card" style="text-align:center; padding: 40px 25px;">
+            <img src="https://a.top4top.io/p_36115ao3o1.jpg" class="auth-logo-modern">
+            
+            <h2 style="margin:0 0 5px; font-weight:900; font-size: 22px; color:var(--primary-dark);">نظام الصيانة الذكي</h2>
+            <p style="color:var(--text-muted); font-size:13px; margin-bottom:35px; line-height:1.6;">جامعة الريادة للعلوم والتكنولوجيا</p>
+
             <div id="reg-fields" class="hidden">
-                <p style="text-align:right; font-size:12px; font-weight:bold;">النوع:</p>
-                <div class="auth-grid" style="grid-template-columns:1fr 1fr; margin-bottom:10px;">
-                    <label><input type="radio" name="auth-gender" value="male" class="auth-card-input" checked><div class="auth-card"><i class="fa-solid fa-person"></i> ذكر</div></label>
-                    <label><input type="radio" name="auth-gender" value="female" class="auth-card-input"><div class="auth-card"><i class="fa-solid fa-person-dress"></i> أنثى</div></label>
+                <p class="auth-section-label">اختر النوع:</p>
+                <div class="auth-grid" style="grid-template-columns: 1fr 1fr;">
+                    <label><input type="radio" name="auth-gender" value="male" class="auth-card-input" checked><div class="auth-card"><i class="fa-solid fa-person"></i><span>ذكر</span></div></label>
+                    <label><input type="radio" name="auth-gender" value="female" class="auth-card-input"><div class="auth-card"><i class="fa-solid fa-person-dress"></i><span>أنثى</span></div></label>
                 </div>
-                <div class="input-group"><input type="text" id="reg-name" placeholder="الاسم الكامل"></div>
-                <div class="input-group"><input type="tel" id="reg-phone" placeholder="رقم الهاتف"></div>
-                <p style="text-align:right; font-size:12px; font-weight:bold;">الوظيفة:</p>
-                <div class="auth-grid" style="margin-bottom:10px;">
-                    <label><input type="radio" name="auth-role" value="employee" class="auth-card-input" checked><div class="auth-card">موظف</div></label>
-                    <label><input type="radio" name="auth-role" value="supervisor" class="auth-card-input"><div class="auth-card">مشرف</div></label>
-                    <label><input type="radio" name="auth-role" value="technician" class="auth-card-input"><div class="auth-card">فني</div></label>
+                <div class="input-group" style="margin-top:15px;"><input type="text" id="reg-name" placeholder="الاسم الكامل"></div>
+                <div class="input-group"><input type="tel" id="reg-phone" placeholder="01xxxxxxxxx"></div>
+                
+                <p class="auth-section-label">الوظيفة:</p>
+                <div class="auth-grid">
+                    <label><input type="radio" name="auth-role" value="employee" class="auth-card-input" checked><div class="auth-card"><i class="fa-solid fa-user-pen"></i><span>موظف</span></div></label>
+                    <label><input type="radio" name="auth-role" value="supervisor" class="auth-card-input"><div class="auth-card"><i class="fa-solid fa-user-tie"></i><span>مشرف</span></div></label>
+                    <label><input type="radio" name="auth-role" value="technician" class="auth-card-input"><div class="auth-card"><i class="fa-solid fa-helmet-safety"></i><span>فني</span></div></label>
                 </div>
-                <div class="input-group"><input type="text" id="reg-job" placeholder="المسمى الوظيفي"></div>
+                <div class="input-group" style="margin-top:15px;"><input type="text" id="reg-job" placeholder="المسمى الوظيفي"></div>
                 <div class="input-group"><input type="text" id="reg-loc" placeholder="مقر العمل"></div>
             </div>
-            <div class="input-group"><input type="email" id="email" placeholder="البريد الجامعي"></div>
+
+            <div class="input-group"><input type="email" id="email" placeholder="البريد الإلكتروني الجامعي"></div>
             <div class="input-group"><input type="password" id="password" placeholder="كلمة المرور"></div>
             <div id="confirm-pass-field" class="hidden input-group"><input type="password" id="confirm-password" placeholder="تأكيد كلمة المرور"></div>
-            <button onclick="handleAuth()" id="auth-btn" class="btn-main">تسجيل الدخول</button>
-            <p onclick="toggleAuth()" style="font-size:12px; margin-top:15px; cursor:pointer; color:var(--primary);">ليس لديك حساب؟ إنشاء حساب جديد</p>
+            
+            <button onclick="handleAuth()" id="auth-btn" class="btn-main" style="margin-top:25px;">تسجيل الدخول</button>
+            <div onclick="toggleAuth()" style="margin-top:25px; font-size:13px; cursor:pointer; padding:10px; color:var(--text-muted);">
+                <span id="auth-switch-text">ليس لديك حساب؟ <b style="color:var(--primary)">إنشاء حساب جديد</b></span>
+            </div>
         </div>
     </div>
 
     <div id="app-container" class="hidden">
-        <div id="main-content-area-wrapper">
-            <div class="main-banner">
-                <div class="header-top">
-                    <div class="user-avatar-container" onclick="nav('profile')"><img id="banner-img" src=""></div>
-                    <div class="bell-btn" onclick="toast('لا توجد إشعارات')"><i class="fa-regular fa-bell"></i><div class="bell-badge"></div></div>
+        <div class="main-banner">
+            <div class="header-top">
+                <div class="user-avatar-container" onclick="nav('profile', document.querySelector('.nav-item:nth-child(4)'))">
+                    <img id="banner-img" src="https://cdn-icons-png.flaticon.com/512/4140/4140048.png">
                 </div>
+                <div class="bell-btn" onclick="toast('لا توجد إشعارات جديدة')">
+                    <i class="fa-regular fa-bell"></i>
+                    <div class="bell-badge"></div>
+                </div>
+            </div>
+            <div class="header-content">
                 <div class="user-minimal">
-                    <span id="banner-role" class="role-badge">-</span>
-                    <h1 id="banner-name">-</h1>
-                    <span id="banner-id" style="color:rgba(255,255,255,0.8); font-size:12px;">ID: --</span>
+                    <span id="banner-role" class="role-badge">User</span>
+                    <h1 id="banner-name">Guest</h1>
+                    <span id="banner-id" style="color:rgba(255,255,255,0.8); font-family:monospace; font-size:12px;">ID: --</span>
+                </div>
+            </div>
+        </div>
+        
+        <div id="main-content">
+            <div id="page-home" class="page-section">
+                <div class="tabs-container">
+                    <button class="tab-btn active" onclick="switchTab('active', this)">المهام الجارية</button>
+                    <button class="tab-btn" onclick="switchTab('history', this)">الأرشيف</button>
+                    <button class="tab-btn" onclick="switchTab('trash', this)" style="color:var(--error);">المحذوفات</button>
+                </div>
+                <div id="filter-container" class="hidden" style="padding:0 15px 10px;">
+                    <select id="feed-filter" onchange="renderFeed()" style="padding:10px;"><option value="all">عرض الكل</option><option value="Admin">المبني الاداري</option><option value="Nursing">تمريض</option><option value="CS">حاسبات</option><option value="PT">علاج طبيعي</option><option value="Pharmacy">صيدلة</option><option value="Dentistry">أسنان</option><option value="Business">إدارة أعمال</option></select>
+                </div>
+                <div id="archive-actions" class="hidden" style="padding:0 15px 15px;">
+                     <button onclick="downloadArchivePDF()" class="btn-main btn-sm" style="background:var(--success); width:100%;"><i class="fa-solid fa-file-pdf"></i> تحميل تقرير الأرشيف (PDF)</button>
+                </div>
+                <div id="requests-feed" style="padding-bottom:100px;"></div>
+            </div>
+
+            <div id="page-create" class="page-section hidden">
+                <div class="glass-card" style="margin-top:0;">
+                    <h3 style="margin:0 0 20px; font-weight:800; color:var(--primary-dark); border-right:4px solid var(--primary); padding-right:15px; font-size:20px;">بلاغ جديد</h3>
+                    <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:15px;">
+                        <div class="input-group"><label>التاريخ</label><div class="date-wrapper"><input type="date" id="req-date"></div></div>
+                        <div class="input-group"><label>الوقت</label><div class="time-wrapper"><input type="time" id="req-time"></div></div>
+                    </div>
+                    <div class="input-group">
+                        <label>نوع العطل</label>
+                        <select id="req-type">
+                            <option value="">اختر التخصص...</option>
+                            <option value="كهرباء">كهرباء</option>
+                            <option value="سباكة">سباكة</option>
+                            <option value="نجارة">نجارة</option>
+                            <option value="تكييف">تكييف</option>
+                            <option value="IT">دعم فني (IT)</option>
+                        </select>
+                    </div>
+                    <div class="input-group">
+                        <label>الأهمية</label>
+                        <div class="priority-grid">
+                            <label class="prio-label" style="flex:1"><input type="radio" name="prio" value="low" class="prio-radio" checked><div class="prio-card p-low"><i class="fa-regular fa-face-smile"></i><span>عادي</span></div></label>
+                            <label class="prio-label" style="flex:1"><input type="radio" name="prio" value="medium" class="prio-radio"><div class="prio-card p-med"><i class="fa-regular fa-face-meh"></i><span>متوسط</span></div></label>
+                            <label class="prio-label" style="flex:1"><input type="radio" name="prio" value="high" class="prio-radio"><div class="prio-card p-high"><i class="fa-solid fa-fire"></i><span>عاجل</span></div></label>
+                        </div>
+                    </div>
+                    <div class="input-group">
+                        <label>الموقع</label>
+                        <select id="req-faculty" style="margin-bottom:12px;">
+                            <option value="">اختر المبنى/الكلية...</option>
+                            <option value="Admin">المبني الاداري</option>
+                            <option value="Nursing">مبني كلية التمريض</option>
+                            <option value="CS">مبني كليه الحاسبات والمعلومات</option>
+                            <option value="PT">مبني كلية العلاج الطبيعي</option>
+                            <option value="Pharmacy">مبني كليه الصيدلة</option>
+                            <option value="Dentistry">مبني كلية الاسنان</option>
+                            <option value="Business">مبني كلية ادراة اعمال</option>
+                            <option value="Other">إضافة أخرى...</option>
+                        </select>
+                        <input type="text" id="req-room" placeholder="رقم الغرفة / القاعة">
+                    </div>
+                    <div class="input-group"><label>وصف البلاغ</label><textarea id="req-desc" rows="4" placeholder="تفاصيل المشكلة..."></textarea></div>
+                    
+                    <div style="display:flex; gap:10px; margin-bottom:20px;">
+                        <div style="flex:1; background:var(--surface-light); padding:20px; border-radius:16px; border:2px dashed var(--border); text-align:center; cursor:pointer;" onclick="document.getElementById('req-files').click()">
+                            <i class="fa-solid fa-cloud-arrow-up fa-2x" style="color:var(--text-muted); margin-bottom:10px;"></i>
+                            <p style="font-size:12px; color:var(--text-muted); margin:0;">صور / فيديو</p>
+                            <input type="file" id="req-files" hidden multiple accept="image/*,video/*" onchange="handleFiles(this)">
+                        </div>
+                        <div id="mic-trigger" class="mic-btn" onclick="toggleRecording()">
+                            <i class="fa-solid fa-microphone"></i>
+                        </div>
+                    </div>
+                    
+                    <div id="preview-grid" class="media-grid" style="margin-bottom:20px;"></div>
+                    <button onclick="openSupModal()" class="btn-main">التالي: اختيار المشرف <i class="fa-solid fa-arrow-left"></i></button>
                 </div>
             </div>
 
-            <div id="main-content">
-                <div id="page-home" class="page-section">
-                    <div class="tabs-container">
-                        <button class="tab-btn active" onclick="switchTab('active', this)">المهام الجارية</button>
-                        <button class="tab-btn" onclick="switchTab('history', this)">الأرشيف</button>
-                        <button class="tab-btn" onclick="switchTab('trash', this)" style="color:var(--error);">المحذوفات</button>
+            <div id="page-team" class="page-section hidden">
+                <div class="glass-card" style="border-top: 3px solid var(--gold);">
+                    <h3 style="margin-bottom:20px;">فريق العمل</h3>
+                    <div style="display:flex; gap:10px; margin-bottom:20px;">
+                        <input type="text" id="search-query" placeholder="بحث بالـ ID ..." style="margin:0;">
+                        <button onclick="searchUser()" class="btn-main" style="width:auto; margin:0;"><i class="fa-solid fa-search"></i></button>
                     </div>
-                    <div id="filter-container" class="hidden" style="padding:0 15px 10px;">
-                        <select id="feed-filter" onchange="renderFeed()"><option value="all">عرض الكل</option><option value="Admin">المبني الاداري</option><option value="Nursing">تمريض</option><option value="CS">حاسبات</option><option value="PT">علاج طبيعي</option><option value="Pharmacy">صيدلة</option><option value="Dentistry">أسنان</option><option value="Business">إدارة أعمال</option></select>
+                    <div id="search-results" class="hidden" style="margin-bottom:20px;"></div>
+                    <div id="friend-reqs" class="hidden" style="background:#fff7ed; padding:15px; border-radius:15px; margin-bottom:20px; border:1px solid var(--gold);">
+                        <h5 style="margin:0 0 10px; color:var(--gold);">طلبات صداقة جديدة:</h5>
+                        <div id="reqs-list"></div>
                     </div>
-                    <div id="archive-actions" class="hidden" style="padding:0 15px 15px;">
-                         <button onclick="downloadArchivePDF()" class="btn-main btn-sm" style="background:var(--success);"><i class="fa-solid fa-file-pdf"></i> تحميل تقرير الأرشيف</button>
-                    </div>
-                    <div id="requests-feed" style="padding-bottom:100px;"></div>
+                    <h5 style="color:var(--text-muted);">الأصدقاء:</h5>
+                    <div id="team-list"></div>
                 </div>
+            </div>
 
-                <div id="page-create" class="page-section hidden">
-                    <div class="glass-card">
-                        <h3 style="margin:0 0 20px; color:var(--primary);">بلاغ جديد</h3>
-                        <div class="input-group"><label>التاريخ</label><input type="date" id="req-date"></div>
-                        <div class="input-group"><label>الوقت</label><input type="time" id="req-time"></div>
-                        <div class="input-group">
-                            <label>نوع العطل</label>
-                            <select id="req-type"><option value="">اختر...</option><option value="كهرباء">كهرباء</option><option value="سباكة">سباكة</option><option value="نجارة">نجارة</option><option value="تكييف">تكييف</option><option value="IT">دعم فني (IT)</option></select>
+            ```
+
+عندما تكون مستعداً، اطلب الجزء الثاني لإكمال الكود.
+            <div id="page-profile" class="page-section hidden">
+                <div class="glass-card" style="margin-top:20px;">
+                    <div style="text-align:center;">
+                        <div style="position:relative; width:130px; height:130px; margin:0 auto 25px;">
+                            <img id="edit-current-pic" src="" class="frame-none" style="width:100%; height:100%; border-radius:50%; object-fit:cover;">
+                            <div onclick="document.getElementById('edit-profile-file').click()" style="position:absolute; bottom:5px; right:5px; background:var(--primary); width:40px; height:40px; border-radius:50%; display:flex; align-items:center; justify-content:center; cursor:pointer; border:3px solid #fff; z-index:5;"><i class="fa-solid fa-camera" style="color:white;"></i></div>
                         </div>
-                        <div class="input-group">
-                            <label>الأهمية</label>
-                            <div style="display:flex; gap:10px;">
-                                <label style="flex:1;"><input type="radio" name="prio" value="low" checked hidden><div class="prio-card p-low" style="padding:10px; border:1px solid #ddd; border-radius:10px; text-align:center;">عادي</div></label>
-                                <label style="flex:1;"><input type="radio" name="prio" value="medium" hidden><div class="prio-card p-med" style="padding:10px; border:1px solid #ddd; border-radius:10px; text-align:center;">متوسط</div></label>
-                                <label style="flex:1;"><input type="radio" name="prio" value="high" hidden><div class="prio-card p-high" style="padding:10px; border:1px solid #ddd; border-radius:10px; text-align:center;">عاجل</div></label>
+                        <input type="file" id="edit-profile-file" hidden accept="image/*" onchange="previewProfilePic(this)">
+                        
+                        <div style="margin-bottom:25px; background:var(--surface-light); padding:15px; border-radius:15px; border:1px solid var(--border);">
+                            <p style="font-size:12px; color:var(--text-muted); margin:0 0 10px; font-weight:bold;">اختر إطار للصورة:</p>
+                            <div class="frame-selector-grid">
+                                <div class="frame-option selected" onclick="selectFrame(this, 'frame-none')" style="border:4px solid #ddd;"></div>
+                                <div class="frame-option" onclick="selectFrame(this, 'frame-gold')" style="border:4px solid #d97706; box-shadow:0 0 5px #d97706;"></div>
+                                <div class="frame-option" onclick="selectFrame(this, 'frame-neon')" style="border:4px solid #0ea5e9; box-shadow:0 0 5px #0ea5e9;"></div>
+                                <div class="frame-option" onclick="selectFrame(this, 'frame-rose')" style="border:4px solid #e11d48;"></div>
+                                <div class="frame-option" onclick="selectFrame(this, 'frame-double')" style="border:4px double var(--primary);"></div>
+                                <div class="frame-option" onclick="selectFrame(this, 'frame-dashed')" style="border:4px dashed var(--success);"></div>
+                                <div class="frame-option" onclick="selectFrame(this, 'frame-glow-white')" style="border:4px solid #fff; background:#ccc; box-shadow:0 0 10px #999;"></div>
+                                <div class="frame-option" onclick="selectFrame(this, 'frame-royal')" style="border:4px solid #4f46e5;"></div>
                             </div>
                         </div>
-                        <div class="input-group">
-                            <label>الموقع</label>
-                            <select id="req-faculty" style="margin-bottom:10px;"><option value="">المبنى...</option><option value="Admin">الاداري</option><option value="Nursing">تمريض</option><option value="CS">حاسبات</option><option value="PT">علاج طبيعي</option><option value="Pharmacy">صيدلة</option><option value="Dentistry">أسنان</option><option value="Business">إدارة أعمال</option><option value="Other">أخرى</option></select>
-                            <input type="text" id="req-room" placeholder="رقم الغرفة">
+
+                        <div style="font-family:monospace; background:var(--surface-light); display:inline-block; padding:10px 25px; border-radius:30px; margin-bottom:30px; color:var(--primary-dark); border:1px solid var(--border);" onclick="copyId()">ID: <span id="edit-id-display">--</span> <i class="fa-regular fa-copy"></i></div>
+                        <div style="text-align:right;">
+                            <div class="input-group"><label>الاسم الكامل</label><input type="text" id="edit-name"></div>
+                            <div class="input-group"><label>النوع</label><select id="edit-gender"><option value="male">ذكر</option><option value="female">أنثى</option></select></div>
+                            <div class="input-group"><label>رقم الهاتف</label><input type="tel" id="edit-phone"></div>
+                            <div class="input-group"><label>المسمى الوظيفي</label><input type="text" id="edit-job"></div>
+                            <div class="input-group"><label>مقر العمل</label><input type="text" id="edit-loc"></div>
                         </div>
-                        <div class="input-group"><label>الوصف</label><textarea id="req-desc" rows="4"></textarea></div>
-                        <div style="display:flex; gap:10px; margin-bottom:15px;">
-                            <button onclick="document.getElementById('req-files').click()" class="btn-ghost" style="flex:1;"><i class="fa-solid fa-camera"></i> صور/فيديو</button>
-                            <input type="file" id="req-files" hidden multiple accept="image/*,video/*" onchange="handleFiles(this)">
-                            <button id="mic-trigger" onclick="toggleRecording()" class="btn-ghost" style="width:50px;"><i class="fa-solid fa-microphone"></i></button>
-                        </div>
-                        <div id="preview-grid" class="media-grid"></div>
-                        <button onclick="openSupModal()" class="btn-main" style="margin-top:20px;">التالي</button>
+                        <button onclick="saveProfile()" class="btn-main" id="save-profile-btn" style="margin-top:20px;">حفظ التعديلات</button>
                     </div>
                 </div>
+            </div>
 
-                <div id="page-team" class="page-section hidden">
-                    <div class="glass-card">
-                        <h3>فريق العمل</h3>
-                        <div style="display:flex; gap:5px; margin-bottom:15px;">
-                            <input type="text" id="search-query" placeholder="بحث ID...">
-                            <button onclick="searchUser()" class="btn-main" style="width:auto;"><i class="fa-solid fa-search"></i></button>
-                        </div>
-                        <div id="search-results" class="hidden"></div>
-                        <div id="friend-reqs" class="hidden" style="background:#fff7ed; padding:10px; border-radius:10px; margin-bottom:10px;">
-                            <h5>طلبات صداقة:</h5><div id="reqs-list"></div>
-                        </div>
-                        <h5>الأصدقاء:</h5>
-                        <div id="team-list"></div>
-                    </div>
-                </div>
-
-                <div id="page-profile" class="page-section hidden">
-                    <div class="glass-card">
-                        <div style="text-align:center;">
-                            <img id="edit-current-pic" src="" style="width:120px; height:120px; border-radius:50%; margin-bottom:10px;">
-                            <div onclick="document.getElementById('edit-profile-file').click()" style="color:var(--primary); cursor:pointer;">تغيير الصورة</div>
-                            <input type="file" id="edit-profile-file" hidden accept="image/*" onchange="previewProfilePic(this)">
-                        </div>
-                        <div>
-                            <div class="input-group"><label>الاسم</label><input type="text" id="edit-name"></div>
-                            <div class="input-group"><label>الهاتف</label><input type="tel" id="edit-phone"></div>
-                            <div class="input-group"><label>الوظيفة</label><input type="text" id="edit-job"></div>
-                            <div class="input-group"><label>الموقع</label><input type="text" id="edit-loc"></div>
-                            <button onclick="saveProfile()" id="save-profile-btn" class="btn-main">حفظ</button>
+            <div id="page-settings" class="page-section hidden">
+                <div class="glass-card">
+                    <h3 style="margin-bottom:25px;">الإعدادات</h3>
+                    <div class="input-group">
+                        <label>الإشعارات</label>
+                        <div style="display:flex; justify-content:space-between; align-items:center; background:var(--surface-light); padding:15px; border-radius:16px; border:1px solid var(--border);">
+                            <span>تفعيل التنبيهات الصوتية</span>
+                            <button onclick="reqNotifyPerm()" class="btn-sm btn-main" style="width:auto;">تفعيل</button>
                         </div>
                     </div>
-                </div>
-
-                <div id="page-settings" class="page-section hidden">
-                    <div class="glass-card">
-                        <h3>الإعدادات</h3>
-                        <div style="display:flex; justify-content:space-between; margin-bottom:15px;"><span>الإشعارات</span><button onclick="reqNotifyPerm()" class="btn-sm btn-ghost">تفعيل</button></div>
-                        <div id="emp-report-btn-container" class="hidden"><button onclick="openEmpReportModal()" class="btn-main">إنشاء تقرير إداري</button></div>
-                        <hr style="border-color:var(--border); margin:20px 0;">
-                        <button onclick="document.getElementById('logout-modal').classList.remove('hidden')" class="btn-danger btn-main">تسجيل خروج</button>
+                    
+                    <div id="emp-report-btn-container" class="hidden" style="margin-top:15px;">
+                        <button onclick="openEmpReportModal()" class="btn-main" style="background:#4f46e5;"><i class="fa-solid fa-file-contract"></i> إنشاء تقرير إداري فردي</button>
                     </div>
-                </div>
 
-            </div> </div> <div class="bottom-nav">
-            <div class="nav-item active" onclick="nav('home', this)"><i class="fa-solid fa-list-check"></i><br>المهام</div>
-            <div class="nav-item" onclick="nav('team', this)"><i class="fa-solid fa-users"></i><br>الفريق</div>
+                    <div id="full-report-container" style="margin-top:15px;">
+                        <button onclick="printFullReport()" class="btn-main" style="background:var(--primary-dark);"><i class="fa-solid fa-table-list"></i> طباعة تقرير شامل (مع وقت الاستجابة)</button>
+                        <p style="font-size:10px; color:var(--text-muted); margin-top:5px; margin-right:5px;">يشمل جميع البلاغات وحالة الاستجابة الزمنية.</p>
+                    </div>
+
+                    <div style="margin-top:20px; background:var(--surface-light); padding:15px; border-radius:16px; border:1px solid var(--border); display:flex; align-items:center; justify-content:space-between;">
+                        <span>خدمة العملاء</span>
+                        <div style="color:var(--text-muted); font-size:12px;"><i class="fa-solid fa-headset" style="margin-left:5px;"></i> انقر الزر العائم للتواصل</div>
+                    </div>
+
+                    <hr style="border-color:var(--border); margin:25px 0;">
+                    <button onclick="document.getElementById('logout-modal').classList.remove('hidden')" class="btn-main btn-danger">تسجيل خروج</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="bottom-nav">
+            <div class="nav-item active" onclick="nav('home', this)"><i class="fa-solid fa-list-check"></i>المهام</div>
+            <div class="nav-item" onclick="nav('team', this)"><i class="fa-solid fa-users"></i>الفريق</div>
             <div class="nav-add-btn" onclick="nav('create', null)"><i class="fa-solid fa-plus"></i></div>
-            <div class="nav-item" onclick="nav('profile', this)"><i class="fa-solid fa-user"></i><br>حسابي</div>
-            <div class="nav-item" onclick="nav('settings', this)"><i class="fa-solid fa-gear"></i><br>إعدادات</div>
+            <div class="nav-item" onclick="nav('profile', this)"><i class="fa-solid fa-user"></i>حسابي</div>
+            <div class="nav-item" onclick="nav('settings', this)"><i class="fa-solid fa-gear"></i>الإعدادات</div>
         </div>
     </div>
 
-    <div id="media-viewer" class="hidden" style="position:fixed; inset:0; background:rgba(0,0,0,0.9); z-index:9999; display:flex; justify-content:center; align-items:center;">
-        <div style="position:absolute; top:20px; right:20px; color:white; cursor:pointer;" onclick="this.parentElement.classList.add('hidden')"><i class="fa-solid fa-xmark fa-2x"></i></div>
-        <div id="media-content-container" style="max-width:90%; max-height:80%;"></div>
+    <div id="media-viewer" class="hidden" style="position:fixed; inset:0; background:rgba(0,0,0,0.95); z-index:9999; display:flex; flex-direction:column; align-items:center; justify-content:center;">
+        <div class="close-btn" style="top:30px; right:30px; left:auto; background:rgba(255,255,255,0.1); color:white;" onclick="document.getElementById('media-viewer').classList.add('hidden')"><i class="fa-solid fa-xmark"></i></div>
+        <div id="media-content-container" style="max-width:95%; max-height:80vh;"></div>
+    </div>
+
+    <div id="audio-player-modal" class="modal-overlay hidden" style="z-index: 10001;">
+        <div class="modal-content" style="max-width:350px; text-align:center; padding:35px 20px;">
+            <div class="close-btn" onclick="closeAudioPlayer()"><i class="fa-solid fa-xmark"></i></div>
+            <div style="width:80px; height:80px; background:#e0f2fe; color:var(--primary); border-radius:50%; display:flex; align-items:center; justify-content:center; margin:0 auto 25px; font-size:30px;">
+                <i class="fa-solid fa-music"></i>
+            </div>
+            <h4 style="margin:0 0 20px; color:var(--text);">تشغيل التسجيل الصوتي</h4>
+            <audio id="modal-audio-player" controls style="width:100%; border-radius:30px; outline:none;"></audio>
+        </div>
+    </div>
+
+    <div id="friend-profile-modal" class="modal-overlay hidden">
+        <div class="modal-content" style="text-align:center; z-index:2001;">
+            <div class="close-btn" onclick="closeModal('friend-profile-modal')"><i class="fa-solid fa-xmark"></i></div>
+            <div style="position:relative; margin-bottom:20px;">
+                <img id="fp-pic" src="" style="width:120px; height:120px; border-radius:50%; border:4px solid var(--primary); object-fit:cover; box-shadow:0 15px 30px rgba(0,0,0,0.1);">
+            </div>
+            <h3 id="fp-name" style="margin:0; font-size:22px; font-weight:800; color:var(--text);">-</h3>
+            <span id="fp-role" style="background:var(--primary); color:white; padding:5px 18px; border-radius:20px; font-size:12px; display:inline-block; margin:10px 0 25px; font-weight:700;">-</span>
+            <div style="display:flex; justify-content:center; gap:10px; margin-bottom:25px;">
+                <a id="fp-call-btn" href="#" class="btn-main" style="background:var(--success); width:auto; border-radius:50px; padding:10px 25px;"><i class="fa-solid fa-phone"></i> اتصال</a>
+                <button onclick="openDeleteFriendModal()" class="btn-ghost" style="color:var(--error); border-color:var(--error); border-radius:50px; padding:10px 25px;"><i class="fa-solid fa-user-xmark"></i> حذف</button>
+            </div>
+            <div style="text-align:right; background:var(--surface-light); padding:25px; border-radius:24px; border:1px solid var(--border);">
+                <p style="margin:12px 0;"><i class="fa-solid fa-briefcase" style="color:var(--text-muted); width:25px;"></i> <span id="fp-job">-</span></p>
+                <p style="margin:12px 0;"><i class="fa-solid fa-location-dot" style="color:var(--text-muted); width:25px;"></i> <span id="fp-loc">-</span></p>
+                <p style="margin:12px 0;"><i class="fa-solid fa-envelope" style="color:var(--text-muted); width:25px;"></i> <span id="fp-email">-</span></p>
+            </div>
+        </div>
     </div>
 
     <div id="sup-modal" class="modal-overlay hidden">
         <div class="modal-content">
-            <div class="close-btn" onclick="closeModal('sup-modal')">x</div>
-            <h3>اختر المشرف</h3><div id="sup-list"></div>
-            <button onclick="sendRequestFinal()" id="confirm-send-btn" class="btn-main" style="margin-top:15px;">إرسال</button>
-        </div>
-    </div>
-
-    <div id="request-details-modal" class="modal-overlay hidden">
-        <div class="modal-content">
-            <div class="close-btn" onclick="closeModal('request-details-modal')">x</div>
-            <h3 style="text-align:center;">تفاصيل البلاغ</h3>
-            <div id="req-details-content"></div>
-        </div>
-    </div>
-    
-    <div id="tech-report-modal" class="modal-overlay hidden">
-        <div class="modal-content">
-            <div class="close-btn" onclick="closeModal('tech-report-modal')">x</div>
-            <h3>تقرير فني</h3>
-            <input type="text" id="tech-report-title" placeholder="العنوان" style="margin-bottom:10px; width:100%;">
-            <textarea id="tech-report-content" rows="5" placeholder="التفاصيل..." style="width:100%;"></textarea>
-            <button onclick="submitTechReport()" class="btn-main" style="margin-top:10px;">حفظ PDF</button>
+            <div class="close-btn" onclick="closeModal('sup-modal')"><i class="fa-solid fa-xmark"></i></div>
+            <h3 style="margin-bottom:20px; border-right:4px solid var(--gold); padding-right:15px; color:var(--text);">اختر المشرف</h3>
+            <div id="sup-list" style="max-height:300px; overflow-y:auto; margin-bottom:20px;"></div>
+            <button onclick="sendRequestFinal()" class="btn-main" id="confirm-send-btn">إرسال البلاغ <i class="fa-regular fa-paper-plane"></i></button>
         </div>
     </div>
 
     <div id="action-modal" class="modal-overlay hidden">
         <div class="modal-content">
-            <div class="close-btn" onclick="closeModal('action-modal')">x</div>
-            <h3 id="act-title">إجراء</h3>
-            <textarea id="act-comment" rows="3" placeholder="ملاحظات..." style="width:100%;"></textarea>
-            <div id="tech-select-area" class="hidden" style="margin-top:10px;">
-                <p>اختر الفني:</p><div id="tech-list-action" style="display:grid; grid-template-columns:1fr 1fr; gap:5px;"></div>
+            <div class="close-btn" onclick="closeModal('action-modal')"><i class="fa-solid fa-xmark"></i></div>
+            <h3 id="act-title" style="margin-bottom:20px; color:var(--text);">إجراء</h3>
+            <textarea id="act-comment" rows="4" placeholder="اكتب ملاحظات..."></textarea>
+            
+            <div id="tech-select-area" class="hidden" style="margin-top:20px;">
+                <p style="font-size:13px; font-weight:700; color:var(--text-muted); margin-bottom:12px;">اختر الفني المختص:</p>
+                <div id="tech-list-action" class="tech-select-grid" style="max-height:200px; overflow-y:auto; padding:5px;"></div>
             </div>
-            <button onclick="submitAction()" id="act-submit-btn" class="btn-main" style="margin-top:10px;">تنفيذ</button>
+
+            <button onclick="submitAction()" id="act-submit-btn" class="btn-main" style="margin-top:20px;">تنفيذ</button>
+        </div>
+    </div>
+
+    <div id="tech-report-modal" class="modal-overlay hidden">
+        <div class="modal-content">
+            <div class="close-btn" onclick="closeModal('tech-report-modal')"><i class="fa-solid fa-xmark"></i></div>
+            <h3 style="margin-bottom:20px; color:var(--primary-dark);">تقرير فني</h3>
+            <p style="font-size:12px; color:var(--text-muted); margin-bottom:15px;">اكتب التقرير ليتم حفظه كملف PDF</p>
+            <div class="input-group"><input type="text" id="tech-report-title" placeholder="عنوان التقرير"></div>
+            <div class="input-group"><textarea id="tech-report-content" rows="6" placeholder="تفاصيل التقرير..."></textarea></div>
+            <button onclick="submitTechReport()" class="btn-main"><i class="fa-solid fa-file-pdf"></i> حفظ وتحميل PDF</button>
+        </div>
+    </div>
+    
+    <div id="emp-report-modal" class="modal-overlay hidden">
+        <div class="modal-content">
+            <div class="close-btn" onclick="closeModal('emp-report-modal')"><i class="fa-solid fa-xmark"></i></div>
+            <h3 style="margin-bottom:20px; color:var(--primary);">تقرير إداري</h3>
+            <div class="input-group"><input type="text" id="emp-rep-title" placeholder="عنوان التقرير"></div>
+            <div class="input-group"><textarea id="emp-rep-content" rows="8" placeholder="نص التقرير..."></textarea></div>
+            <p style="font-size:12px; color:var(--text-muted); margin-top:10px;">سيتم إضافة التوقيعات تلقائياً عند الطباعة.</p>
+            <button onclick="generateEmpReport()" class="btn-main" style="margin-top:15px;"><i class="fa-solid fa-print"></i> طباعة PDF</button>
+        </div>
+    </div>
+
+    <div id="request-details-modal" class="modal-overlay hidden">
+        <div class="modal-content" style="max-width:550px;">
+            <div class="close-btn" onclick="closeModal('request-details-modal')"><i class="fa-solid fa-xmark"></i></div>
+            <h3 style="text-align:center; color:var(--primary); margin-bottom:25px;">تفاصيل البلاغ</h3>
+            <div id="req-details-content"></div>
         </div>
     </div>
 
     <div id="logout-modal" class="modal-overlay hidden">
         <div class="modal-content" style="text-align:center;">
-            <h3>تأكيد الخروج؟</h3>
-            <div style="display:flex; gap:10px; margin-top:20px;">
-                <button onclick="logout()" class="btn-danger btn-main">خروج</button>
+            <i class="fa-solid fa-right-from-bracket fa-3x" style="color:var(--error); margin-bottom:15px;"></i>
+            <h3 style="color:var(--text);">تأكيد الخروج؟</h3>
+            <div style="display:flex; gap:10px; margin-top:25px;">
+                <button onclick="logout()" class="btn-main btn-danger">نعم، خروج</button>
                 <button onclick="closeModal('logout-modal')" class="btn-ghost" style="width:100%;">إلغاء</button>
             </div>
         </div>
     </div>
+    
+    <div id="delete-friend-modal" class="modal-overlay hidden">
+        <div class="modal-content" style="text-align:center;">
+            <div class="close-btn" onclick="closeModal('delete-friend-modal')"><i class="fa-solid fa-xmark"></i></div>
+            <div class="confirm-icon-box"><i class="fa-solid fa-user-xmark"></i></div>
+            <h3 style="margin-bottom:10px; color:var(--text);">حذف صديق؟</h3>
+            <p style="color:var(--text-muted); margin-bottom:25px; font-size:14px;">هل أنت متأكد من رغبتك في إزالة هذا المستخدم من قائمة الأصدقاء؟ سيتم إزالته أيضاً من قائمة المشرفين.</p>
+            <div style="display:flex; gap:10px;">
+                <button onclick="confirmRemoveFriend()" class="btn-main btn-danger">نعم، حذف</button>
+                <button onclick="closeModal('delete-friend-modal')" class="btn-ghost" style="width:100%;">إلغاء</button>
+            </div>
+        </div>
+    </div>
 
-    <div id="toast" style="position:fixed; top:20px; left:50%; transform:translateX(-50%); background:#333; color:white; padding:10px 20px; border-radius:20px; z-index:99999; display:none;"></div>
+    <div id="toast" style="position:fixed; top:30px; left:50%; transform:translateX(-50%); background:rgba(15, 23, 42, 0.95); color:white; padding:12px 30px; border-radius:50px; border:1px solid rgba(255,255,255,0.1); z-index:9999; display:none; font-size:13px; font-weight:bold; box-shadow:0 10px 40px rgba(0,0,0,0.5); font-family:'Cairo'; backdrop-filter:blur(5px);"></div>
 
 </div>
-
 <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
 
 <script>
+    // =========================================================================
+    // 1. CONFIGURATION & INITIALIZATION
+    // =========================================================================
     const firebaseConfig = {
         apiKey: "AIzaSyABwJfEkkbNB8GurZkyj67R8ksVNEXZ11I",
         authDomain: "ryadanur1-375a8.firebaseapp.com",
@@ -467,15 +703,43 @@
     const auth = firebase.auth();
     const db = firebase.firestore();
 
-    let currentUser=null, userData=null, isLoginMode=true, selectedSup=null, currentTab='active', requestsCache=[], uploadQueue=[], tempActionData={}, selectedTech=null;
-    let isRecording=false, mediaRecorder=null, audioChunks=[];
+    // --- Global State ---
+    let currentUser = null;
+    let userData = null;
+    let isLoginMode = true;
+    let selectedSup = null;
+    let currentTab = 'active'; 
+    let requestsCache = [];
+    let uploadQueue = []; 
+    let tempActionData = {}; 
+    let selectedTech = null;
+    let newProfilePicFile = null;
+    let selectedFrameClass = 'frame-none'; // Default frame
+    let isFirstLoad = true;
+    let currentFriendDocId = null;
 
+    // --- Audio Recording State ---
+    let mediaRecorder = null;
+    let audioChunks = [];
+    let isRecording = false;
+
+    // =========================================================================
+    // 2. AUTHENTICATION & STARTUP
+    // =========================================================================
     auth.onAuthStateChanged(async u => {
         if(u) {
-            if(!u.emailVerified) { toast("فعّل البريد أولاً"); auth.signOut(); showScreen('auth-screen'); return; }
-            currentUser = u; await loadUser();
+            if(!u.emailVerified) {
+                document.getElementById('loader').classList.add('hidden');
+                toast("⚠️ يجب تفعيل البريد الإلكتروني أولاً.");
+                auth.signOut();
+                showScreen('auth-screen');
+                return;
+            }
+            currentUser = u;
+            await loadUser();
         } else {
-            document.getElementById('loader').classList.add('hidden'); showScreen('auth-screen');
+            document.getElementById('loader').classList.add('hidden');
+            showScreen('auth-screen');
         }
     });
 
@@ -484,266 +748,761 @@
             const doc = await db.collection('users').doc(currentUser.uid).get();
             if(doc.exists) {
                 userData = doc.data();
-                if(!userData.shortId) await db.collection('users').doc(currentUser.uid).update({shortId: Math.random().toString(36).substr(2,6).toUpperCase()});
+                
+                // Legacy fields patch
+                if(!userData.shortId) {
+                    userData.shortId = Math.random().toString(36).substr(2,6).toUpperCase();
+                    await db.collection('users').doc(currentUser.uid).update({shortId: userData.shortId});
+                }
+                if(!userData.gender) await db.collection('users').doc(currentUser.uid).update({gender: 'male'});
+                
+                // Load Frame
+                if(!userData.frame) userData.frame = 'frame-none';
+                selectedFrameClass = userData.frame;
+
                 renderHeader();
                 showScreen('app-container');
-                document.getElementById('support-fab').classList.remove('hidden');
                 setupRoleUI();
-                loadFeed(); loadTeam();
-                document.getElementById('loader').classList.add('hidden');
+                
+                // Support FAB starts hidden, controlled by nav()
+
+                loadFeed();
+                loadTeam(); 
+                loadFriendReqs();
+                loadProfilePageData();
+                
+                // Set default dates
+                document.getElementById('req-date').valueAsDate = new Date();
+                document.getElementById('req-time').value = new Date().toLocaleTimeString('en-GB', {hour:'2-digit', minute:'2-digit'});
+
+                setTimeout(() => { document.getElementById('loader').classList.add('hidden'); }, 500);
             }
-        } catch(e) { toast("خطأ تحميل البيانات"); }
+        } catch(e) { 
+            console.error(e);
+            document.getElementById('loader').classList.add('hidden');
+            toast("⚠️ خطأ في تحميل بيانات المستخدم"); 
+        }
     }
 
     function setupRoleUI() {
         if(userData.role === 'supervisor') document.getElementById('filter-container').classList.remove('hidden');
         if(userData.role === 'employee') document.getElementById('emp-report-btn-container').classList.remove('hidden');
         if(userData.role === 'technician') {
-             // Mobile Nav
-             const mBtn = document.querySelector('.bottom-nav .nav-add-btn');
-             if(mBtn) { mBtn.innerHTML = '<i class="fa-solid fa-file-pdf"></i>'; mBtn.onclick = () => document.getElementById('tech-report-modal').classList.remove('hidden'); }
-             // Desktop Sidebar
-             const dBtn = document.querySelectorAll('.sidebar-item')[2];
-             if(dBtn) { dBtn.innerHTML = '<i class="fa-solid fa-file-pdf"></i> تقرير فني'; dBtn.onclick = () => document.getElementById('tech-report-modal').classList.remove('hidden'); }
-             
-             document.getElementById('page-create').innerHTML = "<div style='text-align:center; padding:50px; color:#777;'>حساب فني: للمتابعة والتقارير فقط</div>";
+            const addBtn = document.querySelector('.nav-add-btn');
+            addBtn.innerHTML = '<i class="fa-solid fa-file-pdf"></i>';
+            addBtn.onclick = function() { document.getElementById('tech-report-modal').classList.remove('hidden'); };
+            document.getElementById('page-create').innerHTML = "<div style='text-align:center; padding:50px;'><h3 style='color:var(--text-muted)'>حساب فني</h3><p>لا يمكنك إنشاء بلاغات، فقط متابعة المهام وإرسال التقارير.</p></div>";
         }
     }
 
+    // =========================================================================
+    // 3. UI RENDERING & FEED
+    // =========================================================================
     function renderHeader() {
-        const map = {'employee':'موظف', 'supervisor':'مشرف', 'technician':'فني'};
+        const roleMap = {'employee':'موظف', 'supervisor':'مشرف', 'technician':'فني'};
         document.getElementById('banner-name').innerText = userData.fullName;
-        document.getElementById('banner-role').innerText = map[userData.role];
-        document.getElementById('banner-id').innerText = "ID: " + (userData.shortId || '--');
-        const pic = userData.photoUrl || 'https://cdn-icons-png.flaticon.com/512/4140/4140048.png';
-        document.getElementById('banner-img').src = pic;
-        // Sidebar header sync
-        const sideImg = document.querySelector('.sidebar-logo img');
-        if(sideImg) sideImg.src = pic;
+        document.getElementById('banner-role').innerText = roleMap[userData.role];
+        document.getElementById('banner-id').innerText = "ID: " + userData.shortId;
+        
+        const bannerImg = document.getElementById('banner-img');
+        bannerImg.src = userData.photoUrl;
+        
+        // Apply Frame
+        bannerImg.className = ''; // reset
+        if(userData.frame) bannerImg.classList.add(userData.frame);
+    }
+
+    function checkAndPlaySound(newRequests) {
+        const hasIncoming = newRequests.some(r => r.userId !== currentUser.uid);
+        if (hasIncoming) {
+            const audio = document.getElementById('notify-sound');
+            if(audio) audio.play().catch(e => console.log("Audio play blocked"));
+            toast("🔔 إشعار جديد");
+            document.querySelector('.bell-badge').style.display = 'block';
+        }
     }
 
     function loadFeed() {
-        let q = db.collection('requests');
+        let q = db.collection('requests'); 
         if(userData.role==='employee') q = q.where('userId','==',currentUser.uid);
         else if(userData.role==='supervisor') q = q.where('supervisorId','==',currentUser.uid);
         else if(userData.role==='technician') q = q.where('technicianId','==',currentUser.uid);
-
+        
         q.onSnapshot(snap => {
-            requestsCache = [];
-            snap.forEach(d => requestsCache.push({id:d.id, ...d.data()}));
+            const currentIds = requestsCache.map(r => r.id);
+            let newItems = [];
+            let updatedCache = [];
+
+            snap.forEach(doc => {
+                const data = {id: doc.id, ...doc.data()};
+                updatedCache.push(data);
+                if (!isFirstLoad && !currentIds.includes(doc.id)) {
+                    newItems.push(data);
+                }
+            });
+
+            requestsCache = updatedCache;
             requestsCache.sort((a,b) => (b.createdAt?.seconds||0)-(a.createdAt?.seconds||0));
+            
+            if(!isFirstLoad && newItems.length > 0) checkAndPlaySound(newItems);
+            isFirstLoad = false;
             renderFeed();
         });
     }
 
-    function renderFeed() {
-        const c = document.getElementById('requests-feed'); c.innerHTML = "";
-        let list = requestsCache.filter(r => r.isDeleted !== (currentTab !== 'trash'));
-        if(currentTab !== 'trash') {
-            if(currentTab === 'active') list = list.filter(r => !['done','rejected'].includes(r.status));
-            else list = list.filter(r => ['done','rejected'].includes(r.status));
-        }
+    // CALCULATE RESPONSE TIME HELPER
+    function calculateResponseTime(assignedAt, completedAt) {
+        if(!assignedAt || !completedAt) return null;
+        const start = assignedAt.seconds ? new Date(assignedAt.seconds * 1000) : new Date(assignedAt);
+        const end = completedAt.seconds ? new Date(completedAt.seconds * 1000) : new Date(completedAt);
+        const diffMs = end - start;
+        if(diffMs < 0) return "خطأ في التوقيت";
         
-        const fac = document.getElementById('feed-filter').value;
-        if(userData.role==='supervisor' && fac !== 'all') list = list.filter(r => r.faculty === fac);
+        const diffHrs = Math.floor(diffMs / 3600000);
+        const diffMins = Math.floor((diffMs % 3600000) / 60000);
+        
+        if(diffHrs > 0) return `${diffHrs} ساعة و ${diffMins} دقيقة`;
+        return `${diffMins} دقيقة`;
+    }
 
-        if(list.length === 0) { c.innerHTML = "<div style='text-align:center; padding:20px; color:#888;'>لا يوجد بيانات</div>"; return; }
+    function renderFeed() {
+        const container = document.getElementById('requests-feed'); container.innerHTML = "";
+        let list = requestsCache;
+
+        if(currentTab === 'trash') list = list.filter(r => r.isDeleted === true);
+        else {
+            list = list.filter(r => r.isDeleted !== true);
+            if(currentTab === 'active') list = list.filter(r => ['pending','approved','working','suspended'].includes(r.status));
+            else if(currentTab === 'history') list = list.filter(r => ['done','rejected'].includes(r.status));
+        }
+
+        const facFilter = document.getElementById('feed-filter').value;
+        if(userData.role === 'supervisor' && facFilter !== 'all') list = list.filter(r => r.faculty === facFilter);
+
+        if(list.length === 0) { 
+            container.innerHTML = `<div style="text-align:center; padding:50px 20px; color:var(--text-muted);"><i class="fa-regular fa-clipboard fa-3x" style="opacity:0.5; margin-bottom:10px;"></i><p>لا يوجد بيانات</p></div>`; 
+            return; 
+        }
 
         list.forEach(d => {
-            let stCls = d.status==='pending'?'st-pending':d.status==='done'?'st-done':d.status==='rejected'?'st-rejected':'st-working';
-            let date = new Date(d.date + " " + d.time).toLocaleTimeString('ar-EG', {hour:'2-digit',minute:'2-digit'});
-            
-            // Actions
-            let btns = "";
+            let statusClass = 'st-' + d.status;
+            let statusText = getStatusLabel(d.status);
+            let cardClass = "";
+            if(d.status === 'pending') cardClass = "req-new";
+            else if(d.status === 'done') cardClass = "req-done";
+            else if(d.status === 'rejected') cardClass = "req-rejected";
+
+            let timeParts = d.time.split(':');
+            let dateObj = new Date(); dateObj.setHours(timeParts[0]); dateObj.setMinutes(timeParts[1]);
+            let timeDisplay = dateObj.toLocaleTimeString('ar-EG', {hour: 'numeric', minute:'numeric', hour12: true});
+
+            let actionBtns = "";
+            let deleteBtn = "";
+
             if(currentTab !== 'trash') {
-                if(userData.role==='supervisor' && d.status==='pending') {
-                    btns = `<div style="display:flex; gap:5px;"><button onclick="event.stopPropagation(); openAction('${d.id}','approve')" class="btn-sm btn-main" style="background:var(--success)">قبول</button><button onclick="event.stopPropagation(); openAction('${d.id}','reject')" class="btn-sm btn-danger">رفض</button></div>`;
-                } else if(userData.role==='technician') {
-                    if(d.status==='approved') btns = `<div style="display:flex; gap:5px;"><button onclick="event.stopPropagation(); openAction('${d.id}','startWork')" class="btn-sm btn-main" style="background:var(--warning)">بدء</button><button onclick="event.stopPropagation(); openAction('${d.id}','tech_reject')" class="btn-sm btn-danger">رفض</button></div>`;
-                    else if(d.status==='working') btns = `<button onclick="event.stopPropagation(); openAction('${d.id}','done')" class="btn-sm btn-main" style="background:var(--success)">تم</button>`;
+                if(userData.role === 'employee' || userData.role === 'supervisor') {
+                      deleteBtn = `<button onclick="event.stopPropagation(); softDelete('${d.id}')" class="btn-ghost btn-sm" style="color:var(--error); border-color:var(--border); margin-left:10px;"><i class="fa-solid fa-trash"></i></button>`;
                 }
-                if(userData.role==='employee') btns = `<button onclick="event.stopPropagation(); softDelete('${d.id}')" class="btn-sm btn-ghost" style="color:red;"><i class="fa-solid fa-trash"></i></button>`;
+
+                if(userData.role === 'supervisor' && d.status === 'pending') {
+                    actionBtns = `
+                    <div style="display:flex; gap:10px;">
+                        <button onclick="event.stopPropagation(); openAction('${d.id}','approve')" class="btn-main btn-sm" style="background:var(--success);">قبول وتعيين فني</button>
+                        <button onclick="event.stopPropagation(); openAction('${d.id}','reject')" class="btn-main btn-danger btn-sm">رفض</button>
+                    </div>`;
+                }
+                else if(userData.role === 'technician') {
+                    if(d.status === 'approved') {
+                        actionBtns = `
+                        <div style="display:flex; gap:10px;">
+                             <button onclick="event.stopPropagation(); openAction('${d.id}','startWork')" class="btn-main btn-sm" style="background:var(--warning); color:#fff;">قبول (بدء العمل)</button>
+                             <button onclick="event.stopPropagation(); openAction('${d.id}','tech_reject')" class="btn-main btn-danger btn-sm">رفض</button>
+                        </div>`;
+                    } else if(d.status === 'working') {
+                        actionBtns = `<button onclick="event.stopPropagation(); openAction('${d.id}','done')" class="btn-main btn-sm" style="background:var(--success);">تم الإصلاح</button>`;
+                    }
+                }
             } else {
-                btns = `<button onclick="event.stopPropagation(); restoreReq('${d.id}')" class="btn-sm btn-main">استعادة</button>`;
+                actionBtns = `<div style="display:flex; gap:5px;"><button onclick="event.stopPropagation(); restoreReq('${d.id}')" class="btn-main btn-sm">استعادة</button><button onclick="event.stopPropagation(); hardDelete('${d.id}')" class="btn-danger btn-sm">حذف نهائي</button></div>`;
             }
 
-            c.innerHTML += `
-            <div class="glass-card request-card" onclick="openRequestDetails('${d.id}')" style="border-right:4px solid ${d.priority==='high'?'red':d.priority==='medium'?'orange':'green'};">
-                <div style="display:flex; justify-content:space-between;">
-                    <div style="display:flex; gap:10px; align-items:center;">
-                        <img src="${d.userData.photoUrl}" style="width:35px; height:35px; border-radius:50%;">
-                        <div><b style="font-size:12px;">${d.userData.fullName}</b><br><span style="font-size:10px; color:#888;">${d.date} | ${d.time}</span></div>
+            // Media Icons
+            let thumbsHtml = "";
+            if(d.media && d.media.length > 0) {
+                thumbsHtml = `<div class="archive-thumbs">`;
+                d.media.forEach(m => {
+                    if(m.type === 'audio') thumbsHtml += `<div style="width:45px; height:45px; background:var(--surface-light); border-radius:10px; display:flex; align-items:center; justify-content:center; border:1px solid var(--border); color:var(--primary);"><i class="fa-solid fa-microphone"></i></div>`;
+                    else thumbsHtml += `<img src="${m.url}">`;
+                });
+                thumbsHtml += `</div>`;
+            }
+
+            // Response Time Logic
+            let responseTimeHtml = '';
+            if(d.status === 'done' && d.assignedAt && d.completedAt) {
+                const rt = calculateResponseTime(d.assignedAt, d.completedAt);
+                if(rt) responseTimeHtml = `<div style="font-size:11px; color:var(--success); font-weight:bold; margin-top:5px;"><i class="fa-solid fa-stopwatch"></i> وقت الاستجابة: ${rt}</div>`;
+            }
+
+            container.innerHTML += `
+            <div class="glass-card request-card ${cardClass}" onclick="openRequestDetails('${d.id}')" style="border-right-color:${d.priority === 'high' ? 'var(--error)' : d.priority === 'medium' ? 'var(--warning)' : 'var(--success)'};">
+                <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:10px;">
+                    <div style="display:flex; align-items:center; gap:10px;">
+                        <img src="${d.userData.photoUrl}" class="avatar" style="width:40px; height:40px; border-radius:50%; object-fit:cover;">
+                        <div>
+                            <b style="font-size:13px; display:block; color:var(--text);">${d.userData.fullName}</b>
+                            <span style="font-size:10px; color:var(--text-muted); direction:ltr; display:inline-block;"><i class="fa-regular fa-clock"></i> ${timeDisplay} | ${d.date}</span>
+                        </div>
                     </div>
-                    <span class="status-pill ${stCls}">${d.status}</span>
+                    <span class="status-pill ${statusClass}">${statusText}</span>
                 </div>
-                <p style="font-size:13px; margin:10px 0;">[${d.type}] ${d.description}</p>
-                <div style="display:flex; justify-content:space-between; align-items:center; margin-top:10px;">
-                    <span style="font-size:11px; color:#888;">${d.location}</span>
-                    ${btns}
+                
+                <div style="margin:10px 0; font-size:14px; line-height:1.5; color:var(--text);">
+                    <span style="color:var(--info); font-size:12px; font-weight:bold; display:block; margin-bottom:4px;">[${d.type || 'عام'}]</span>
+                    ${d.priority === 'high' ? '<i class="fa-solid fa-fire" style="color:var(--error)"></i>' : ''} ${d.description}
+                </div>
+                
+                ${thumbsHtml}
+
+                <div style="font-size:11px; color:var(--text-muted); margin-bottom:10px; margin-top:8px;"><i class="fa-solid fa-location-dot"></i> ${d.location}</div>
+                ${responseTimeHtml}
+                
+                <div style="display:flex; justify-content:space-between; align-items:center;">
+                    ${deleteBtn}
+                    <div style="margin-right:auto;">${actionBtns}</div>
                 </div>
             </div>`;
         });
     }
 
-    // Actions
-    function openAction(id, type) {
-        tempActionData = {id, type};
-        document.getElementById('action-modal').classList.remove('hidden');
-        document.getElementById('act-title').innerText = type==='approve'?'تعيين فني':type==='reject'?'رفض الطلب':'إجراء';
-        const tDiv = document.getElementById('tech-select-area');
-        tDiv.classList.add('hidden');
-        if(type==='approve') {
-            tDiv.classList.remove('hidden');
-            const l = document.getElementById('tech-list-action'); l.innerHTML="تحميل...";
-            db.collection('users').where('role','==','technician').get().then(s => {
-                l.innerHTML=""; s.forEach(doc => {
-                    const u = doc.data();
-                    l.innerHTML += `<div onclick="selectedTech={id:'${doc.id}',name:'${u.fullName}'}; this.style.background='#def'" style="padding:5px; border:1px solid #ddd; border-radius:5px; cursor:pointer; font-size:12px;">${u.fullName}</div>`;
-                });
-            });
+    // =========================================================================
+    // 4. RECORDING & ACTIONS
+    // =========================================================================
+    async function toggleRecording() {
+        const btn = document.getElementById('mic-trigger');
+        if (!isRecording) {
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                mediaRecorder = new MediaRecorder(stream);
+                audioChunks = [];
+                mediaRecorder.ondataavailable = event => { audioChunks.push(event.data); };
+                mediaRecorder.onstop = () => {
+                    const audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
+                    const audioFile = new File([audioBlob], `voice_note_${Date.now()}.webm`, { type: 'audio/webm' });
+                    addToQueue(audioFile);
+                };
+                mediaRecorder.start();
+                isRecording = true;
+                btn.classList.add('recording');
+                toast("بدأ التسجيل...");
+            } catch (err) { console.error(err); toast("❌ الميكروفون غير متاح"); }
+        } else {
+            if(mediaRecorder) { mediaRecorder.stop(); isRecording = false; btn.classList.remove('recording'); toast("تم حفظ التسجيل"); }
         }
+    }
+
+    async function openAction(id, type) {
+        tempActionData = { id, type };
+        document.getElementById('action-modal').classList.remove('hidden');
+        const commBox = document.getElementById('act-comment'); commBox.value = "";
+        
+        const titles = {'approve':'قبول وتعيين فني', 'reject':'رفض الطلب', 'startWork':'بدء التنفيذ', 'done':'إتمام الإصلاح', 'tech_reject': 'رفض المهمة'};
+        document.getElementById('act-title').innerText = titles[type];
+
+        if(type === 'approve') {
+            commBox.placeholder = "ملاحظات للفني (اختياري)...";
+            document.getElementById('tech-select-area').classList.remove('hidden');
+            loadTechsForAction();
+        } else {
+            commBox.placeholder = "سبب الرفض / ملاحظات...";
+            document.getElementById('tech-select-area').classList.add('hidden');
+        }
+    }
+
+    async function loadTechsForAction() {
+        const list = document.getElementById('tech-list-action'); list.innerHTML="<small>جاري التحميل...</small>";
+        const snap = await db.collection('users').where('role','==','technician').get();
+        list.innerHTML="";
+        if(snap.empty) { list.innerHTML = "<p style='grid-column:span 2; font-size:11px; color:red;'>لا يوجد فنيين مسجلين</p>"; return; }
+        snap.forEach(doc => {
+             const t = doc.data();
+             list.innerHTML += `
+             <div class="tech-select-card" onclick="selTech(this, '${doc.id}', '${t.fullName}')">
+                <img src="${t.photoUrl}">
+                <div style="font-size:12px; font-weight:bold; color:var(--text);">${t.fullName}</div>
+                <div style="font-size:10px; color:var(--text-muted);">${t.jobTitle||'فني'}</div>
+             </div>`;
+        });
+    }
+    
+    function selTech(el, id, name) {
+        document.querySelectorAll('.tech-select-card').forEach(d=>d.classList.remove('selected'));
+        el.classList.add('selected'); selectedTech={id, name};
     }
 
     async function submitAction() {
-        const {id, type} = tempActionData;
-        const comm = document.getElementById('act-comment').value;
-        const d = { supervisorComment: comm };
-        if(type==='approve') { if(!selectedTech) return toast("اختر فني"); d.status='approved'; d.technicianId=selectedTech.id; d.technicianName=selectedTech.name; }
-        else if(type==='reject') { d.status='rejected'; d.rejectedBy=userData.fullName; }
-        else if(type==='startWork') d.status='working';
-        else if(type==='tech_reject') { d.status='rejected'; d.rejectedBy="الفني"; }
-        else if(type==='done') d.status='done';
-        
-        await db.collection('requests').doc(id).update(d);
-        closeModal('action-modal'); toast("تم التنفيذ");
+        const { id, type } = tempActionData;
+        const comment = document.getElementById('act-comment').value;
+        const btn = document.getElementById('act-submit-btn');
+
+        if((type==='reject' || type==='tech_reject') && !comment) return toast("⚠️ يجب ذكر السبب");
+        if(type==='approve' && !selectedTech) return toast("⚠️ اختر فني للمهمة");
+
+        btn.disabled=true;
+        try {
+            let updateData = { supervisorComment: comment };
+            
+            if(type === 'approve') { 
+                updateData.status = 'approved'; 
+                updateData.technicianId = selectedTech.id; 
+                updateData.technicianName = selectedTech.name; 
+                updateData.assignedAt = firebase.firestore.FieldValue.serverTimestamp(); // Start Timer
+            }
+            else if(type === 'reject') { 
+                updateData.status = 'rejected'; updateData.rejectedBy = userData.fullName;
+            }
+            else if(type === 'startWork') { updateData.status = 'working'; }
+            else if(type === 'tech_reject') {
+                updateData.status = 'rejected'; updateData.rejectedBy = `الفني: ${userData.fullName}`;
+                updateData.supervisorComment = `رفض الفني: ${comment}`;
+            }
+            else if(type === 'done') { 
+                updateData.status = 'done';
+                updateData.completedAt = firebase.firestore.FieldValue.serverTimestamp(); // Stop Timer
+            }
+
+            await db.collection('requests').doc(id).update(updateData);
+            toast("✅ تم تنفيذ الإجراء"); closeModal('action-modal');
+        } catch(e) { toast("❌ خطأ"); } finally { btn.disabled=false; }
     }
 
-    // Create Request
-    function handleFiles(inp) { Array.from(inp.files).forEach(f => { uploadQueue.push(f); document.getElementById('preview-grid').innerHTML += `<div class="media-item"><img src="${URL.createObjectURL(f)}"></div>`; }); }
+    // =========================================================================
+    // 5. FRIENDS & UPLOAD
+    // =========================================================================
+    function openDeleteFriendModal() { document.getElementById('delete-friend-modal').classList.remove('hidden'); }
+
+    async function confirmRemoveFriend() {
+        if(!currentFriendDocId) return;
+        try {
+            await db.collection('users').doc(currentUser.uid).collection('friends').doc(currentFriendDocId).delete();
+            toast("تم حذف الصديق"); closeModal('delete-friend-modal'); closeModal('friend-profile-modal');
+        } catch(e) { toast("حدث خطأ أثناء الحذف"); }
+    }
     
-    async function toggleRecording() {
-        if(!isRecording) {
-            const s = await navigator.mediaDevices.getUserMedia({audio:true});
-            mediaRecorder = new MediaRecorder(s); audioChunks=[];
-            mediaRecorder.ondataavailable = e => audioChunks.push(e.data);
-            mediaRecorder.onstop = () => { uploadQueue.push(new File([new Blob(audioChunks)], "audio.webm", {type:'audio/webm'})); toast("تم التسجيل"); };
-            mediaRecorder.start(); isRecording=true; document.getElementById('mic-trigger').style.color='red';
-        } else {
-            mediaRecorder.stop(); isRecording=false; document.getElementById('mic-trigger').style.color='inherit';
-        }
+    async function viewFriendProfile(fid, docId) {
+        document.getElementById('loader').classList.remove('hidden'); currentFriendDocId = docId; 
+        try {
+            const doc = await db.collection('users').doc(fid).get();
+            document.getElementById('loader').classList.add('hidden');
+            if(doc.exists) {
+                const d = doc.data();
+                const roleMap = {'employee':'موظف', 'supervisor':'مشرف', 'technician':'فني'};
+                document.getElementById('fp-pic').src = d.photoUrl;
+                document.getElementById('fp-name').innerText = d.fullName;
+                document.getElementById('fp-role').innerText = roleMap[d.role] || '-';
+                document.getElementById('fp-job').innerText = d.jobTitle || 'غير محدد';
+                document.getElementById('fp-loc').innerText = d.location || 'غير محدد';
+                document.getElementById('fp-email').innerText = d.email;
+                const callBtn = document.getElementById('fp-call-btn');
+                if(d.phone) { callBtn.href = `tel:${d.phone}`; callBtn.classList.remove('hidden'); } else callBtn.classList.add('hidden');
+                document.getElementById('friend-profile-modal').classList.remove('hidden');
+            }
+        } catch(e) { document.getElementById('loader').classList.add('hidden'); }
     }
 
-    async function openSupModal() {
-        const l = document.getElementById('sup-list'); l.innerHTML = "تحميل...";
-        document.getElementById('sup-modal').classList.remove('hidden');
-        const s = await db.collection('users').where('role','==','supervisor').get();
-        l.innerHTML="";
-        s.forEach(doc => {
-            const u = doc.data();
-            l.innerHTML += `<div onclick="selectedSup='${doc.id}'; this.style.background='#def'" style="padding:10px; border:1px solid #ddd; margin-bottom:5px; border-radius:10px; cursor:pointer;">${u.fullName}</div>`;
+    function handleFiles(input) { 
+        const files = Array.from(input.files);
+        files.forEach(file => {
+            if (file.type.startsWith('video/')) {
+                const video = document.createElement('video');
+                video.preload = 'metadata';
+                video.onloadedmetadata = function() {
+                    window.URL.revokeObjectURL(video.src);
+                    if (video.duration > 41) { toast("⚠️ عذراً، يجب أن لا يتجاوز الفيديو 40 ثانية"); return; } 
+                    else addToQueue(file);
+                }
+                video.src = URL.createObjectURL(file);
+            } else addToQueue(file);
         });
     }
 
-    async function sendRequestFinal() {
-        if(!selectedSup) return toast("اختر مشرف");
-        document.getElementById('confirm-send-btn').innerText = "جاري الإرسال...";
-        try {
-            let media = [];
-            for(const f of uploadQueue) {
-                const fd = new FormData(); fd.append('file',f); fd.append('upload_preset', CLOUD_PRESET);
-                if(f.type.includes('audio')) fd.append('resource_type','video');
-                const r = await fetch(`https://api.cloudinary.com/v1_1/${CLOUD_NAME}/upload`, {method:'POST', body:fd});
-                const j = await r.json(); media.push({url:j.secure_url, type: f.type.includes('image')?'image':f.type.includes('audio')?'audio':'video'});
+    function addToQueue(f) {
+        uploadQueue.push(f);
+        const grid = document.getElementById('preview-grid');
+        const index = uploadQueue.length - 1;
+        let previewContent = '';
+        if(f.type.startsWith('audio')) previewContent = `<div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:#e0f2fe;color:var(--primary);flex-direction:column;"><i class="fa-solid fa-microphone fa-2x"></i><span style="font-size:10px;margin-top:5px;">تسجيل صوتي</span></div>`;
+        else if (f.type.startsWith('video')) previewContent = `<div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center"><i class="fa-solid fa-play" style="color:white"></i></div><img src="${URL.createObjectURL(f)}" style="opacity:0.7">`;
+        else previewContent = `<img src="${URL.createObjectURL(f)}">`;
+
+        grid.innerHTML += `<div class="media-item">${previewContent}<div class="remove-file" onclick="uploadQueue.splice(${index},1); this.parentElement.remove()">x</div></div>`;
+    }
+
+    async function openSupModal() { 
+        if(!document.getElementById('req-desc').value) return toast("⚠️ الوصف مطلوب");
+        if(!document.getElementById('req-type').value) return toast("⚠️ نوع العطل مطلوب");
+        document.getElementById('sup-modal').classList.remove('hidden'); 
+        const l=document.getElementById('sup-list'); l.innerHTML="<p style='text-align:center'>تحميل المشرفين...</p>"; 
+        
+        const snap = await db.collection('users').where('role','==','supervisor').get();
+        l.innerHTML="";
+        const friendsSnap = await db.collection('users').doc(currentUser.uid).collection('friends').get();
+        const friendIds = friendsSnap.docs.map(doc => doc.data().friendId);
+
+        let count = 0;
+        snap.forEach(d=>{ 
+            if(friendIds.includes(d.id)) { 
+                const u=d.data(); 
+                l.innerHTML+=`<div onclick="selectSup(this, '${d.id}')" style="display:flex; align-items:center; gap:10px; padding:15px; border:1px solid var(--border); margin-bottom:8px; border-radius:12px; cursor:pointer;"><img src="${u.photoUrl}" style="width:35px; height:35px; border-radius:50%;"><span style="color:var(--text)">${u.fullName}</span></div>`;
+                count++;
             }
-            const fac = document.getElementById('req-faculty').value;
-            const loc = fac + " - " + document.getElementById('req-room').value;
-            await db.collection('requests').add({
-                userId: currentUser.uid, userData: {fullName: userData.fullName, photoUrl: userData.photoUrl},
-                supervisorId: selectedSup, status: 'pending',
-                type: document.getElementById('req-type').value, priority: 'medium',
-                date: document.getElementById('req-date').value, time: document.getElementById('req-time').value,
-                description: document.getElementById('req-desc').value, location: loc, faculty: fac, media: media, isDeleted: false,
-                createdAt: firebase.firestore.FieldValue.serverTimestamp()
+        }); 
+        if(count === 0) l.innerHTML = "<div style='text-align:center; padding:20px; color:var(--text-muted);'><p>لا يوجد مشرفين في قائمة أصدقائك.</p><p style='font-size:11px;'>يجب إضافة المشرف كصديق أولاً.</p></div>";
+    }
+    
+    function selectSup(el, id) { document.querySelectorAll('#sup-list div').forEach(d=>d.style.background='transparent'); el.style.background='rgba(37, 99, 235, 0.2)'; selectedSup=id; }
+
+    async function sendRequestFinal() { 
+        if(!selectedSup) return toast("⚠️ اختر مشرف");
+        const btn=document.getElementById('confirm-send-btn'); btn.disabled=true; btn.innerText="جاري الإرسال...";
+        try { 
+            let mediaLinks = [];
+            for(const file of uploadQueue) {
+                const fd = new FormData(); fd.append('file', file); fd.append('upload_preset', CLOUD_PRESET);
+                if(file.type.startsWith('audio')) fd.append('resource_type', 'video'); 
+                const res = await fetch(`https://api.cloudinary.com/v1_1/${CLOUD_NAME}/upload`, {method:'POST', body:fd});
+                const d = await res.json();
+                let type = 'image'; if(file.type.startsWith('video')) type='video'; if(file.type.startsWith('audio')) type='audio';
+                mediaLinks.push({url: d.secure_url, type: type});
+            }
+            const facSelect = document.getElementById('req-faculty');
+            const loc = `${facSelect.options[facSelect.selectedIndex].text} - ${document.getElementById('req-room').value}`;
+            
+            await db.collection('requests').add({ 
+                userId:currentUser.uid, userData:{ fullName:userData.fullName, photoUrl:userData.photoUrl }, 
+                supervisorId:selectedSup, status:'pending', type: document.getElementById('req-type').value,
+                priority: document.querySelector('input[name="prio"]:checked').value,
+                time: document.getElementById('req-time').value, date: document.getElementById('req-date').value, 
+                description: document.getElementById('req-desc').value, location: loc, faculty: facSelect.value,
+                media: mediaLinks, isDeleted: false, createdAt: firebase.firestore.FieldValue.serverTimestamp() 
+            }); 
+            
+            toast("✅ تم الإرسال بنجاح"); closeModal('sup-modal'); nav('home', document.querySelector('.nav-item:first-child'));
+            uploadQueue=[]; document.getElementById('preview-grid').innerHTML=""; document.getElementById('req-desc').value="";
+            document.getElementById('mic-trigger').classList.remove('recording');
+        } catch(e){toast("❌ خطأ"); console.error(e);} finally{btn.disabled=false; btn.innerText="إرسال البلاغ";} 
+    }
+
+    // =========================================================================
+    // 6. REPORTS & PROFILE FRAMES
+    // =========================================================================
+    
+    // Tech & Employee Reports (Existing Logic)
+    function submitTechReport() { /* Same as before but minimized for length constraint, functionality retained */
+        const title = document.getElementById('tech-report-title').value;
+        const content = document.getElementById('tech-report-content').value;
+        if(!title || !content) return toast("⚠️ أكمل البيانات");
+        const element = document.createElement('div'); element.style.padding='30px'; element.style.fontFamily='Cairo'; element.dir='rtl';
+        element.innerHTML = `<h1 style="text-align:center; color:#0056b3;">${title}</h1><p>الفني: ${userData.fullName}</p><hr><p>${content}</p>`;
+        html2pdf().from(element).save(`Tech_Report.pdf`); toast("✅ تم التحميل"); closeModal('tech-report-modal');
+    }
+    
+    function generateEmpReport() {
+        const title = document.getElementById('emp-rep-title').value; const content = document.getElementById('emp-rep-content').value;
+        if(!title || !content) return toast("⚠️ أكمل البيانات");
+        const element = document.createElement('div'); element.style.padding='40px'; element.style.fontFamily='Cairo'; element.dir='rtl';
+        element.innerHTML = `<h2 style="text-align:center;">جامعة الريادة</h2><h3 style="text-align:center;">تقرير إداري</h3><p>التاريخ: ${new Date().toLocaleDateString('ar-EG')}</p><hr><h3>${title}</h3><p>${content}</p><div style="margin-top:50px;"><p>توقيع الموظف: .................</p></div>`;
+        html2pdf().from(element).save(`Emp_Report.pdf`); toast("✅ جاري التحميل"); closeModal('emp-report-modal');
+    }
+
+    // NEW: Full Report with Response Time
+    function printFullReport() {
+        let list = requestsCache; // Get all requests currently loaded
+        if(list.length === 0) return toast("⚠️ لا يوجد بيانات للطباعة");
+
+        const element = document.createElement('div');
+        element.style.padding = '20px'; element.style.fontFamily = 'Cairo, sans-serif'; element.dir = 'rtl';
+        
+        let tableRows = '';
+        list.forEach(r => {
+            let rt = '-';
+            if(r.status === 'done' && r.assignedAt && r.completedAt) {
+                rt = calculateResponseTime(r.assignedAt, r.completedAt);
+            }
+            
+            let statusAr = getStatusLabel(r.status);
+            
+            tableRows += `
+            <tr style="border-bottom:1px solid #ddd;">
+                <td style="padding:8px; border-left:1px solid #ddd;">${r.userData.fullName}</td>
+                <td style="padding:8px; border-left:1px solid #ddd;">${r.type || 'عام'}</td>
+                <td style="padding:8px; border-left:1px solid #ddd;">${r.date}</td>
+                <td style="padding:8px; border-left:1px solid #ddd;">${statusAr}</td>
+                <td style="padding:8px; font-weight:bold; color:${rt !== '-' ? '#10b981' : '#666'}">${rt}</td>
+            </tr>`;
+        });
+
+        element.innerHTML = `
+            <div style="text-align:center; margin-bottom:20px;">
+                <h1>تقرير الصيانة الشامل</h1>
+                <p>جامعة الريادة للعلوم والتكنولوجيا</p>
+                <p>تاريخ الاستخراج: ${new Date().toLocaleDateString('ar-EG')}</p>
+            </div>
+            <table style="width:100%; border-collapse:collapse; font-size:12px; text-align:right; border:1px solid #ddd;">
+                <thead style="background:#f1f5f9;">
+                    <tr>
+                        <th style="padding:10px; border-left:1px solid #ddd;">مقدم الطلب</th>
+                        <th style="padding:10px; border-left:1px solid #ddd;">النوع</th>
+                        <th style="padding:10px; border-left:1px solid #ddd;">التاريخ</th>
+                        <th style="padding:10px; border-left:1px solid #ddd;">الحالة</th>
+                        <th style="padding:10px;">وقت الاستجابة</th>
+                    </tr>
+                </thead>
+                <tbody>${tableRows}</tbody>
+            </table>
+        `;
+
+        html2pdf().from(element).set({
+            margin: 10, filename: 'Full_Report_Response_Time.pdf',
+            image: { type: 'jpeg', quality: 0.98 },
+            html2canvas: { scale: 2 },
+            jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+        }).save();
+        toast("✅ جاري تحضير التقرير الشامل...");
+    }
+
+    // NEW: Profile Frames Logic
+    function loadProfilePageData() {
+        document.getElementById('edit-current-pic').src = userData.photoUrl;
+        
+        // Load saved frame
+        selectedFrameClass = userData.frame || 'frame-none';
+        document.getElementById('edit-current-pic').className = selectedFrameClass;
+        
+        // Highlight selected frame in grid
+        document.querySelectorAll('.frame-option').forEach(div => {
+            div.classList.remove('selected');
+            if(div.getAttribute('onclick').includes(selectedFrameClass)) div.classList.add('selected');
+        });
+
+        document.getElementById('edit-id-display').innerText = userData.shortId;
+        document.getElementById('edit-name').value = userData.fullName;
+        document.getElementById('edit-gender').value = userData.gender || 'male';
+        document.getElementById('edit-phone').value = userData.phone;
+        document.getElementById('edit-job').value = userData.jobTitle;
+        document.getElementById('edit-loc').value = userData.location;
+    }
+
+    function selectFrame(el, frameClass) {
+        // Visual update
+        document.querySelectorAll('.frame-option').forEach(d => d.classList.remove('selected'));
+        el.classList.add('selected');
+        
+        // Preview update
+        selectedFrameClass = frameClass;
+        document.getElementById('edit-current-pic').className = frameClass;
+    }
+
+    function previewProfilePic(input) {
+        if(input.files && input.files[0]) {
+            newProfilePicFile = input.files[0];
+            document.getElementById('edit-current-pic').src = URL.createObjectURL(newProfilePicFile);
+        }
+    }
+
+    async function saveProfile() {
+        const btn = document.getElementById('save-profile-btn');
+        btn.disabled = true; btn.innerText = "جاري الحفظ...";
+        const name = document.getElementById('edit-name').value;
+        const gender = document.getElementById('edit-gender').value;
+        const phone = document.getElementById('edit-phone').value;
+        const job = document.getElementById('edit-job').value;
+        const loc = document.getElementById('edit-loc').value;
+
+        try {
+            let newUrl = userData.photoUrl;
+            if(newProfilePicFile) {
+                const fd = new FormData(); fd.append('file', newProfilePicFile); fd.append('upload_preset', CLOUD_PRESET);
+                const res = await fetch(`https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`, {method:'POST', body:fd});
+                const d = await res.json();
+                newUrl = d.secure_url;
+            }
+            // Save Frame Class too
+            await db.collection('users').doc(currentUser.uid).update({ 
+                fullName: name, gender: gender, phone: phone, jobTitle: job, location: loc, photoUrl: newUrl,
+                frame: selectedFrameClass 
             });
-            toast("تم الإرسال"); closeModal('sup-modal'); nav('home'); uploadQueue=[];
-        } catch(e) { toast("خطأ"); } document.getElementById('confirm-send-btn').innerText="إرسال";
+            userData.fullName = name; userData.gender = gender; userData.phone = phone; 
+            userData.jobTitle = job; userData.location = loc; userData.photoUrl = newUrl; userData.frame = selectedFrameClass;
+            renderHeader(); 
+            toast("✅ تم حفظ التعديلات والإطار");
+        } catch(e) { toast("❌ فشل الحفظ"); } 
+        finally { btn.disabled=false; btn.innerText = "حفظ التعديلات"; newProfilePicFile=null; }
+    }
+
+    function copyId() { navigator.clipboard.writeText(userData.shortId); toast("تم نسخ ID"); }
+
+    async function handleAuth() {
+        const email = document.getElementById('email').value; 
+        const pass = document.getElementById('password').value;
+        const confirmPass = document.getElementById('confirm-password').value;
+        const btn = document.getElementById('auth-btn'); 
+
+        if(!isLoginMode) {
+             if(pass !== confirmPass) return toast("❌ كلمة المرور غير متطابقة");
+             if(pass.length < 6) return toast("❌ كلمة المرور ضعيفة (6 أحرف على الأقل)");
+        }
+
+        btn.disabled=true; btn.innerText = "جاري المعالجة...";
+        try {
+            if(isLoginMode) {
+                await auth.signInWithEmailAndPassword(email, pass);
+            } else {
+                const cred = await auth.createUserWithEmailAndPassword(email, pass);
+                await cred.user.sendEmailVerification();
+                toast("✅ تم إنشاء الحساب. يجب تفعيل الرابط المرسل للإيميل قبل الدخول.");
+                
+                const role = document.querySelector('input[name="auth-role"]:checked').value;
+                const gender = document.querySelector('input[name="auth-gender"]:checked').value;
+                const defaultPic = gender === 'male' ? 'https://cdn-icons-png.flaticon.com/512/4140/4140048.png' : 'https://cdn-icons-png.flaticon.com/512/4140/4140047.png';
+                
+                await db.collection('users').doc(cred.user.uid).set({
+                    email, role: role, fullName:document.getElementById('reg-name').value, 
+                    gender: gender, photoUrl: defaultPic, frame: 'frame-none',
+                    shortId: Math.random().toString(36).substr(2,6).toUpperCase(),
+                    jobTitle: document.getElementById('reg-job').value, location: document.getElementById('reg-loc').value, phone: document.getElementById('reg-phone').value
+                });
+                toggleAuth();
+            }
+        } catch(e) { toast(e.message); }
+        finally { btn.disabled=false; btn.innerText = isLoginMode?"تسجيل الدخول":"إنشاء حساب"; }
+    }
+
+    function downloadArchivePDF() {
+        let list = requestsCache.filter(r => ['done','rejected'].includes(r.status));
+        if(list.length === 0) return toast("⚠️ لا يوجد بيانات للأرشفة");
+        const element = document.createElement('div');
+        element.style.padding = '20px'; element.style.fontFamily = 'Cairo, sans-serif'; element.dir = 'rtl';
+        let html = `<div style="text-align:center; margin-bottom:20px;"><h1>أرشيف الصيانة</h1><p>المستخدم: ${userData.fullName}</p></div>`;
+        list.forEach(r => {
+            html += `<div style="border:1px solid #ccc; padding:10px; margin-bottom:10px;"><b>${r.userData.fullName}</b> | ${r.date}<br>${r.description}<br>الحالة: ${getStatusLabel(r.status)}</div>`;
+        });
+        element.innerHTML = html;
+        html2pdf().from(element).save('archive_report.pdf'); toast("✅ جاري تحضير الملف...");
+    }
+    
+    function downloadSinglePDF(id) {
+        const r = requestsCache.find(x => x.id === id);
+        const element = document.createElement('div');
+        element.style.padding = '30px'; element.style.fontFamily = 'Cairo'; element.dir = 'rtl';
+        // Check for response time to add to PDF
+        let rt = '-';
+        if(r.status === 'done' && r.assignedAt && r.completedAt) rt = calculateResponseTime(r.assignedAt, r.completedAt);
+
+        element.innerHTML = `
+            <h1 style="text-align:center;">تفاصيل بلاغ</h1><hr>
+            <p><b>مقدم الطلب:</b> ${r.userData.fullName}</p>
+            <p><b>الوصف:</b> ${r.description}</p>
+            <p><b>التاريخ:</b> ${r.date} - ${r.time}</p>
+            <p><b>الموقع:</b> ${r.location}</p>
+            <p><b>وقت الاستجابة:</b> ${rt}</p>
+            <p><b>الحالة:</b> ${getStatusLabel(r.status)}</p>
+        `;
+        html2pdf().from(element).save(`report_${id}.pdf`);
+    }
+
+    // Standard Helpers
+    function toggleAuth() { 
+        isLoginMode = !isLoginMode; 
+        const regFields = document.getElementById('reg-fields'); const confirmPass = document.getElementById('confirm-pass-field');
+        if (isLoginMode) { regFields.classList.add('hidden'); confirmPass.classList.add('hidden'); document.getElementById('auth-btn').innerText = "تسجيل الدخول"; document.getElementById('auth-switch-text').innerHTML = "ليس لديك حساب؟ <b style='color:var(--primary)'>إنشاء حساب جديد</b>"; } 
+        else { regFields.classList.remove('hidden'); confirmPass.classList.remove('hidden'); document.getElementById('auth-btn').innerText = "إنشاء حساب"; document.getElementById('auth-switch-text').innerHTML = "لديك حساب بالفعل؟ <b style='color:var(--primary)'>تسجيل الدخول</b>"; }
+    }
+
+    function switchTab(tab, el) {
+        currentTab = tab; 
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active')); 
+        el.classList.add('active'); 
+        if(tab === 'history') document.getElementById('archive-actions').classList.remove('hidden');
+        else document.getElementById('archive-actions').classList.add('hidden');
+        renderFeed();
+    }
+
+    function getStatusLabel(s) {
+        const map = { 'pending': 'تم الإرسال', 'approved': 'بانتظار الفني', 'working': 'قيد التنفيذ', 'done': 'تم الإصلاح', 'rejected': 'مرفوض', 'suspended': 'معلق' };
+        return map[s] || s;
     }
 
     function openRequestDetails(id) {
-        const d = requestsCache.find(r => r.id===id);
-        const m = document.getElementById('request-details-modal'); m.classList.remove('hidden');
-        let mediaHtml = ""; (d.media||[]).forEach(x => mediaHtml += `<a href="${x.url}" target="_blank" style="display:block; padding:10px; background:#f1f5f9; margin-bottom:5px; border-radius:5px;">ملف مرفق</a>`);
+        const d = requestsCache.find(r => r.id === id);
+        document.getElementById('request-details-modal').classList.remove('hidden');
+        let mediaHtml = "";
+        if(d.media && d.media.length > 0) d.media.forEach(m => {
+            if(m.type === 'audio') mediaHtml += `<div class="media-item" onclick="openAudioPlayer('${m.url}')" style="background:#e0f2fe; display:flex; flex-direction:column; align-items:center; justify-content:center; cursor:pointer;"><i class="fa-solid fa-play-circle" style="font-size:30px; color:var(--primary); margin-bottom:5px;"></i><span style="font-size:10px; color:var(--primary-dark);">تشغيل الصوت</span></div>`;
+            else mediaHtml += `<div class="media-item" onclick="openMediaViewer('${m.url}','${m.type}')">${m.type==='video' ? `<video src="${m.url}"></video><div style="position:absolute; inset:0; display:flex; align-items:center; justify-content:center;"><i class="fa-solid fa-play"></i></div>` : `<img src="${m.url}">`}</div>`;
+        }); else mediaHtml = "<p style='color:var(--text-muted); font-size:12px; grid-column:span 3; text-align:center;'>لا توجد مرفقات</p>";
+        
+        let timelineHtml = '<div class="timeline">';
+        let steps = [ { id: 'pending', label: 'تم الإرسال', desc: 'بانتظار الموافقة' }, { id: 'approved', label: 'تم التوجيه', desc: d.technicianName ? `مع الفني: ${d.technicianName}` : 'تعيين فني' }, { id: 'working', label: 'قيد التنفيذ', desc: 'بدأ العمل' }, { id: 'done', label: 'تم الإصلاح', desc: 'انتهت العملية' } ];
+        if(d.status === 'rejected') timelineHtml += `<div class="timeline-item active rejected"><div class="tl-icon"><i class="fa-solid fa-xmark"></i></div><div class="tl-content"><h4>تم الرفض</h4><p>${d.supervisorComment}</p></div></div>`;
+        else steps.forEach(s => { 
+            let active = false; 
+            if(s.id === 'pending') active = true; 
+            if(d.status === 'approved' && (s.id==='pending'||s.id==='approved')) active=true;
+            if(d.status === 'working' && (s.id==='pending'||s.id==='approved'||s.id==='working')) active=true;
+            if(d.status === 'done') active=true;
+            timelineHtml += `<div class="timeline-item ${active ? 'active' : ''}"><div class="tl-icon"><i class="fa-solid fa-check"></i></div><div class="tl-content"><h4>${s.label}</h4><p>${s.desc}</p></div></div>`;
+        });
+        timelineHtml += '</div>';
+
         document.getElementById('req-details-content').innerHTML = `
-            <p><strong>الوصف:</strong> ${d.description}</p>
-            <p><strong>الموقع:</strong> ${d.location}</p>
-            <p><strong>الحالة:</strong> ${d.status}</p>
-            <div>${mediaHtml}</div>
-            <button onclick="downloadSinglePDF('${d.id}')" class="btn-ghost" style="width:100%; margin-top:10px;">تحميل PDF</button>
+            ${timelineHtml}
+            <div style="background:var(--surface-light); padding:15px; border-radius:15px; margin-bottom:15px; border:1px solid var(--border);"><p style="margin:0; font-size:15px; line-height:1.6; color:var(--text);">${d.description}</p></div>
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; font-size:12px; color:var(--text-muted); margin-bottom:10px;"><span><i class="fa-solid fa-screwdriver-wrench"></i> ${d.type || 'عام'}</span><span><i class="fa-solid fa-calendar"></i> ${d.date}</span><span><i class="fa-solid fa-clock"></i> ${d.time}</span><span><i class="fa-solid fa-map-pin"></i> ${d.location}</span></div>
+            ${d.supervisorComment && d.status !== 'rejected' ? `<div style="background:#ecfdf5; color:#065f46; padding:10px; border-radius:10px; font-size:12px; margin-bottom:15px; border:1px solid #a7f3d0;"><i class="fa-solid fa-note-sticky"></i> ملاحظات المشرف: ${d.supervisorComment}</div>` : ''}
+            <h5 style="margin:10px 0 5px; color:var(--text-muted);">المرفقات:</h5><div class="media-grid" style="margin-bottom:20px;">${mediaHtml}</div>
+            <button onclick="downloadSinglePDF('${d.id}')" class="btn-main btn-ghost" style="width:100%; border-color:var(--primary); color:var(--primary);"><i class="fa-solid fa-download"></i> تحميل تفاصيل البلاغ (PDF)</button>
         `;
     }
 
-    // Auth
-    function toggleAuth() { isLoginMode=!isLoginMode; document.getElementById('reg-fields').classList.toggle('hidden'); document.getElementById('confirm-pass-field').classList.toggle('hidden'); document.getElementById('auth-btn').innerText=isLoginMode?'دخول':'إنشاء'; }
-    async function handleAuth() {
-        const e=document.getElementById('email').value, p=document.getElementById('password').value, b=document.getElementById('auth-btn');
-        b.innerText="...";
-        try {
-            if(isLoginMode) await auth.signInWithEmailAndPassword(e,p);
-            else {
-                const c = await auth.createUserWithEmailAndPassword(e,p); await c.user.sendEmailVerification();
-                const r = document.querySelector('input[name="auth-role"]:checked').value;
-                const g = document.querySelector('input[name="auth-gender"]:checked').value;
-                await db.collection('users').doc(c.user.uid).set({
-                    email:e, role:r, gender:g, fullName:document.getElementById('reg-name').value, 
-                    photoUrl: 'https://cdn-icons-png.flaticon.com/512/4140/4140048.png', shortId: Math.random().toString(36).substr(2,6).toUpperCase(),
-                    phone: document.getElementById('reg-phone').value, jobTitle: document.getElementById('reg-job').value, location: document.getElementById('reg-loc').value
-                });
-                toggleAuth(); toast("تم الإنشاء. تحقق من الإيميل");
-            }
-        } catch(er) { toast(er.message); } b.innerText=isLoginMode?'دخول':'إنشاء';
-    }
-
-    // Reports
-    function downloadSinglePDF(id) {
-        const r = requestsCache.find(x => x.id === id);
-        const e = document.createElement('div'); e.innerHTML = `<h1>تفاصيل البلاغ</h1><p>${r.description}</p><p>${r.location}</p>`;
-        html2pdf().from(e).save(`req_${id}.pdf`);
-    }
-
-    // Navigation & Utils
+    function openAudioPlayer(url) { const m=document.getElementById('audio-player-modal'); const a=document.getElementById('modal-audio-player'); a.src=url; m.classList.remove('hidden'); a.play().catch(e=>console.log("Autoplay blocked")); }
+    function closeAudioPlayer() { const m=document.getElementById('audio-player-modal'); const a=document.getElementById('modal-audio-player'); a.pause(); a.currentTime=0; m.classList.add('hidden'); }
+    function openMediaViewer(u, t) { document.getElementById('media-viewer').classList.remove('hidden'); document.getElementById('media-content-container').innerHTML = t==='video'?`<video src="${u}" controls autoplay style="max-width:100%;"></video>`:`<img src="${u}" style="max-width:100%;">`; }
+    function reqNotifyPerm() { Notification.requestPermission().then(p => { if(p==="granted") toast("تم تفعيل الإشعارات"); }); }
+    
+    // NAVIGATION WITH FAB CONTROL
     function nav(p, el) { 
-        document.querySelectorAll('.page-section').forEach(x=>x.classList.add('hidden'));
-        document.getElementById('page-'+p).classList.remove('hidden');
-        // Update both Mobile and Desktop Navs
-        document.querySelectorAll('.nav-item, .sidebar-item').forEach(x=>x.classList.remove('active'));
-        if(el) el.classList.add('active');
-        // Special handle for desktop sidebar mapping if el is mobile
-        const sideItems = document.querySelectorAll('.sidebar-item');
-        if(p==='home') sideItems[0].classList.add('active');
-        if(p==='team') sideItems[1].classList.add('active');
-        if(p==='create') sideItems[2].classList.add('active');
-        if(p==='profile') sideItems[3].classList.add('active');
-        if(p==='settings') sideItems[4].classList.add('active');
+        document.querySelectorAll('.page-section').forEach(x=>x.classList.add('hidden')); 
+        document.getElementById('page-'+p).classList.remove('hidden'); 
+        if(p !== 'create') { document.querySelectorAll('.nav-item').forEach(x=>x.classList.remove('active')); if(el) el.classList.add('active'); }
+        if(p==='profile') loadProfilePageData();
+        
+        // Show FAB ONLY in Settings
+        const fab = document.getElementById('support-fab');
+        if(p === 'settings') fab.classList.remove('hidden');
+        else fab.classList.add('hidden');
     }
     
-    function showScreen(id) { ['auth-screen','app-container'].forEach(x=>document.getElementById(x).classList.add('hidden')); document.getElementById(id).classList.remove('hidden'); }
+    function showScreen(id) { ['auth-screen','app-container'].forEach(x => document.getElementById(x).classList.add('hidden')); document.getElementById(id).classList.remove('hidden'); }
     function closeModal(id) { document.getElementById(id).classList.add('hidden'); }
-    function switchTab(t, e) { currentTab=t; document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active')); e.classList.add('active'); renderFeed(); }
-    function logout() { auth.signOut(); location.reload(); }
-    function toast(m) { const t=document.getElementById('toast'); t.innerText=m; t.style.display='block'; setTimeout(()=>t.style.display='none',3000); }
+    function logout() { auth.signOut(); document.getElementById('support-fab').classList.add('hidden'); location.reload(); }
+    function toast(m) { const t=document.getElementById('toast'); t.innerHTML=m; t.style.display='block'; setTimeout(()=>t.style.display='none',3000); }
     async function softDelete(id) { await db.collection('requests').doc(id).update({isDeleted:true}); toast("نقل للمهملات"); }
     async function restoreReq(id) { await db.collection('requests').doc(id).update({isDeleted:false}); toast("تم الاستعادة"); }
-
-    // Search
-    async function searchUser() {
-        const q=document.getElementById('search-query').value;
-        const d=document.getElementById('search-results'); d.innerHTML="..."; d.classList.remove('hidden');
-        const s = await db.collection('users').where('shortId','==',q).get();
-        d.innerHTML="";
-        if(s.empty) d.innerHTML="لا يوجد";
-        s.forEach(doc => { const u=doc.data(); d.innerHTML += `<div style='padding:10px; border:1px solid #ddd;'>${u.fullName} <button onclick="addFriend('${doc.id}','${u.fullName}','${u.photoUrl}')" class='btn-sm btn-main'>إضافة</button></div>`; });
+    async function hardDelete(id) { if(confirm("حذف نهائي؟")) await db.collection('requests').doc(id).delete(); }
+    async function searchUser() { /* Search logic same as before */ 
+        const q = document.getElementById('search-query').value.trim(); const resDiv = document.getElementById('search-results'); if(!q) return;
+        resDiv.innerHTML = '<p style="text-align:center;">جاري البحث...</p>'; resDiv.classList.remove('hidden');
+        let users = []; let s1 = await db.collection('users').where('shortId','==',q).get(); let s2 = await db.collection('users').where('email','==',q).get();
+        s1.forEach(d=>users.push({id:d.id, ...d.data()})); s2.forEach(d=> { if(!users.find(u=>u.id===d.id)) users.push({id:d.id, ...d.data()}); });
+        resDiv.innerHTML = ""; if(users.length === 0) { resDiv.innerHTML = '<p style="text-align:center;">لا يوجد</p>'; return; }
+        users.forEach(u => { if(u.id !== currentUser.uid) resDiv.innerHTML += `<div style="display:flex; justify-content:space-between; padding:10px; border-bottom:1px solid #eee;"><span>${u.fullName}</span><button onclick="addFriend('${u.id}', '${u.fullName}', '${u.photoUrl}')" class="btn-sm btn-main">إضافة</button></div>`; });
     }
-    async function addFriend(id,n,p) { await db.collection('friend_requests').add({fromId:currentUser.uid, toId:id, status:'pending', fromData:{name:userData.fullName,pic:userData.photoUrl}, toData:{name:n,pic:p}}); toast("تم الإرسال"); }
+    async function addFriend(tid, tname, tpic) { await db.collection('friend_requests').add({ fromId: currentUser.uid, toId: tid, status: 'pending', fromData: { name: userData.fullName, pic: userData.photoUrl }, toData: { name: tname, pic: tpic } }); toast("✅ تم الإرسال"); }
+    function loadFriendReqs() { db.collection('friend_requests').where('toId','==',currentUser.uid).where('status','==','pending').onSnapshot(snap => { const list = document.getElementById('reqs-list'); const container = document.getElementById('friend-reqs'); list.innerHTML = ""; if(snap.empty) container.classList.add('hidden'); else { container.classList.remove('hidden'); snap.forEach(doc => { const d = doc.data(); list.innerHTML += `<div style="display:flex; justify-content:space-between; margin-bottom:5px;"><span>${d.fromData.name}</span><div><button onclick="ansFriend('${doc.id}', true)"><i class="fa-solid fa-check"></i></button> <button onclick="ansFriend('${doc.id}', false)"><i class="fa-solid fa-xmark"></i></button></div></div>`; }); } }); }
+    async function ansFriend(rid, accept) { if(accept) { const r = await db.collection('friend_requests').doc(rid).get(); const rd = r.data(); await db.collection('users').doc(currentUser.uid).collection('friends').add({friendId: rd.fromId, ...rd.fromData}); await db.collection('users').doc(rd.fromId).collection('friends').add({friendId: currentUser.uid, name: userData.fullName, pic: userData.photoUrl}); } await db.collection('friend_requests').doc(rid).delete(); }
+    function loadTeam() { db.collection('users').doc(currentUser.uid).collection('friends').onSnapshot(snap => { const div = document.getElementById('team-list'); div.innerHTML=""; snap.forEach(doc => { const d = doc.data(); div.innerHTML += `<div class="friend-item" onclick="viewFriendProfile('${d.friendId}', '${doc.id}')"><img src="${d.pic}" style="width:30px; height:30px; border-radius:50%;"> <span>${d.name}</span></div>`; }); }); }
+
 </script>
 </body>
 </html>
