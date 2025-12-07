@@ -352,10 +352,11 @@
                 <div class="input-group"><input type="tel" id="reg-phone" placeholder="01xxxxxxxxx"></div>
                 
                 <p class="auth-section-label">الوظيفة:</p>
-                <div class="auth-grid">
+                <div class="auth-grid" style="grid-template-columns: 1fr 1fr 1fr 1fr; gap:5px;">
                     <label><input type="radio" name="auth-role" value="employee" class="auth-card-input" checked><div class="auth-card"><i class="fa-solid fa-user-pen"></i><span>موظف</span></div></label>
                     <label><input type="radio" name="auth-role" value="supervisor" class="auth-card-input"><div class="auth-card"><i class="fa-solid fa-user-tie"></i><span>مشرف</span></div></label>
                     <label><input type="radio" name="auth-role" value="technician" class="auth-card-input"><div class="auth-card"><i class="fa-solid fa-helmet-safety"></i><span>فني</span></div></label>
+                    <label><input type="radio" name="auth-role" value="manager" class="auth-card-input"><div class="auth-card"><i class="fa-solid fa-user-shield"></i><span>مدير</span></div></label>
                 </div>
                 <div class="input-group" style="margin-top:15px;"><input type="text" id="reg-job" placeholder="المسمى الوظيفي"></div>
                 <div class="input-group"><input type="text" id="reg-loc" placeholder="مقر العمل"></div>
@@ -539,7 +540,7 @@
                     </div>
 
                     <div id="full-report-container" style="margin-top:15px;">
-                        <button onclick="printFullReport()" class="btn-main" style="background:var(--primary-dark);"><i class="fa-solid fa-table-list"></i> طباعة تقرير شامل (مع وقت الاستجابة)</button>
+                        <button onclick="printFullReport()" class="btn-main" style="background:var(--primary-dark);"><i class="fa-solid fa-table-list"></i> طباعة تقرير شامل</button>
                         <p style="font-size:10px; color:var(--text-muted); margin-top:5px; margin-right:5px;">يشمل جميع البلاغات وحالة الاستجابة الزمنية.</p>
                     </div>
 
@@ -785,7 +786,7 @@
     }
 
     function setupRoleUI() {
-        if(userData.role === 'supervisor') document.getElementById('filter-container').classList.remove('hidden');
+        if(userData.role === 'supervisor' || userData.role === 'manager') document.getElementById('filter-container').classList.remove('hidden');
         if(userData.role === 'employee') document.getElementById('emp-report-btn-container').classList.remove('hidden');
         if(userData.role === 'technician') {
             const addBtn = document.querySelector('.nav-add-btn');
@@ -799,7 +800,7 @@
     // 3. UI RENDERING & FEED
     // =========================================================================
     function renderHeader() {
-        const roleMap = {'employee':'موظف', 'supervisor':'مشرف', 'technician':'فني'};
+        const roleMap = {'employee':'موظف', 'supervisor':'مشرف', 'technician':'فني', 'manager':'مدير'};
         document.getElementById('banner-name').innerText = userData.fullName;
         document.getElementById('banner-role').innerText = roleMap[userData.role];
         document.getElementById('banner-id').innerText = "ID: " + userData.shortId;
@@ -827,6 +828,7 @@
         if(userData.role==='employee') q = q.where('userId','==',currentUser.uid);
         else if(userData.role==='supervisor') q = q.where('supervisorId','==',currentUser.uid);
         else if(userData.role==='technician') q = q.where('technicianId','==',currentUser.uid);
+        // if manager, q remains db.collection('requests') to fetch all
         
         q.onSnapshot(snap => {
             const currentIds = requestsCache.map(r => r.id);
@@ -877,7 +879,7 @@
         }
 
         const facFilter = document.getElementById('feed-filter').value;
-        if(userData.role === 'supervisor' && facFilter !== 'all') list = list.filter(r => r.faculty === facFilter);
+        if((userData.role === 'supervisor' || userData.role === 'manager') && facFilter !== 'all') list = list.filter(r => r.faculty === facFilter);
 
         if(list.length === 0) { 
             container.innerHTML = `<div style="text-align:center; padding:50px 20px; color:var(--text-muted);"><i class="fa-regular fa-clipboard fa-3x" style="opacity:0.5; margin-bottom:10px;"></i><p>لا يوجد بيانات</p></div>`; 
@@ -900,7 +902,7 @@
             let deleteBtn = "";
 
             if(currentTab !== 'trash') {
-                if(userData.role === 'employee' || userData.role === 'supervisor') {
+                if(userData.role === 'employee' || userData.role === 'supervisor' || userData.role === 'manager') {
                       deleteBtn = `<button onclick="event.stopPropagation(); softDelete('${d.id}')" class="btn-ghost btn-sm" style="color:var(--error); border-color:var(--border); margin-left:10px;"><i class="fa-solid fa-trash"></i></button>`;
                 }
 
@@ -1096,7 +1098,7 @@
             document.getElementById('loader').classList.add('hidden');
             if(doc.exists) {
                 const d = doc.data();
-                const roleMap = {'employee':'موظف', 'supervisor':'مشرف', 'technician':'فني'};
+                const roleMap = {'employee':'موظف', 'supervisor':'مشرف', 'technician':'فني', 'manager':'مدير'};
                 document.getElementById('fp-pic').src = d.photoUrl;
                 document.getElementById('fp-name').innerText = d.fullName;
                 document.getElementById('fp-role').innerText = roleMap[d.role] || '-';
@@ -1198,7 +1200,7 @@
     // =========================================================================
     
     // Tech & Employee Reports (Existing Logic)
-    function submitTechReport() { /* Same as before but minimized for length constraint, functionality retained */
+    function submitTechReport() { 
         const title = document.getElementById('tech-report-title').value;
         const content = document.getElementById('tech-report-content').value;
         if(!title || !content) return toast("⚠️ أكمل البيانات");
@@ -1358,11 +1360,21 @@
             if(isLoginMode) {
                 await auth.signInWithEmailAndPassword(email, pass);
             } else {
+                const role = document.querySelector('input[name="auth-role"]:checked').value;
+                
+                // Manager Limitation Logic (Max 3)
+                if(role === 'manager') {
+                    const mSnap = await db.collection('users').where('role', '==', 'manager').get();
+                    if(mSnap.size >= 3) {
+                        btn.disabled = false; btn.innerText = "إنشاء حساب";
+                        return toast("❌ عذراً، اكتمل عدد المديرين المسموح به (3).");
+                    }
+                }
+
                 const cred = await auth.createUserWithEmailAndPassword(email, pass);
                 await cred.user.sendEmailVerification();
                 toast("✅ تم إنشاء الحساب. يجب تفعيل الرابط المرسل للإيميل قبل الدخول.");
                 
-                const role = document.querySelector('input[name="auth-role"]:checked').value;
                 const gender = document.querySelector('input[name="auth-gender"]:checked').value;
                 const defaultPic = gender === 'male' ? 'https://cdn-icons-png.flaticon.com/512/4140/4140048.png' : 'https://cdn-icons-png.flaticon.com/512/4140/4140047.png';
                 
