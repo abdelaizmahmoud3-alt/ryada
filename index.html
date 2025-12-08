@@ -103,6 +103,7 @@
             height: 85px; 
             border-radius: 50%;
             margin-bottom: 5px;
+            cursor: pointer;
         }
         .user-avatar-container img {
             width: 100%; height: 100%; border-radius: 50%;
@@ -285,15 +286,19 @@
 
         .news-card { background: #fff; border-radius: 20px; padding: 20px; margin-bottom: 20px; border: 1px solid var(--border); box-shadow: var(--shadow); position: relative; }
         .post-header { display: flex; gap: 10px; margin-bottom: 15px; }
-        .post-avatar { width: 45px; height: 45px; border-radius: 50%; object-fit: cover; }
+        .post-avatar { width: 45px; height: 45px; border-radius: 50%; object-fit: cover; cursor: pointer; }
         .post-content { font-size: 14px; line-height: 1.6; margin-bottom: 15px; color: var(--text); white-space: pre-wrap; }
         .post-actions { display: flex; justify-content: space-between; border-top: 1px solid var(--surface-light); padding-top: 10px; }
         .p-btn { border: none; background: transparent; cursor: pointer; color: var(--text-muted); font-size: 13px; display: flex; gap: 5px; align-items: center; font-family: 'Cairo', sans-serif; }
         .p-btn.liked { color: var(--error); }
         .comment-section { margin-top: 15px; background: var(--surface-light); padding: 10px; border-radius: 15px; }
-        .comment-item { display: flex; gap: 8px; margin-bottom: 10px; font-size: 12px; }
+        .comment-item { display: flex; gap: 8px; margin-bottom: 10px; font-size: 12px; align-items: flex-start; }
         .comment-del { color: var(--error); cursor: pointer; font-size: 10px; margin-right: auto; }
         .post-delete-btn { position: absolute; top: 15px; left: 15px; color: var(--text-muted); cursor: pointer; }
+        
+        .clickable-user { cursor: pointer; transition: 0.2s; }
+        .clickable-user:active { opacity: 0.7; }
+        .reply-btn { font-size: 10px; color: var(--primary); cursor: pointer; margin-right: 5px; }
 
     </style>
 </head>
@@ -350,7 +355,7 @@
     <div id="app-container" class="hidden">
         <div class="main-banner">
             <div class="header-top">
-                <div class="user-avatar-container" onclick="nav('profile', document.querySelector('.nav-item:nth-child(4)'))">
+                <div class="user-avatar-container" onclick="openAnyProfile(currentUser.uid)">
                     <img id="banner-img" src="https://cdn-icons-png.flaticon.com/512/4140/4140048.png">
                     <div id="banner-frame" class="frame-overlay"></div>
                 </div>
@@ -386,7 +391,7 @@
             
             <div id="page-news" class="page-section hidden">
                 <div class="glass-card" style="margin-top:0;">
-                    <h3 style="color:var(--primary); margin-bottom:15px;">البيان (أخبار الجامعة)</h3>
+                    <h3 style="color:var(--primary); margin-bottom:15px;">البيان</h3>
                     <div id="create-post-container" class="hidden" style="margin-bottom:20px;">
                         <textarea id="new-post-content" rows="3" placeholder="ما الجديد؟ (للمدراء فقط)"></textarea>
                         <button onclick="createPost()" class="btn-main btn-sm" style="margin-top:10px;">نشر</button>
@@ -474,7 +479,7 @@
             <div id="page-profile" class="page-section hidden">
                 <div class="glass-card" style="margin-top:20px;">
                     <div style="text-align:center;">
-                        <div class="user-avatar-container" style="margin: 0 auto 25px;">
+                        <div class="user-avatar-container" style="margin: 0 auto 25px; cursor: default;">
                             <img id="edit-current-pic" src="">
                             <div id="edit-frame-overlay" class="frame-overlay"></div>
                             <div onclick="document.getElementById('edit-profile-file').click()" style="position:absolute; bottom:-5px; right:-5px; background:var(--primary); width:35px; height:35px; border-radius:50%; display:flex; align-items:center; justify-content:center; cursor:pointer; border:2px solid #fff; z-index:3;"><i class="fa-solid fa-camera" style="color:white; font-size:14px;"></i></div>
@@ -564,15 +569,16 @@
     <div id="friend-profile-modal" class="modal-overlay hidden">
         <div class="modal-content" style="text-align:center; z-index:2001;">
             <div class="close-btn" onclick="closeModal('friend-profile-modal')"><i class="fa-solid fa-xmark"></i></div>
-            <div style="position:relative; margin-bottom:20px;">
-                <img id="fp-pic" src="" style="width:120px; height:120px; border-radius:50%; border:4px solid var(--primary); object-fit:cover; box-shadow:0 15px 30px rgba(0,0,0,0.1);">
+            <div class="user-avatar-container" style="margin: 0 auto 20px; width:120px; height:120px; cursor: default;">
+                <img id="fp-pic" src="">
+                <div id="fp-frame" class="frame-overlay"></div>
             </div>
             <h3 id="fp-name" style="margin:0; font-size:22px; font-weight:800; color:var(--text);">-</h3>
             <span id="fp-role" style="background:var(--primary); color:white; padding:5px 18px; border-radius:20px; font-size:12px; display:inline-block; margin:10px 0 25px; font-weight:700;">-</span>
-            <div style="display:flex; justify-content:center; gap:10px; margin-bottom:25px;">
-                <a id="fp-call-btn" href="#" class="btn-main" style="background:var(--success); width:auto; border-radius:50px; padding:10px 25px;"><i class="fa-solid fa-phone"></i> اتصال</a>
-                <button onclick="openDeleteFriendModal()" class="btn-ghost" style="color:var(--error); border-color:var(--error); border-radius:50px; padding:10px 25px;"><i class="fa-solid fa-user-xmark"></i> حذف</button>
-            </div>
+            
+            <div id="fp-actions" style="display:flex; justify-content:center; gap:10px; margin-bottom:25px;">
+                </div>
+
             <div style="text-align:right; background:var(--surface-light); padding:25px; border-radius:24px; border:1px solid var(--border);">
                 <p style="margin:12px 0;"><i class="fa-solid fa-briefcase" style="color:var(--text-muted); width:25px;"></i> <span id="fp-job">-</span></p>
                 <p style="margin:12px 0;"><i class="fa-solid fa-location-dot" style="color:var(--text-muted); width:25px;"></i> <span id="fp-loc">-</span></p>
@@ -914,17 +920,13 @@
             let prioIcon = d.priority === 'high' ? '<i class="fa-solid fa-fire" style="color:var(--error)"></i>' : '';
             let prioColor = d.priority === 'high' ? 'var(--error)' : d.priority === 'medium' ? 'var(--warning)' : 'var(--success)';
             
-            // Media Hidden in Feed - Only shows in details modal as requested
-            let thumbsHtml = ""; 
-            // Removed thumbs generation loop here
-
             container.innerHTML += `
             <div class="glass-card request-card ${cardClass}" onclick="openRequestDetails('${d.id}')" style="border-right-color:${prioColor};">
                 <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:10px;">
                     <div style="display:flex; align-items:center; gap:10px;">
-                        <img src="${d.userData.photoUrl}" class="avatar" style="width:40px; height:40px; border-radius:50%; object-fit:cover;">
+                        <img src="${d.userData.photoUrl}" class="avatar clickable-user" style="width:40px; height:40px; border-radius:50%; object-fit:cover;" onclick="event.stopPropagation(); openAnyProfile('${d.userId}')">
                         <div>
-                            <b style="font-size:13px; display:block; color:var(--text);">${d.userData.fullName}</b>
+                            <b style="font-size:13px; display:block; color:var(--text);" class="clickable-user" onclick="event.stopPropagation(); openAnyProfile('${d.userId}')">${d.userData.fullName}</b>
                             <span style="font-size:10px; color:var(--text-muted); direction:ltr; display:inline-block;"><i class="fa-regular fa-clock"></i> ${timeDisplay} | ${d.date}</span>
                         </div>
                     </div>
@@ -953,7 +955,6 @@
         const btn = document.getElementById('mic-trigger');
         
         if (!isRecording) {
-            // Start Recording
             try {
                 const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
                 mediaRecorder = new MediaRecorder(stream);
@@ -965,7 +966,6 @@
 
                 mediaRecorder.onstop = () => {
                     const audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
-                    // Convert blob to file for upload queue
                     const audioFile = new File([audioBlob], `voice_note_${Date.now()}.webm`, { type: 'audio/webm' });
                     addToQueue(audioFile);
                 };
@@ -979,7 +979,6 @@
                 toast("❌ الميكروفون غير متاح أو تم رفض الإذن");
             }
         } else {
-            // Stop Recording
             if(mediaRecorder) {
                 mediaRecorder.stop();
                 isRecording = false;
@@ -990,8 +989,76 @@
     }
 
     // =========================================================================
-    // 5. ACTIONS & FRIENDS
+    // 5. ACTIONS, FRIENDS & GLOBAL PROFILE
     // =========================================================================
+    
+    // NEW: Open Any User Profile & Handle Friending Logic
+    async function openAnyProfile(targetId) {
+        if(targetId === currentUser.uid) {
+            nav('profile', document.querySelector('.nav-item:nth-child(4)'));
+            return;
+        }
+
+        document.getElementById('loader').classList.remove('hidden');
+        
+        try {
+            const userDoc = await db.collection('users').doc(targetId).get();
+            if(!userDoc.exists) throw new Error("User not found");
+            
+            const targetUser = userDoc.data();
+            const roleMap = {'employee':'موظف', 'supervisor':'مشرف', 'technician':'فني', 'manager':'مدير'};
+
+            document.getElementById('fp-pic').src = targetUser.photoUrl;
+            document.getElementById('fp-name').innerText = targetUser.fullName;
+            document.getElementById('fp-role').innerText = roleMap[targetUser.role] || '-';
+            document.getElementById('fp-job').innerText = targetUser.jobTitle || 'غير محدد';
+            document.getElementById('fp-loc').innerText = targetUser.location || 'غير محدد';
+            document.getElementById('fp-email').innerText = targetUser.email;
+            document.getElementById('fp-frame').className = 'frame-overlay ' + (targetUser.frame || '');
+
+            // Check Friendship Status
+            const friendsSnap = await db.collection('users').doc(currentUser.uid).collection('friends').where('friendId', '==', targetId).get();
+            const isFriend = !friendsSnap.empty;
+            let friendshipId = isFriend ? friendsSnap.docs[0].id : null;
+            currentFriendDocId = friendshipId; // Global var for delete modal
+
+            const actionsDiv = document.getElementById('fp-actions');
+            actionsDiv.innerHTML = "";
+
+            if(isFriend) {
+                let callBtn = "";
+                if(targetUser.phone) {
+                    callBtn = `<a href="tel:${targetUser.phone}" class="btn-main" style="background:var(--success); width:auto; border-radius:50px; padding:10px 25px;"><i class="fa-solid fa-phone"></i> اتصال</a>`;
+                }
+                actionsDiv.innerHTML = `
+                    ${callBtn}
+                    <button onclick="openDeleteFriendModal()" class="btn-ghost" style="color:var(--error); border-color:var(--error); border-radius:50px; padding:10px 25px;"><i class="fa-solid fa-user-xmark"></i> حذف</button>
+                `;
+            } else {
+                // Check if request pending
+                const pendingSnap = await db.collection('friend_requests').where('fromId', '==', currentUser.uid).where('toId', '==', targetId).get();
+                if(!pendingSnap.empty) {
+                    actionsDiv.innerHTML = `<button disabled class="btn-ghost" style="border-radius:50px;">تم إرسال الطلب</button>`;
+                } else {
+                    actionsDiv.innerHTML = `<button onclick="addFriend('${targetId}', '${targetUser.fullName}', '${targetUser.photoUrl}')" class="btn-main" style="border-radius:50px; width:auto;"><i class="fa-solid fa-user-plus"></i> إضافة صديق</button>`;
+                }
+            }
+
+            document.getElementById('loader').classList.add('hidden');
+            document.getElementById('friend-profile-modal').classList.remove('hidden');
+
+        } catch(e) {
+            console.error(e);
+            document.getElementById('loader').classList.add('hidden');
+            toast("تعذر فتح الملف الشخصي");
+        }
+    }
+
+    async function viewFriendProfile(fid, docId) {
+        // Wrapper for legacy calls from Team list
+        openAnyProfile(fid);
+    }
+
     async function openAction(id, type) {
         tempActionData = { id, type };
         document.getElementById('action-modal').classList.remove('hidden');
@@ -1007,13 +1074,16 @@
         };
         document.getElementById('act-title').innerText = titles[type];
 
+        document.getElementById('tech-select-area').classList.add('hidden');
+        
         if(type === 'approve') {
             commBox.placeholder = "ملاحظات للفني (اختياري)...";
             document.getElementById('tech-select-area').classList.remove('hidden');
             loadTechsForAction();
+        } else if (type === 'done') {
+            commBox.placeholder = "تقرير الفني / ملاحظات الإصلاح...";
         } else {
             commBox.placeholder = "سبب الرفض / ملاحظات...";
-            document.getElementById('tech-select-area').classList.add('hidden');
         }
     }
 
@@ -1052,19 +1122,22 @@
 
         if((type==='reject' || type==='tech_reject') && !comment) return toast("⚠️ يجب ذكر السبب");
         if(type==='approve' && !selectedTech) return toast("⚠️ اختر فني للمهمة");
+        if(type==='done' && !comment) return toast("⚠️ يجب كتابة تقرير الإصلاح");
 
         btn.disabled=true;
         try {
-            let updateData = { supervisorComment: comment };
+            let updateData = {};
             
             if(type === 'approve') { 
                 updateData.status = 'approved'; 
                 updateData.technicianId = selectedTech.id; 
                 updateData.technicianName = selectedTech.name; 
+                updateData.supervisorComment = comment;
             }
             else if(type === 'reject') { 
                 updateData.status = 'rejected'; 
                 updateData.rejectedBy = userData.fullName;
+                updateData.supervisorComment = comment;
             }
             else if(type === 'startWork') { updateData.status = 'working'; }
             else if(type === 'tech_reject') {
@@ -1074,8 +1147,8 @@
             }
             else if(type === 'done') { 
                 updateData.status = 'done';
-                // Record Done Time
                 updateData.completedAt = firebase.firestore.FieldValue.serverTimestamp();
+                updateData.techComment = comment; // Save Technician's opinion
             }
 
             await db.collection('requests').doc(id).update(updateData);
@@ -1083,7 +1156,6 @@
         } catch(e) { toast("❌ خطأ"); } finally { btn.disabled=false; }
     }
 
-    // Friends & Deletion
     function openDeleteFriendModal() {
         document.getElementById('delete-friend-modal').classList.remove('hidden');
     }
@@ -1099,38 +1171,6 @@
             console.error(e);
             toast("حدث خطأ أثناء الحذف");
         }
-    }
-    
-    async function viewFriendProfile(fid, docId) {
-        document.getElementById('loader').classList.remove('hidden');
-        currentFriendDocId = docId; 
-        
-        try {
-            const doc = await db.collection('users').doc(fid).get();
-            document.getElementById('loader').classList.add('hidden');
-            
-            if(doc.exists) {
-                const d = doc.data();
-                const roleMap = {'employee':'موظف', 'supervisor':'مشرف', 'technician':'فني'};
-                
-                document.getElementById('fp-pic').src = d.photoUrl;
-                document.getElementById('fp-name').innerText = d.fullName;
-                document.getElementById('fp-role').innerText = roleMap[d.role] || '-';
-                document.getElementById('fp-job').innerText = d.jobTitle || 'غير محدد';
-                document.getElementById('fp-loc').innerText = d.location || 'غير محدد';
-                document.getElementById('fp-email').innerText = d.email;
-                
-                const callBtn = document.getElementById('fp-call-btn');
-                if(d.phone) {
-                    callBtn.href = `tel:${d.phone}`;
-                    callBtn.classList.remove('hidden');
-                } else {
-                    callBtn.classList.add('hidden');
-                }
-                
-                document.getElementById('friend-profile-modal').classList.remove('hidden');
-            }
-        } catch(e) { document.getElementById('loader').classList.add('hidden'); }
     }
 
     // =========================================================================
@@ -1158,7 +1198,6 @@
         const grid = document.getElementById('preview-grid');
         const index = uploadQueue.length - 1;
         
-        // Visual for Audio files
         let previewContent = '';
         if(f.type.startsWith('audio')) {
              previewContent = `<div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:#e0f2fe;color:var(--primary);flex-direction:column;"><i class="fa-solid fa-microphone fa-2x"></i><span style="font-size:10px;margin-top:5px;">تسجيل صوتي</span></div>`;
@@ -1220,7 +1259,6 @@
             for(const file of uploadQueue) {
                 const fd = new FormData(); fd.append('file', file); fd.append('upload_preset', CLOUD_PRESET);
                 
-                // Audio is treated as video/raw in some cloud configs, 'auto' is safest
                 if(file.type.startsWith('audio')) {
                     fd.append('resource_type', 'video'); 
                 }
@@ -1266,10 +1304,8 @@
     }
 
     // =========================================================================
-    // 7. REPORTS (Tech & Employee & Full)
+    // 7. REPORTS
     // =========================================================================
-    
-    // Tech Report
     function submitTechReport() {
         const title = document.getElementById('tech-report-title').value;
         const content = document.getElementById('tech-report-content').value;
@@ -1297,21 +1333,15 @@
         document.getElementById('tech-report-content').value = "";
     }
 
-    // Employee Professional Report
-    function openEmpReportModal() {
-        document.getElementById('emp-report-modal').classList.remove('hidden');
-    }
+    function openEmpReportModal() { document.getElementById('emp-report-modal').classList.remove('hidden'); }
 
     function generateEmpReport() {
         const title = document.getElementById('emp-rep-title').value;
         const content = document.getElementById('emp-rep-content').value;
-        
         if(!title || !content) return toast("⚠️ أكمل البيانات");
 
         const element = document.createElement('div');
-        element.style.padding = '40px'; 
-        element.style.fontFamily = 'Cairo, sans-serif'; 
-        element.dir = 'rtl';
+        element.style.padding = '40px'; element.style.fontFamily = 'Cairo, sans-serif'; element.dir = 'rtl';
         element.innerHTML = `
             <div style="border: 2px solid #000; padding: 20px; min-height: 800px; position: relative;">
                 <div style="text-align:center; border-bottom:2px solid #000; padding-bottom:20px; margin-bottom:30px;">
@@ -1319,51 +1349,21 @@
                     <h3 style="margin:5px 0 0; color:#444;">تقرير إداري</h3>
                     <p style="margin:10px 0 0; font-size:12px;">التاريخ: ${new Date().toLocaleDateString('ar-EG')}</p>
                 </div>
-                
-                <div style="margin-bottom:20px;">
-                    <strong>العنوان: </strong> <span>${title}</span>
-                </div>
-                
-                <div style="margin-bottom:20px;">
-                    <strong>مقدمه: </strong> <span>${userData.fullName} - ${userData.jobTitle || 'موظف'}</span>
-                </div>
-
+                <div style="margin-bottom:20px;"><strong>العنوان: </strong> <span>${title}</span></div>
+                <div style="margin-bottom:20px;"><strong>مقدمه: </strong> <span>${userData.fullName} - ${userData.jobTitle || 'موظف'}</span></div>
                 <hr style="margin:20px 0;">
-
-                <div style="font-size:14px; line-height:2; white-space: pre-wrap; text-align: justify; min-height: 400px;">
-                    ${content}
-                </div>
-
+                <div style="font-size:14px; line-height:2; white-space: pre-wrap; text-align: justify; min-height: 400px;">${content}</div>
                 <div style="display:flex; justify-content:space-between; margin-top:100px; padding-top:20px;">
-                    <div style="text-align:center; width:200px;">
-                        <p style="font-weight:bold; margin-bottom:40px;">توقيع الموظف</p>
-                        <p>.......................</p>
-                        <p style="font-size:12px;">${userData.fullName}</p>
-                    </div>
-                    <div style="text-align:center; width:200px;">
-                        <p style="font-weight:bold; margin-bottom:40px;">توقيع المسؤول / المدير</p>
-                        <p>.......................</p>
-                        <p style="font-size:12px;">(يعتمد)</p>
-                    </div>
+                    <div style="text-align:center; width:200px;"><p style="font-weight:bold; margin-bottom:40px;">توقيع الموظف</p><p>.......................</p><p style="font-size:12px;">${userData.fullName}</p></div>
+                    <div style="text-align:center; width:200px;"><p style="font-weight:bold; margin-bottom:40px;">توقيع المسؤول / المدير</p><p>.......................</p><p style="font-size:12px;">(يعتمد)</p></div>
                 </div>
             </div>
         `;
-
-        html2pdf().from(element).set({
-            margin: 10,
-            filename: `Emp_Report_${Date.now()}.pdf`,
-            image: { type: 'jpeg', quality: 0.98 },
-            html2canvas: { scale: 2 },
-            jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
-        }).save();
-        
-        toast("✅ جاري إنشاء التقرير PDF...");
-        closeModal('emp-report-modal');
-        document.getElementById('emp-rep-title').value = "";
-        document.getElementById('emp-rep-content').value = "";
+        html2pdf().from(element).set({ margin: 10, filename: `Emp_Report_${Date.now()}.pdf`, image: { type: 'jpeg', quality: 0.98 }, html2canvas: { scale: 2 }, jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' } }).save();
+        toast("✅ جاري إنشاء التقرير PDF..."); closeModal('emp-report-modal');
+        document.getElementById('emp-rep-title').value = ""; document.getElementById('emp-rep-content').value = "";
     }
 
-    // New: Full System Report (For Manager)
     async function generateFullReport() {
         toast("جاري جلب البيانات...");
         const snap = await db.collection('requests').orderBy('createdAt', 'desc').get();
@@ -1384,7 +1384,6 @@
                 </thead>
                 <tbody>
         `;
-        
         snap.forEach(doc => {
             const d = doc.data();
             let dur = "-";
@@ -1394,7 +1393,6 @@
                 const diffMins = Math.round((diffMs % 3600000) / 60000);
                 dur = `${diffHrs}س ${diffMins}د`;
             }
-            
             html += `
             <tr>
                 <td style="border:1px solid #ccc; padding:5px;">${d.date}</td>
@@ -1405,7 +1403,6 @@
                 <td style="border:1px solid #ccc; padding:5px;">${dur}</td>
             </tr>`;
         });
-        
         html += `</tbody></table></div>`;
         const el = document.createElement('div'); el.innerHTML = html;
         html2pdf().from(el).set({ margin:5, filename:'Full_System_Report.pdf', jsPDF:{format:'a4', orientation:'landscape'} }).save();
@@ -1439,14 +1436,7 @@
     }
 
     function getStatusLabel(s) {
-        const map = {
-            'pending': 'تم الإرسال',
-            'approved': 'بانتظار الفني',
-            'working': 'قيد التنفيذ',
-            'done': 'تم الإصلاح',
-            'rejected': 'مرفوض',
-            'suspended': 'معلق'
-        };
+        const map = { 'pending': 'تم الإرسال', 'approved': 'بانتظار الفني', 'working': 'قيد التنفيذ', 'done': 'تم الإصلاح', 'rejected': 'مرفوض', 'suspended': 'معلق' };
         return map[s] || s;
     }
 
@@ -1509,12 +1499,21 @@
         }
         timelineHtml += '</div>';
 
-        // Response Time Calculation
+        // Response Time
         let responseTimeHtml = "";
         if(d.status === 'done' && d.completedAt && d.createdAt) {
             responseTimeHtml = `<div style="background:#f0fdf4; color:#166534; padding:10px; border-radius:10px; font-size:12px; margin-bottom:15px; border:1px solid #bbf7d0; text-align:center;">
                 <i class="fa-solid fa-stopwatch"></i> وقت الاستجابة: <b>${calculateDuration(d.createdAt, d.completedAt)}</b>
             </div>`;
+        }
+
+        // Supervisor & Tech Comments Display
+        let commentsHtml = '';
+        if(d.supervisorComment) {
+            commentsHtml += `<div style="background:#ecfdf5; color:#065f46; padding:10px; border-radius:10px; font-size:12px; margin-bottom:5px; border:1px solid #a7f3d0;"><i class="fa-solid fa-user-tie"></i> <b>رأي المشرف:</b> ${d.supervisorComment}</div>`;
+        }
+        if(d.techComment) {
+            commentsHtml += `<div style="background:#eff6ff; color:#1e3a8a; padding:10px; border-radius:10px; font-size:12px; margin-bottom:15px; border:1px solid #bfdbfe;"><i class="fa-solid fa-helmet-safety"></i> <b>رأي الفني:</b> ${d.techComment}</div>`;
         }
 
         document.getElementById('req-details-content').innerHTML = `
@@ -1529,16 +1528,13 @@
                <span><i class="fa-solid fa-clock"></i> ${d.time}</span>
                <span><i class="fa-solid fa-map-pin"></i> ${d.location}</span>
             </div>
-            ${d.supervisorComment && !isRejected ? `<div style="background:#ecfdf5; color:#065f46; padding:10px; border-radius:10px; font-size:12px; margin-bottom:15px; border:1px solid #a7f3d0;"><i class="fa-solid fa-note-sticky"></i> ملاحظات المشرف: ${d.supervisorComment}</div>` : ''}
-            
+            ${commentsHtml}
             <h5 style="margin:10px 0 5px; color:var(--text-muted);">المرفقات:</h5>
             <div class="media-grid" style="margin-bottom:20px;">${mediaHtml}</div>
-            
             <button onclick="downloadSinglePDF('${d.id}')" class="btn-main btn-ghost" style="width:100%; border-color:var(--primary); color:var(--primary);"><i class="fa-solid fa-download"></i> تحميل تفاصيل البلاغ (PDF)</button>
         `;
     }
 
-    // NEW Audio Player Modal Functions
     function openAudioPlayer(url) {
         const modal = document.getElementById('audio-player-modal');
         const audio = document.getElementById('modal-audio-player');
@@ -1581,7 +1577,6 @@
     
     function logout() { 
         auth.signOut(); 
-        // Support FAB is now handled via settings/css, logic remains same
         location.reload(); 
     }
     
@@ -1609,8 +1604,8 @@
             resDiv.innerHTML += `
             <div style="display:flex; align-items:center; justify-content:space-between; padding:10px; background:var(--surface-light); border-radius:10px; margin-bottom:5px; border:1px solid var(--border);">
                 <div style="display:flex; align-items:center; gap:10px;">
-                    <img src="${u.photoUrl}" style="width:35px; height:35px; border-radius:50%;">
-                    <div><b style="font-size:12px; color:var(--text);">${u.fullName}</b><br><span style="font-size:10px; color:var(--gold);">${roleMap[u.role]}</span></div>
+                    <img src="${u.photoUrl}" style="width:35px; height:35px; border-radius:50%; cursor:pointer;" onclick="openAnyProfile('${u.id}')">
+                    <div><b style="font-size:12px; color:var(--text); cursor:pointer;" onclick="openAnyProfile('${u.id}')">${u.fullName}</b><br><span style="font-size:10px; color:var(--gold);">${roleMap[u.role]}</span></div>
                 </div>
                 <button onclick="addFriend('${u.id}', '${u.fullName}', '${u.photoUrl}')" class="btn-main btn-sm">إضافة +</button>
             </div>`;
@@ -1638,7 +1633,7 @@
                     const d = doc.data();
                     list.innerHTML += `
                     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px; border-bottom:1px solid rgba(0,0,0,0.1); padding-bottom:5px;">
-                        <span style="font-size:12px; color:var(--text);">${d.fromData.name}</span>
+                        <span style="font-size:12px; color:var(--text); cursor:pointer;" onclick="openAnyProfile('${d.fromId}')">${d.fromData.name}</span>
                         <div>
                             <button onclick="ansFriend('${doc.id}', true)" style="background:none; border:none; color:var(--success); cursor:pointer;"><i class="fa-solid fa-check"></i></button>
                             <button onclick="ansFriend('${doc.id}', false)" style="background:none; border:none; color:var(--error); cursor:pointer;"><i class="fa-solid fa-xmark"></i></button>
@@ -1669,127 +1664,13 @@
             snap.forEach(doc => {
                 const d = doc.data();
                 div.innerHTML += `
-                <div class="friend-item" onclick="viewFriendProfile('${d.friendId}', '${doc.id}')">
+                <div class="friend-item" onclick="openAnyProfile('${d.friendId}')">
                     <img src="${d.pic}" style="width:40px; height:40px; border-radius:50%; border:1px solid var(--border); object-fit:cover;">
                     <div><b style="font-size:12px;">${d.name}</b></div>
                     <i class="fa-solid fa-chevron-left" style="margin-right:auto; font-size:10px; color:var(--text-muted);"></i>
                 </div>`;
             });
         });
-    }
-
-    // Profile Edit
-    function loadProfilePageData() {
-        document.getElementById('edit-current-pic').src = userData.photoUrl;
-        document.getElementById('edit-id-display').innerText = userData.shortId;
-        document.getElementById('edit-name').value = userData.fullName;
-        document.getElementById('edit-gender').value = userData.gender || 'male';
-        document.getElementById('edit-phone').value = userData.phone;
-        document.getElementById('edit-job').value = userData.jobTitle;
-        document.getElementById('edit-loc').value = userData.location;
-        
-        // Load current frame
-        selectedFrameClass = userData.frame || '';
-        document.getElementById('edit-frame-overlay').className = 'frame-overlay ' + selectedFrameClass;
-        
-        // Highlight selected frame in grid
-        document.querySelectorAll('.frame-option').forEach(f => f.classList.remove('selected'));
-        if(selectedFrameClass) {
-             const sel = document.querySelector(`.frame-option.${selectedFrameClass}`);
-             if(sel) sel.classList.add('selected');
-        } else {
-             document.querySelector('.frame-option.f-none').classList.add('selected');
-        }
-    }
-
-    function previewProfilePic(input) {
-        if(input.files && input.files[0]) {
-            newProfilePicFile = input.files[0];
-            document.getElementById('edit-current-pic').src = URL.createObjectURL(newProfilePicFile);
-        }
-    }
-
-    // New: Frame Selection Logic
-    function selectFrame(el, frameClass) {
-        selectedFrameClass = frameClass;
-        document.querySelectorAll('.frame-option').forEach(f => f.classList.remove('selected'));
-        el.classList.add('selected');
-        document.getElementById('edit-frame-overlay').className = 'frame-overlay ' + frameClass;
-    }
-
-    async function saveProfile() {
-        const btn = document.getElementById('save-profile-btn');
-        btn.disabled = true; btn.innerText = "جاري الحفظ...";
-        const name = document.getElementById('edit-name').value;
-        const gender = document.getElementById('edit-gender').value;
-        const phone = document.getElementById('edit-phone').value;
-        const job = document.getElementById('edit-job').value;
-        const loc = document.getElementById('edit-loc').value;
-
-        try {
-            let newUrl = userData.photoUrl;
-            if(newProfilePicFile) {
-                const fd = new FormData(); fd.append('file', newProfilePicFile); fd.append('upload_preset', CLOUD_PRESET);
-                const res = await fetch(`https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`, {method:'POST', body:fd});
-                const d = await res.json();
-                newUrl = d.secure_url;
-            }
-            await db.collection('users').doc(currentUser.uid).update({ 
-                fullName: name, gender: gender, phone: phone, jobTitle: job, location: loc, photoUrl: newUrl, frame: selectedFrameClass 
-            });
-            userData.fullName = name; userData.gender = gender; userData.phone = phone; 
-            userData.jobTitle = job; userData.location = loc; userData.photoUrl = newUrl; userData.frame = selectedFrameClass;
-            renderHeader(); 
-            toast("✅ تم حفظ التعديلات بنجاح");
-        } catch(e) { toast("❌ فشل الحفظ"); } 
-        finally { btn.disabled=false; btn.innerText = "حفظ التعديلات"; newProfilePicFile=null; }
-    }
-
-    function copyId() { navigator.clipboard.writeText(userData.shortId); toast("تم نسخ ID"); }
-
-    async function handleAuth() {
-        const email = document.getElementById('email').value; 
-        const pass = document.getElementById('password').value;
-        const confirmPass = document.getElementById('confirm-password').value;
-        const btn = document.getElementById('auth-btn'); 
-
-        if(!isLoginMode) {
-             if(pass !== confirmPass) return toast("❌ كلمة المرور غير متطابقة");
-             if(pass.length < 6) return toast("❌ كلمة المرور ضعيفة (6 أحرف على الأقل)");
-        }
-
-        btn.disabled=true; btn.innerText = "جاري المعالجة...";
-        try {
-            if(isLoginMode) {
-                await auth.signInWithEmailAndPassword(email, pass);
-            } else {
-                const role = document.querySelector('input[name="auth-role"]:checked').value;
-                
-                // Manager Count Check
-                if(role === 'manager') {
-                     const managerSnap = await db.collection('users').where('role', '==', 'manager').get();
-                     if(managerSnap.size >= 4) {
-                         throw new Error("⛔ نأسف، تم اكتمال عدد المديرين المسموح به (4).");
-                     }
-                }
-
-                const cred = await auth.createUserWithEmailAndPassword(email, pass);
-                await cred.user.sendEmailVerification();
-                toast("✅ تم إنشاء الحساب. يجب تفعيل الرابط المرسل للإيميل قبل الدخول.");
-                
-                const gender = document.querySelector('input[name="auth-gender"]:checked').value;
-                const defaultPic = gender === 'male' ? 'https://cdn-icons-png.flaticon.com/512/4140/4140048.png' : 'https://cdn-icons-png.flaticon.com/512/4140/4140047.png';
-                
-                await db.collection('users').doc(cred.user.uid).set({
-                    email, role: role, fullName:document.getElementById('reg-name').value, 
-                    gender: gender, photoUrl: defaultPic,
-                    shortId: Math.random().toString(36).substr(2,6).toUpperCase(),
-                    jobTitle: document.getElementById('reg-job').value, location: document.getElementById('reg-loc').value, phone: document.getElementById('reg-phone').value
-                });
-                toggleAuth();
-            }
-        } catch(e) { toast(e.message); }
-        finally { btn.disabled=false; btn.innerText = isLoginMode?"تسجيل الدخول":"إنشاء حساب"; }
     }
 
     // =========================================================================
@@ -1824,9 +1705,9 @@
                 <div class="news-card">
                     ${isAuthor ? `<i class="fa-solid fa-trash post-delete-btn" onclick="deletePost('${doc.id}')"></i>` : ''}
                     <div class="post-header">
-                        <img src="${p.authorPic}" class="post-avatar">
+                        <img src="${p.authorPic}" class="post-avatar" onclick="openAnyProfile('${p.authorId}')">
                         <div>
-                            <b style="font-size:14px;">${p.authorName}</b>
+                            <b style="font-size:14px; cursor:pointer;" onclick="openAnyProfile('${p.authorId}')">${p.authorName}</b>
                             <div style="font-size:10px; color:var(--text-muted);">مدير</div>
                         </div>
                     </div>
@@ -1857,7 +1738,10 @@
                              const c = cDoc.data();
                              cList.innerHTML += `
                              <div class="comment-item">
-                                 <b style="color:var(--primary);">${c.authorName}:</b> ${c.text}
+                                 <div>
+                                     <b style="color:var(--primary); cursor:pointer;" onclick="openAnyProfile('${c.authorId}')">${c.authorName}</b>: ${c.text}
+                                     <div onclick="replyTo('${doc.id}', '${c.authorName}')" class="reply-btn">رد</div>
+                                 </div>
                                  ${c.authorId === currentUser.uid ? `<i class="fa-solid fa-trash comment-del" onclick="deleteComment('${doc.id}', '${cDoc.id}')"></i>` : ''}
                              </div>`;
                         });
@@ -1865,6 +1749,12 @@
                 });
             });
         });
+    }
+
+    function replyTo(postId, name) {
+        const input = document.getElementById(`inp-c-${postId}`);
+        input.value = `@${name} `;
+        input.focus();
     }
 
     async function likePost(pid, isLiked) {
@@ -1911,7 +1801,8 @@
                 <div style="font-size:12px; color:#555; margin-bottom:5px;">الحالة: ${getStatusLabel(r.status)} | النوع: ${r.type || 'عام'}</div>
                 <div style="margin-bottom:5px;">${r.description}</div>
                 <div style="font-size:12px; color:#666;">الموقع: ${r.location}</div>
-                ${r.supervisorComment ? `<div style="margin-top:5px; color:red; font-size:12px;">ملاحظات مشرف: ${r.supervisorComment}</div>` : ''}
+                ${r.supervisorComment ? `<div style="margin-top:5px; color:red; font-size:12px;">رأي المشرف: ${r.supervisorComment}</div>` : ''}
+                ${r.techComment ? `<div style="margin-top:5px; color:blue; font-size:12px;">رأي الفني: ${r.techComment}</div>` : ''}
             </div>`;
         });
         element.innerHTML = html;
@@ -1933,6 +1824,8 @@
                 <tr><td style="padding:10px; border:1px solid #ddd; font-weight:bold;">الموقع</td><td style="padding:10px; border:1px solid #ddd;">${r.location}</td></tr>
                 <tr><td style="padding:10px; border:1px solid #ddd; font-weight:bold;">الوصف</td><td style="padding:10px; border:1px solid #ddd;">${r.description}</td></tr>
                 <tr><td style="padding:10px; border:1px solid #ddd; font-weight:bold;">الحالة</td><td style="padding:10px; border:1px solid #ddd;">${getStatusLabel(r.status)}</td></tr>
+                ${r.supervisorComment ? `<tr><td style="padding:10px; border:1px solid #ddd; font-weight:bold;">رأي المشرف</td><td style="padding:10px; border:1px solid #ddd;">${r.supervisorComment}</td></tr>` : ''}
+                ${r.techComment ? `<tr><td style="padding:10px; border:1px solid #ddd; font-weight:bold;">رأي الفني</td><td style="padding:10px; border:1px solid #ddd;">${r.techComment}</td></tr>` : ''}
             </table>
         `;
         html2pdf().from(element).save(`report_${id}.pdf`);
