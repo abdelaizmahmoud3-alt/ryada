@@ -331,7 +331,7 @@
                 <div class="auth-grid" style="grid-template-columns: repeat(4, 1fr);">
                     <label><input type="radio" name="auth-role" value="employee" class="auth-card-input" checked><div class="auth-card"><i class="fa-solid fa-user-pen"></i><span style="font-size:10px;">موظف</span></div></label>
                     <label><input type="radio" name="auth-role" value="supervisor" class="auth-card-input"><div class="auth-card"><i class="fa-solid fa-user-tie"></i><span style="font-size:10px;">مشرف</span></div></label>
-                    <label><input type="radio" name="auth-role" value="technician" class="auth-card-input"><div class="auth-card"><i class="fa-solid fa-helmet-safety"></i><span style="font-size:10px;">فني</span></div></label>
+                    <label><input type="radio" name="auth-role" value="technician" class="auth-card-input"><div class="auth-card"><i class="fa-solid fa-helmet-safety"></i><span style="font-size:10px;">مهندس</span></div></label>
                     <label><input type="radio" name="auth-role" value="manager" class="auth-card-input"><div class="auth-card"><i class="fa-solid fa-user-shield"></i><span style="font-size:10px;">مدير</span></div></label>
                 </div>
                 <div class="input-group" style="margin-top:15px;"><input type="text" id="reg-job" placeholder="المسمى الوظيفي"></div>
@@ -524,6 +524,14 @@
                     <div id="full-report-btn-container" class="hidden" style="margin-top:15px;">
                         <button onclick="generateFullReport()" class="btn-main" style="background:var(--primary-dark);"><i class="fa-solid fa-chart-pie"></i> التقرير الشامل للنظام</button>
                     </div>
+                    
+                    <div id="tech-task-management" class="hidden" style="margin-top:20px; border-top:1px solid var(--border); padding-top:15px;">
+                        <label style="font-weight:bold; color:var(--primary); margin-bottom:10px; display:block;">إدارة مهام الفنيين</label>
+                        <div style="display:flex; gap:10px;">
+                            <input type="text" id="sub-tech-name-input" placeholder="اسم الفني...">
+                            <button onclick="generateSubTechReport()" class="btn-main btn-sm" style="width:auto;"><i class="fa-solid fa-file-invoice"></i> تقرير</button>
+                        </div>
+                    </div>
 
                     <div style="margin-top:20px; background:var(--surface-light); padding:15px; border-radius:16px; border:1px solid var(--border); display:flex; align-items:center; justify-content:space-between;">
                         <span>خدمة العملاء</span>
@@ -613,6 +621,11 @@
             <div id="tech-select-area" class="hidden" style="margin-top:20px;">
                 <p style="font-size:13px; font-weight:700; color:var(--text-muted); margin-bottom:12px;">اختر الفني المختص:</p>
                 <div id="tech-list-action" class="tech-select-grid" style="max-height:200px; overflow-y:auto; padding:5px;"></div>
+            </div>
+            
+            <div id="sub-tech-select-area" class="hidden" style="margin-top:20px;">
+                <p style="font-size:13px; font-weight:700; color:var(--text-muted); margin-bottom:12px;">تعيين فني للتنفيذ:</p>
+                <div id="sub-tech-list" class="tech-select-grid" style="max-height:200px; overflow-y:auto; padding:5px;"></div>
             </div>
 
             <button onclick="submitAction()" id="act-submit-btn" class="btn-main" style="margin-top:20px;">تنفيذ</button>
@@ -713,7 +726,11 @@
     let isFirstLoad = true;
     let currentFriendDocId = null;
     let selectedFrameClass = '';
-    let pendingConfirmAction = null; // Global for new confirm modal
+    let pendingConfirmAction = null; 
+    let selectedSubTech = null; // للمهندس عند اختيار فني
+
+    // تعديل 4: أسماء فنيين مستعارة
+    const dummyTechs = ['أحمد محمد', 'محمود علي', 'سامي حسن', 'خالد جمال', 'يوسف كريم'];
 
     // --- Audio Recording State ---
     let mediaRecorder = null;
@@ -775,7 +792,6 @@
             toast("⚠️ خطأ في تحميل بيانات المستخدم"); 
         }
     }
-
     function setupRoleUI() {
         // Supervisor Filters
         if(userData.role === 'supervisor') {
@@ -787,14 +803,17 @@
             document.getElementById('emp-report-btn-container').classList.remove('hidden');
         }
         
-        // Technician: Replace "Add" button with "Report" button
+        // Engineer (Formerly Technician): Report Button & Settings
         if(userData.role === 'technician') {
             const addBtn = document.querySelector('.nav-add-btn');
             addBtn.innerHTML = '<i class="fa-solid fa-file-pdf"></i>';
             addBtn.onclick = function() {
                 document.getElementById('tech-report-modal').classList.remove('hidden');
             };
-            document.getElementById('page-create').innerHTML = "<div style='text-align:center; padding:50px;'><h3 style='color:var(--text-muted)'>حساب فني</h3><p>لا يمكنك إنشاء بلاغات، فقط متابعة المهام وإرسال التقارير.</p></div>";
+            document.getElementById('page-create').innerHTML = "<div style='text-align:center; padding:50px;'><h3 style='color:var(--text-muted)'>حساب مهندس</h3><p>لا يمكنك إنشاء بلاغات، فقط إدارة المهام وتعيين الفنيين.</p></div>";
+            
+            // تعديل 3: إظهار قسم إدارة مهام الفنيين في الإعدادات
+            document.getElementById('tech-task-management').classList.remove('hidden');
         }
 
         // Manager: Show Create Post & Full Report AND HIDE Create Request Button
@@ -809,7 +828,8 @@
     // 3. UI RENDERING & FEED
     // =========================================================================
     function renderHeader() {
-        const roleMap = {'employee':'موظف', 'supervisor':'مشرف', 'technician':'فني', 'manager':'مدير'};
+        // تعديل 1: تغيير المسمى في الهيدر
+        const roleMap = {'employee':'موظف', 'supervisor':'مشرف', 'technician':'مهندس', 'manager':'مدير'};
         document.getElementById('banner-name').innerText = userData.fullName;
         document.getElementById('banner-role').innerText = roleMap[userData.role];
         document.getElementById('banner-id').innerText = "ID: " + userData.shortId;
@@ -907,19 +927,20 @@
                 if(userData.role === 'supervisor' && d.status === 'pending') {
                     actionBtns = `
                     <div style="display:flex; gap:10px;">
-                        <button onclick="event.stopPropagation(); openAction('${d.id}','approve')" class="btn-main btn-sm" style="background:var(--success);">قبول وتعيين فني</button>
+                        <button onclick="event.stopPropagation(); openAction('${d.id}','approve')" class="btn-main btn-sm" style="background:var(--success);">قبول وتعيين مهندس</button>
                         <button onclick="event.stopPropagation(); openAction('${d.id}','reject')" class="btn-main btn-danger btn-sm">رفض</button>
                     </div>`;
                 }
-                else if(userData.role === 'technician') {
+                else if(userData.role === 'technician') { // Engineer Logic
                     if(d.status === 'approved') {
+                        // تعديل 2: خيار تعيين فني بدلاً من بدء العمل مباشرة
                         actionBtns = `
                         <div style="display:flex; gap:10px;">
-                             <button onclick="event.stopPropagation(); openAction('${d.id}','startWork')" class="btn-main btn-sm" style="background:var(--warning); color:#fff;">قبول (بدء العمل)</button>
+                             <button onclick="event.stopPropagation(); openAction('${d.id}','assignTech')" class="btn-main btn-sm" style="background:var(--primary);">تعيين فني</button>
                              <button onclick="event.stopPropagation(); openAction('${d.id}','tech_reject')" class="btn-main btn-danger btn-sm">رفض</button>
                         </div>`;
                     } else if(d.status === 'working') {
-                        actionBtns = `<button onclick="event.stopPropagation(); openAction('${d.id}','done')" class="btn-main btn-sm" style="background:var(--success);">تم الإصلاح</button>`;
+                        actionBtns = `<button onclick="event.stopPropagation(); openAction('${d.id}','done')" class="btn-main btn-sm" style="background:var(--success);">إتمام المهمة</button>`;
                     }
                 }
             } else {
@@ -929,7 +950,9 @@
             let prioIcon = d.priority === 'high' ? '<i class="fa-solid fa-fire" style="color:var(--error)"></i>' : '';
             let prioColor = d.priority === 'high' ? 'var(--error)' : d.priority === 'medium' ? 'var(--warning)' : 'var(--success)';
             
-            // Render Card with Clickable Profile Logic
+            // Show assigned sub-tech if exists
+            let subTechInfo = d.assignedSubTech ? `<div style="font-size:11px; color:var(--primary); margin-top:5px; font-weight:bold;"><i class="fa-solid fa-helmet-safety"></i> الفني القائم: ${d.assignedSubTech}</div>` : '';
+
             container.innerHTML += `
             <div class="glass-card request-card ${cardClass}" onclick="openRequestDetails('${d.id}')" style="border-right-color:${prioColor};">
                 <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:10px;">
@@ -949,6 +972,7 @@
                 </div>
                 
                 <div style="font-size:11px; color:var(--text-muted); margin-bottom:10px; margin-top:8px;"><i class="fa-solid fa-location-dot"></i> ${d.location}</div>
+                ${subTechInfo}
                 
                 <div style="display:flex; justify-content:space-between; align-items:center;">
                     ${deleteBtn}
@@ -1006,23 +1030,29 @@
         document.getElementById('action-modal').classList.remove('hidden');
         const commBox = document.getElementById('act-comment');
         commBox.value = "";
+        document.getElementById('tech-select-area').classList.add('hidden');
+        document.getElementById('sub-tech-select-area').classList.add('hidden');
         
         const titles = {
-            'approve':'قبول وتعيين فني', 
+            'approve':'قبول وتعيين مهندس', 
             'reject':'رفض الطلب', 
-            'startWork':'بدء التنفيذ', 
+            'assignTech':'تعيين فني للتنفيذ', 
             'done':'إتمام الإصلاح',
             'tech_reject': 'رفض المهمة'
         };
-        document.getElementById('act-title').innerText = titles[type];
+        document.getElementById('act-title').innerText = titles[type] || 'إجراء';
 
         if(type === 'approve') {
-            commBox.placeholder = "ملاحظات للفني (اختياري)...";
+            commBox.placeholder = "ملاحظات للمهندس (اختياري)...";
             document.getElementById('tech-select-area').classList.remove('hidden');
             loadTechsForAction();
+        } else if (type === 'assignTech') {
+            // تعديل 2: منطق تعيين الفني
+            commBox.placeholder = "تعليمات للفني (اختياري)...";
+            document.getElementById('sub-tech-select-area').classList.remove('hidden');
+            loadSubTechs();
         } else {
             commBox.placeholder = "سبب الرفض / ملاحظات...";
-            document.getElementById('tech-select-area').classList.add('hidden');
         }
     }
 
@@ -1034,7 +1064,7 @@
         list.innerHTML="";
         
         if(snap.empty) {
-            list.innerHTML = "<p style='grid-column:span 2; font-size:11px; color:red;'>لا يوجد فنيين مسجلين</p>";
+            list.innerHTML = "<p style='grid-column:span 2; font-size:11px; color:red;'>لا يوجد مهندسين مسجلين</p>";
             return;
         }
 
@@ -1044,14 +1074,32 @@
              <div class="tech-select-card" onclick="selTech(this, '${doc.id}', '${t.fullName}')">
                 <img src="${t.photoUrl}">
                 <div style="font-size:12px; font-weight:bold; color:var(--text);">${t.fullName}</div>
-                <div style="font-size:10px; color:var(--text-muted);">${t.jobTitle||'فني'}</div>
+                <div style="font-size:10px; color:var(--text-muted);">${t.jobTitle||'مهندس'}</div>
              </div>`;
         });
     }
     
+    // تعديل 4: دالة تحميل الفنيين المستعارين
+    function loadSubTechs() {
+        const list = document.getElementById('sub-tech-list');
+        list.innerHTML = "";
+        dummyTechs.forEach(name => {
+             list.innerHTML += `
+             <div class="tech-select-card" onclick="selSubTech(this, '${name}')">
+                <div style="width:50px; height:50px; background:#e0f2fe; border-radius:50%; display:flex; align-items:center; justify-content:center; margin:0 auto 8px; color:var(--primary);"><i class="fa-solid fa-user-gear"></i></div>
+                <div style="font-size:12px; font-weight:bold; color:var(--text);">${name}</div>
+             </div>`;
+        });
+    }
+
     function selTech(el, id, name) {
         document.querySelectorAll('.tech-select-card').forEach(d=>d.classList.remove('selected'));
         el.classList.add('selected'); selectedTech={id, name};
+    }
+    
+    function selSubTech(el, name) {
+        document.querySelectorAll('.tech-select-card').forEach(d=>d.classList.remove('selected'));
+        el.classList.add('selected'); selectedSubTech = name;
     }
 
     async function submitAction() {
@@ -1060,7 +1108,8 @@
         const btn = document.getElementById('act-submit-btn');
 
         if((type==='reject' || type==='tech_reject') && !comment) return toast("⚠️ يجب ذكر السبب");
-        if(type==='approve' && !selectedTech) return toast("⚠️ اختر فني للمهمة");
+        if(type==='approve' && !selectedTech) return toast("⚠️ اختر مهندساً للمهمة");
+        if(type==='assignTech' && !selectedSubTech) return toast("⚠️ اختر فنياً للتنفيذ");
 
         btn.disabled=true;
         try {
@@ -1075,11 +1124,15 @@
                 updateData.status = 'rejected'; 
                 updateData.rejectedBy = userData.fullName;
             }
-            else if(type === 'startWork') { updateData.status = 'working'; }
+            else if(type === 'assignTech') {
+                updateData.status = 'working';
+                updateData.assignedSubTech = selectedSubTech; // حفظ اسم الفني
+                if(comment) updateData.engineerComment = comment;
+            }
             else if(type === 'tech_reject') {
                 updateData.status = 'rejected';
-                updateData.rejectedBy = `الفني: ${userData.fullName}`;
-                updateData.supervisorComment = `رفض الفني: ${comment}`;
+                updateData.rejectedBy = `المهندس: ${userData.fullName}`;
+                updateData.supervisorComment = `رفض المهندس: ${comment}`;
             }
             else if(type === 'done') { 
                 updateData.status = 'done';
@@ -1089,6 +1142,54 @@
             await db.collection('requests').doc(id).update(updateData);
             toast("✅ تم تنفيذ الإجراء"); closeModal('action-modal');
         } catch(e) { toast("❌ خطأ"); } finally { btn.disabled=false; }
+    }
+
+    // تعديل 3: دالة إنشاء تقرير المهام للفني
+    function generateSubTechReport() {
+        const techName = document.getElementById('sub-tech-name-input').value.trim();
+        if(!techName) return toast("⚠️ اكتب اسم الفني");
+
+        // البحث في الطلبات المكتملة
+        const tasks = requestsCache.filter(r => r.status === 'done' && r.assignedSubTech === techName);
+
+        if(tasks.length === 0) return toast("⚠️ لا توجد مهام منجزة لهذا الفني");
+
+        const element = document.createElement('div');
+        element.style.padding = '30px'; element.style.fontFamily = 'Cairo, sans-serif'; element.dir = 'rtl';
+        
+        let rows = "";
+        tasks.forEach(t => {
+            rows += `
+            <tr style="border-bottom:1px solid #ccc;">
+                <td style="padding:8px;">${t.date}</td>
+                <td style="padding:8px;">${t.location}</td>
+                <td style="padding:8px;">${t.description}</td>
+                <td style="padding:8px;">${t.type}</td>
+            </tr>`;
+        });
+
+        element.innerHTML = `
+            <div style="text-align:center; border-bottom:3px solid #0056b3; padding-bottom:15px; margin-bottom:20px;">
+                <h2 style="color:#0056b3;">تقرير أداء فني</h2>
+                <h3 style="margin:5px;">الفني: ${techName}</h3>
+                <p>تاريخ التقرير: ${new Date().toLocaleDateString('ar-EG')}</p>
+            </div>
+            <table style="width:100%; border-collapse:collapse; text-align:right; font-size:12px;">
+                <thead style="background:#f1f5f9;">
+                    <tr>
+                        <th style="padding:10px;">التاريخ</th>
+                        <th style="padding:10px;">الموقع</th>
+                        <th style="padding:10px;">الوصف</th>
+                        <th style="padding:10px;">النوع</th>
+                    </tr>
+                </thead>
+                <tbody>${rows}</tbody>
+            </table>
+            <div style="margin-top:20px; font-weight:bold;">إجمالي المهام المنجزة: ${tasks.length}</div>
+        `;
+
+        html2pdf().from(element).save(`Task_Report_${techName}.pdf`);
+        toast("✅ جاري تحميل التقرير...");
     }
 
     // --- NEW: Universal User Profile Logic ---
@@ -1105,7 +1206,7 @@
             
             if(doc.exists) {
                 const u = doc.data();
-                const roleMap = {'employee':'موظف', 'supervisor':'مشرف', 'technician':'فني', 'manager':'مدير'};
+                const roleMap = {'employee':'موظف', 'supervisor':'مشرف', 'technician':'مهندس', 'manager':'مدير'};
 
                 // Populate Modal
                 document.getElementById('fp-pic').src = u.photoUrl;
@@ -1177,7 +1278,7 @@
         if(users.length === 0) { resDiv.innerHTML = '<p style="text-align:center; color:#999; font-size:12px;">لم يتم العثور على مستخدم</p>'; return; }
         users.forEach(u => {
             if(u.id === currentUser.uid) return;
-            const roleMap = {'employee':'موظف', 'supervisor':'مشرف', 'technician':'فني', 'manager':'مدير'};
+            const roleMap = {'employee':'موظف', 'supervisor':'مشرف', 'technician':'مهندس', 'manager':'مدير'};
             resDiv.innerHTML += `
             <div style="display:flex; align-items:center; justify-content:space-between; padding:10px; background:var(--surface-light); border-radius:10px; margin-bottom:5px; border:1px solid var(--border);">
                 <div style="display:flex; align-items:center; gap:10px;">
@@ -1396,7 +1497,7 @@
         element.innerHTML = `
             <div style="text-align:center; border-bottom:3px solid #0056b3; padding-bottom:15px; margin-bottom:20px;">
                 <h1 style="color:#0056b3;">${title}</h1>
-                <p>بواسطة الفني: ${userData.fullName}</p>
+                <p>بواسطة المهندس: ${userData.fullName}</p>
                 <p>التاريخ: ${new Date().toLocaleDateString('ar-EG')}</p>
             </div>
             <div style="font-size:14px; line-height:1.8; white-space: pre-wrap;">${content}</div>
@@ -1456,7 +1557,7 @@
                         <th style="border:1px solid #999; padding:5px;">النوع</th>
                         <th style="border:1px solid #999; padding:5px;">الوصف</th>
                         <th style="border:1px solid #999; padding:5px;">الحالة</th>
-                        <th style="border:1px solid #999; padding:5px;">الفني</th>
+                        <th style="border:1px solid #999; padding:5px;">المهندس</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -1517,7 +1618,7 @@
 
     function getStatusLabel(s) {
         const map = {
-            'pending': 'تم الإرسال', 'approved': 'بانتظار الفني', 'working': 'قيد التنفيذ',
+            'pending': 'تم الإرسال', 'approved': 'بانتظار المهندس', 'working': 'قيد التنفيذ',
             'done': 'تم الإصلاح', 'rejected': 'مرفوض', 'suspended': 'معلق'
         };
         return map[s] || s;
@@ -1551,8 +1652,8 @@
 
         let steps = [
             { id: 'pending', label: 'تم الإرسال', desc: 'بانتظار الموافقة' },
-            { id: 'approved', label: 'تم التوجيه', desc: d.technicianName ? `مع الفني: ${d.technicianName}` : 'تعيين فني' },
-            { id: 'working', label: 'قيد التنفيذ', desc: 'بدأ العمل' },
+            { id: 'approved', label: 'تم التوجيه', desc: d.technicianName ? `مع المهندس: ${d.technicianName}` : 'تعيين مهندس' },
+            { id: 'working', label: 'قيد التنفيذ', desc: d.assignedSubTech ? `الفني: ${d.assignedSubTech}` : 'بدأ العمل' },
             { id: 'done', label: 'تم الإصلاح', desc: 'انتهت العملية' }
         ];
 
